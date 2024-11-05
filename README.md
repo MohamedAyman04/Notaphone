@@ -27,4 +27,4 @@ a database project
     - Type: stored procedure
     - Name: clearAllTables
     - Input:Nothing
-    - output:Nothing
+    - output:Nothing.
