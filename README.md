@@ -18,11 +18,11 @@ a database project
     - Name: dropAllTables
     - Input:Nothing
     - output:Nothing
-  - d) Drop all implemented stored procedures (except this one), functions and views that you implemented in this milestone. (Abdelhamid)
-    - Type: stored procedure
-    - Name: dropAllProceduresFunctionsViews
-    - Input:Nothing
-    - output:Nothing
+  - ~d) Drop all implemented stored procedures (except this one), functions and views that you implemented in this milestone. (Abdelhamid)~
+    - ~Type: stored procedure~
+    - ~Name: dropAllProceduresFunctionsViews~
+    - ~Input:Nothing~
+    - ~output:Nothing~
   - e) Clear all records in all tables existing in your database. (Ahmed)
     - Type: stored procedure
     - Name: clearAllTables
