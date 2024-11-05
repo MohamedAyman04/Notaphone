@@ -1,0 +1,1 @@
+﻿create database Telecom_Team_10
