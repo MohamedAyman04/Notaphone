@@ -104,4 +104,89 @@ AS
         FOREIGN KEY (mobileNo) REFERENCES Customer_Account(mobileNo)
     );
 
+    CREATE TABLE Points_Group (
+        pointID INT,
+        benefitID INT,
+        pointsAmount INT,
+        PaymentID INT,
+        PRIMARY KEY (pointID, benefitID),
+        FOREIGN KEY (benefitID) REFERENCES Benefits(benefitID),
+        FOREIGN KEY (paymentID) REFERENCES Payment(paymentID),
+    )
+
+    CREATE TABLE Exclusive_Offer (
+        offerID INT,
+        benefitID INT,
+        internet_offered INT,
+        SMS_offered INT,
+        minutes_offered INT,
+        PRIMARY KEY (offerID, benefitID),
+        FOREIGN KEY (benefitID) REFERENCES Benefits(benefitID)
+    )
+
+    CREATE TABLE Cashback (
+        CashbackID INT,
+        benefitID INT,
+        walletID INT,
+        amount INT,
+        credit_date DATE,
+        PRIMARY KEY (CashbackID, benefitID),
+        FOREIGN KEY (benefitID) REFERENCES Benefits(benefitID),
+        FOREIGN KEY (walletID) REFERENCES Wallet(walletID)
+    )
+
+    CREATE TABLE Plan_Provides_Benefits (
+        benefitID INT,
+        planID INT,
+        PRIMARY KEY (benefitID, planID),
+        FOREIGN KEY (benefitID) REFERENCES Benefits(benefitID),
+        FOREIGN KEY (planID) REFERENCES Service_Plan(planID)
+    )
+
+    CREATE TABLE Shop (
+        shopID INT,
+        name VARCHAR(50),
+        category VARCHAR(50),
+        PRIMARY KEY (shopID)
+    )
+
+    CREATE TABLE Physical_Shop (
+        shopID INT,
+        address VARCHAR(50),
+        working_hours VARCHAR(50),
+        PRIMARY KEY (shopID),
+        FOREIGN KEY (shopID) REFERENCES Shop(shopID)
+    )
+
+    CREATE TABLE E_shop (
+        shopID INT,
+        URL VARCHAR(50),
+        rating INT,
+        PRIMARY KEY (shopID),
+        FOREIGN KEY (shopID) REFERENCES Shop(shopID)
+    )
+
+    CREATE TABLE Voucher (
+        voucherID INT,
+        value INT,
+        expiry_date DATE,
+        points INT,
+        mobileNo CHAR(11),
+        shopID INT,
+        redeem_date DATE,
+        PRIMARY KEY (voucherID),
+        FOREIGN KEY (mobileNo) REFERENCES Customer_Account(mobileNo),
+        FOREIGN KEY (shopID) REFERENCES Shop(shopID)
+    )
+
+    CREATE TABLE Technical_Support_Ticket (
+        ticketID INT,
+        mobileNo CHAR(11),
+        Issue_description VARCHAR(50),
+        priority_level INT,
+        status VARCHAR(50),
+        PRIMARY KEY (ticketID, mobileNo),
+        FOREIGN KEY (mobileNo) REFERENCES Customer_Account(mobileNo)
+    )
+
 GO
