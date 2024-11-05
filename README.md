@@ -1,10 +1,14 @@
 # Notaphone
+
 a database project
 
 ## Task division
+
 - ### 2.1
   - ~a) Write an SQL query to create database called “Telecom_Team_Your Team Number”~
-  - b) Put the queries that create all the tables of your database with their definition inside this procedure. (Mohamed 1-10, Nour 11-19)
+  - b) Put the queries that create all the tables of your database with their definition inside this procedure.
+    ~(Mohamed 1-10)~ needs some minor changes
+    (Nour 11-19)
     - Type: stored procedure
     - Name: createAllTables
     - Input:Nothing
