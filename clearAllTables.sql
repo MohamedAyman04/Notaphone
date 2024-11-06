@@ -1,5 +1,5 @@
 ﻿GO
-CREATE PROC clearAllTablesRecords
+CREATE PROC clearAllTables
 AS
 TRUNCATE TABLE Customer_profile;
 TRUNCATE TABLE Customer_Account;
