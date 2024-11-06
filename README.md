@@ -5,6 +5,7 @@ a database project
 ## Task division
 
 - ### 2.1 Basic Structure of the Database
+
   - ~a) Write an SQL query to create database called “Telecom_Team_Your Team Number”~
   - ~b) Put the queries that create all the tables of your database with their definition inside this procedure.
     (Mohamed 1-10) needs some minor changes
@@ -40,22 +41,22 @@ a database project
     - Name: allServicePlans
     - Input: Nothing
     - Output: Table
-  - c) Fetch details for all active Benefits.
-    - Type: view
-    - Name: allBenefits
-    - Input:Nothing
-    - Output: Table
-  - d) Fetch details for all payments along with their corresponding Accounts.
-    - Type: view
-    - Name: AccountPayments
-    - Input: Nothing
-    - Output: Table
-  - ~e) Fetch details for all shops.~
+  - c) ~Fetch details for all active Benefits.~
+    - ~Type: view~
+    - ~Name: allBenefits~
+    - ~Input:Nothing~
+    - ~Output: Table~
+  - d) ~Fetch details for all payments along with their corresponding Accounts.~
+    - ~Type: view~
+    - ~Name: AccountPayments~
+    - ~Input: Nothing~
+    - ~Output: Table~
+  - e) ~Fetch details for all shops.~
     - ~Type: view~
     - ~Name: allShops~
     - ~Input:Nothing~
     - ~Output: Table~
-  - ~f) Fetch details for all resolved tickets.~
+  - f) ~Fetch details for all resolved tickets.~
     - ~Type: view~
     - ~Name: allResolvedTickets~
     - ~Input:Nothing~
@@ -76,7 +77,7 @@ a database project
     - Input:Nothing
     - Output: Table
   - j) Fetch number of cashback transactions per each wallet.
-    -  Type: view
+    - Type: view
     - Name: Num_of_cashback
     - Input:Nothing
     - Output: Table
