@@ -50,16 +50,16 @@ a database project
     - Name: AccountPayments
     - Input: Nothing
     - Output: Table
-  - e) Fetch details for all shops.
-    - Type: view
-    - Name: allShops
-    - Input:Nothing
-    - Output: Table
-  - f) Fetch details for all resolved tickets.
-    - Type: view
-    - Name: allResolvedTickets
-    - Input:Nothing
-    - Output: Table
+  - ~e) Fetch details for all shops.~
+    - ~Type: view~
+    - ~Name: allShops~
+    - ~Input:Nothing~
+    - ~Output: Table~
+  - ~f) Fetch details for all resolved tickets.~
+    - ~Type: view~
+    - ~Name: allResolvedTickets~
+    - ~Input:Nothing~
+    - ~Output: Table~
   - g) Fetch details of all wallets along with their customer names.
     - Type: view
     - Name: CustomerWallet
