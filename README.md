@@ -24,39 +24,39 @@ a database project
     - ~Name: dropAllProceduresFunctionsViews~
     - ~Input:Nothing~
     - ~output:Nothing~
-  - e) Clear all records in all tables existing in your database. (Ahmed)
+  - e) ~Clear all records in all tables existing in your database. (Ahmed)~ TO BE REVISED
     - Type: stored procedure
     - Name: clearAllTables
     - Input:Nothing
     - output:Nothing
 
 - ### 2.2 Basic Data Retrieval
-  - a) Fetch details for all customer profiles along with their active accounts.
+  - ~a) Fetch details for all customer profiles along with their active accounts.~ TO BE REVISED
     - Type: view
     - Name: allCustomerAccounts
     - Input:Nothing
     - Output: Table
-  - b) Fetch details for all offered Service Plans.
+  - ~b) Fetch details for all offered Service Plans.~ TO BE REVISED
     - Type: view
     - Name: allServicePlans
     - Input: Nothing
     - Output: Table
-  - c) ~Fetch details for all active Benefits.~
+  - c) ~Fetch details for all active Benefits.~ TO BE REVISED
     - ~Type: view~
     - ~Name: allBenefits~
     - ~Input:Nothing~
     - ~Output: Table~
-  - d) ~Fetch details for all payments along with their corresponding Accounts.~
+  - d) ~Fetch details for all payments along with their corresponding Accounts.~ TO BE REVISED
     - ~Type: view~
     - ~Name: AccountPayments~
     - ~Input: Nothing~
     - ~Output: Table~
-  - e) ~Fetch details for all shops.~
+  - e) ~Fetch details for all shops.~ TO BE REVISED
     - ~Type: view~
     - ~Name: allShops~
     - ~Input:Nothing~
     - ~Output: Table~
-  - f) ~Fetch details for all resolved tickets.~
+  - f) ~Fetch details for all resolved tickets.~ TO BE REVISED
     - ~Type: view~
     - ~Name: allResolvedTickets~
     - ~Input:Nothing~
