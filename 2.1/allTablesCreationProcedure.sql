@@ -15,10 +15,10 @@ AS
         mobileNo CHAR(11) PRIMARY KEY,
         pass VARCHAR(50),
         balance DECIMAL(10, 1),
-        account_type VARCHAR(50),
+        account_type VARCHAR(50) CHECK (account_type IN ('Post Paid', 'Prepaid', 'Pay_as_you_go')),
         start_date DATE,
-        status VARCHAR(50),
-        point INT,
+        status VARCHAR(50) CHECK (status IN ('active', 'onhold')),
+        point INT DEFAULT 0,
         nationalID INT,
         FOREIGN KEY (nationalID) REFERENCES Customer_profile(nationalID)
     );
@@ -29,7 +29,7 @@ AS
         minutes_offered INT,
         data_offered INT,
         name VARCHAR(50),
-        price DECIMAL(10, 2),
+        price DECIMAL(10, 1),
         description VARCHAR(50)
     );
 
@@ -37,7 +37,7 @@ AS
         mobileNo CHAR(11),
         planID INT,
         subscription_date DATE,
-        status VARCHAR(50),
+        status VARCHAR(50) CHECK (status in ('active', 'onhold')),
         PRIMARY KEY (mobileNo, planID),
         FOREIGN KEY (mobileNo) REFERENCES Customer_Account(mobileNo),
         FOREIGN KEY (planID) REFERENCES Service_Plan(planID)
@@ -60,23 +60,45 @@ AS
         paymentID INT PRIMARY KEY IDENTITY(1, 1),
         amount DECIMAL(10, 1),
         date_of_payment DATE,
-        payment_method VARCHAR(50),
-        status VARCHAR(50),
+        payment_method VARCHAR(50) CHECK (payment_method in ('cash', 'credit')),
+        status VARCHAR(50) CHECK (status in ('successful', 'pending', 'rejected')),
         mobileNo CHAR(11),
         FOREIGN KEY (mobileNo) REFERENCES Customer_Account(mobileNo)
     );
 
+    CREATE VIEW ProcessPaymentView AS
+    SELECT 
+        PP.paymentID,
+        PP.planID,
+        SP.price AS plan_price,
+        P.amount AS payment_amount,
+        CASE 
+            WHEN P.amount < SP.price THEN SP.price - P.amount
+            ELSE 0 
+        END AS remaining_balance,
+        CASE 
+            WHEN P.amount > SP.price THEN P.amount - SP.price 
+            ELSE 0 
+        END AS additional_amounts
+    FROM 
+        Process_Payment AS PP
+    JOIN 
+        Service_Plan AS SP ON PP.planID = SP.planID
+    JOIN 
+        Payment AS P ON PP.paymentID = P.paymentID;
+
     CREATE TABLE Process_Payment (
         paymentID INT PRIMARY KEY IDENTITY(1, 1),
         planID INT,
-        remaining_balance DECIMAL(10, 2), -- Needs calculation based on other tables
-        extra_amount DECIMAL(10, 2),      -- Needs calculation based on other tables
+        remaining_balance DECIMAL(10, 1),
+        extra_amount DECIMAL(10, 1),
+        FOREIGN KEY (paymentID) REFERENCES Payment(paymentID),
         FOREIGN KEY (planID) REFERENCES Service_Plan(planID)
     );
 
     CREATE TABLE Wallet (
         walletID INT PRIMARY KEY IDENTITY(1, 1),
-        current_balance DECIMAL(10, 2),
+        current_balance DECIMAL(10, 1),
         currency VARCHAR(50),
         last_modified_date DATE,
         nationalID INT,
@@ -87,7 +109,7 @@ AS
         walletID1 INT,
         walletID2 INT,
         transfer_id INT,
-        amount DECIMAL(10, 2),
+        amount DECIMAL(10, 1),
         transfer_date DATE,
         PRIMARY KEY (walletID1, walletID2, transfer_id),
         FOREIGN KEY (walletID1) REFERENCES Wallet(walletID),
@@ -99,7 +121,7 @@ AS
         benefitID INT PRIMARY KEY IDENTITY(1, 1),
         description VARCHAR(50),
         validity_date DATE,
-        status VARCHAR(50),
+        status VARCHAR(50) CHECK (status in ('active', 'expired')),
         mobileNo CHAR(11),
         FOREIGN KEY (mobileNo) REFERENCES Customer_Account(mobileNo)
     );
@@ -107,7 +129,7 @@ AS
     CREATE TABLE Points_Group (
         pointID INT,
         benefitID INT,
-        pointsAmount INT,
+        pointsAmount DECIMAL(10, 1),
         PaymentID INT,
         PRIMARY KEY (pointID, benefitID),
         FOREIGN KEY (benefitID) REFERENCES Benefits(benefitID),
@@ -128,7 +150,7 @@ AS
         CashbackID INT,
         benefitID INT,
         walletID INT,
-        amount INT,
+        amount DECIMAL(10, 1),
         credit_date DATE,
         PRIMARY KEY (CashbackID, benefitID),
         FOREIGN KEY (benefitID) REFERENCES Benefits(benefitID),
@@ -184,7 +206,7 @@ AS
         mobileNo CHAR(11),
         Issue_description VARCHAR(50),
         priority_level INT,
-        status VARCHAR(50),
+        status VARCHAR(50) CHECK (status in ('Open', 'In Progress', 'Resolved')),
         PRIMARY KEY (ticketID, mobileNo),
         FOREIGN KEY (mobileNo) REFERENCES Customer_Account(mobileNo)
     )
