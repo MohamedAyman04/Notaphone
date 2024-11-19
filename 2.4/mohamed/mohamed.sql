@@ -11,7 +11,7 @@ RETURN
     SELECT sp.*
     FROM Service_Plan sp INNER JOIN Subscription s ON sp.planID = s.planID
     INNER JOIN Customer_Account c ON s.mobileNo = c.mobileNo
-    WHERE c.mobileNo = @MobileNo AND s.subscription_date >= DATEADD(MONTH, -5, GETDATE());
+    WHERE c.mobileNo = @MobileNo AND s.subscription_date >= DATEADD(MONTH, -5, GETDATE())
 )
 
 GO
