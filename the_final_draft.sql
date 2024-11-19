@@ -1,3 +1,8 @@
+CREATE DATABASE Telecom_Team_10
+
+GO
+
+USE Telecom_Team_10;
 GO
 
 CREATE FUNCTION calculate_remaining_balance (
@@ -255,5 +260,99 @@ AS
         PRIMARY KEY (ticketID, mobileNo),
         FOREIGN KEY (mobileNo) REFERENCES Customer_Account(mobileNo)
     )
+
+GO
+
+CREATE PROCEDURE dropAllTables
+AS
+
+DROP TABLE Customer_profile;
+DROP TABLE Customer_Account;
+DROP TABLE Service_Plan;
+DROP TABLE Subscription;
+DROP TABLE Plan_Usage;
+DROP TABLE Payment;
+DROP TABLE Process_Payment;
+DROP TABLE Wallet;
+DROP TABLE Transfer_money;
+DROP TABLE Benefits;
+DROP TABLE Points_Group;
+DROP TABLE Exclusive_Offer;
+DROP TABLE Cashback;
+DROP TABLE Plan_Provides_Benefits;
+DROP TABLE Shop;
+DROP TABLE Physical_Shop;
+DROP TABLE E_shop;
+DROP TABLE Voucher;
+DROP TABLE Technical_Support_Ticket;
+
+GO
+
+CREATE PROC dropAllProceduresFunctionsViews
+AS
+DROP PROCEDURE createAllTables
+DROP PROCEDURE dropAllTables
+DROP PROCEDURE clearAllTables
+DROP PROCEDURE Account_Plan
+DROP PROCEDURE Benefits_Account
+DROP PROCEDURE Account_Payment_Points
+DROP PROCEDURE Total_Points_Account
+DROP PROCEDURE Unsubscribed_Plans
+DROP PROCEDURE Ticket_Account_Customer
+DROP PROCEDURE Account_Highest_Voucher
+DROP PROCEDURE Top_Successful_Payments
+DROP PROCEDURE Initiate_plan_payment
+DROP PROCEDURE Payment_wallet_cashback
+DROP PROCEDURE Initiate_balance_payment
+DROP PROCEDURE Redeem_voucher_points
+DROP VIEW allCustomerAccounts
+DROP VIEW allServicePlans
+DROP VIEW allBenefits
+DROP VIEW AccountPayments
+DROP VIEW allShops
+DROP VIEW allResolvedTickets
+DROP VIEW CustomerWallet
+DROP VIEW E_shopVouchers
+DROP VIEW PhysicalStoreVouchers
+DROP VIEW Num_of_cashback
+DROP FUNCTION Account_Plan_date
+DROP FUNCTION Account_Usage_Plan
+DROP FUNCTION Account_SMS_Offers
+DROP FUNCTION Wallet_Cashback_Amount
+DROP FUNCTION Wallet_Transfer_Amount
+DROP FUNCTION Wallet_MobileNo
+DROP FUNCTION AccountLoginValidation
+DROP FUNCTION Consumption
+DROP FUNCTION Usage_Plan_CurrentMonth
+DROP FUNCTION Cashback_Wallet_Customer
+DROP FUNCTION Remaining_plan_amount
+DROP FUNCTION Extra_plan_amount
+DROP FUNCTION Subscribed_plans_5_Months
+DROP FUNCTION calculate_remaining_balance
+DROP FUNCTION calculate_amount
+
+GO
+
+CREATE PROC clearAllTables
+AS
+TRUNCATE TABLE Customer_profile;
+TRUNCATE TABLE Customer_Account;
+TRUNCATE TABLE Service_Plan;
+TRUNCATE TABLE Subscription;
+TRUNCATE TABLE Plan_Usage;
+TRUNCATE TABLE Payment;
+TRUNCATE TABLE Process_Payment;
+TRUNCATE TABLE Wallet;
+TRUNCATE TABLE Transfer_money;
+TRUNCATE TABLE Benefits;
+TRUNCATE TABLE Points_Group;
+TRUNCATE TABLE Exclusive_Offer;
+TRUNCATE TABLE Cashback;
+TRUNCATE TABLE Plan_Provides_Benefits;
+TRUNCATE TABLE Shop;
+TRUNCATE TABLE Physical_Shop;
+TRUNCATE TABLE E_shop;
+TRUNCATE TABLE Voucher;
+TRUNCATE TABLE Technical_Support_Ticket;
 
 GO
