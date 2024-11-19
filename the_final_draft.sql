@@ -400,13 +400,13 @@ GO
 
 CREATE VIEW CustomerWallet AS
 SELECT w.*, c.first_name, c.last_name
-FROM Wallet w INNER JOIN Customer_profile c ON w.nationalID = c.nationalID;
+FROM Wallet w INNER JOIN Customer_profile c ON w.nationalID = c.nationalID
 
 GO
 
 CREATE VIEW E_shopVouchers AS
 SELECT e.*, v.voucherID, v.value
-FROM E_shop e INNER JOIN Voucher v ON e.shopID = v.shopID;
+FROM E_shop e INNER JOIN Voucher v ON e.shopID = v.shopID
 WHERE v.redeem_date IS NOT NULL
 
 GO

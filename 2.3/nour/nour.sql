@@ -11,6 +11,10 @@ JOIN Sevice_Plan SP ON (S.planID = SP.planID)
 
 GO
 
+GRANT EXECUTE ON Account_Plan TO Admin
+
+GO
+
 CREATE FUNCTION Account_Plan_Date (@Subscription_Date DATE, @Plan_id INT)
 
 RETURNS TABLE
@@ -27,11 +31,15 @@ RETURN (
 
 GO
 
+GRANT EXECUTE ON Account_Plan_Date TO Admin
+
+GO
+
 CREATE FUNCTION Account_Usage_Plan (@MobileNo CHAR(11), @from_date DATE)
 RETURNS TABLE
 AS
 RETURN (
-    SELECT S.planID, SUM(data_consumption), SUM(minutes_used), SUM(SMS_sent)
+    SELECT S.planID, SUM(data_consumption) AS 'total data consumed', SUM(minutes_used) AS 'total minutes used', SUM(SMS_sent) AS 'total SMS'
     FROM Subscription S
     JOIN Plan_Usage P ON (S.mobileNo = P.mobileNo)
     JOIN Service_Plan SP ON (S.planID = SP.planID)
