@@ -356,3 +356,71 @@ TRUNCATE TABLE Voucher;
 TRUNCATE TABLE Technical_Support_Ticket;
 
 GO
+
+CREATE VIEW allcustomerAccounts AS
+SELECT *
+FROM Customer_profile, Customer_Account
+WHERE Customer_profile.nationalID = Customer_Account.nationalID
+AND Customer_Account.status = 'active';
+
+GO
+
+CREATE VIEW allServicePlans AS
+SELECT *
+FROM Service_Plan;
+
+GO
+
+CREATE VIEW allBenefits AS
+SELECT *
+FROM Benefits
+WHERE status = 'active';
+
+GO
+
+CREATE VIEW AccountPayments AS
+SELECT *
+FROM Customer_Account c
+INNER JOIN Payment p ON c.mobileNo = p.mobileNo;
+
+GO
+
+CREATE VIEW allShops AS
+SELECT * 
+FROM Shop
+
+GO
+
+CREATE VIEW allResolvedTickets AS
+SELECT *
+FROM Technical_Support_Ticket
+WHERE status = 'Resolved'
+
+GO
+
+CREATE VIEW CustomerWallet AS
+SELECT w.*, c.first_name, c.last_name
+FROM Wallet w INNER JOIN Customer_profile c ON w.nationalID = c.nationalID;
+
+GO
+
+CREATE VIEW E_shopVouchers AS
+SELECT e.*, v.voucherID, v.value
+FROM E_shop e INNER JOIN Voucher v ON e.shopID = v.shopID;
+WHERE v.redeem_date IS NOT NULL
+
+GO
+
+CREATE VIEW PhysicalStoreVouchers AS
+SELECT ps.*, v.voucherID, v.value
+FROM Physical_Shop ps INNER JOIN Voucher v ON v.shopID = ps.shopID
+WHERE v.redeem_date IS NOT NULL
+
+GO
+
+CREATE VIEW Num_of_cashback AS
+SELECT walletID, count(CashbackID) AS NumberOfCashbackTransactions
+FROM Cashback
+WHERE walletID IS NOT NULL
+GROUP BY walletID;
+
