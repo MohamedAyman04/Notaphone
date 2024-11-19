@@ -1,4 +1,4 @@
-﻿GO
+GO
 
 CREATE FUNCTION calculate_remaining_balance (
     @plan INT,
