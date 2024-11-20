@@ -43,25 +43,34 @@ RETURN (
     FROM Subscription S
     JOIN Plan_Usage P ON (S.mobileNo = P.mobileNo)
     JOIN Service_Plan SP ON (S.planID = SP.planID)
-    WHERE start_date >= @from_date
+    WHERE P.start_date >= @from_date
     AND S.mobileNo = @MobileNo
     GROUP BY S.planID
 )
 
 GO
 
+GRANT SELECT ON Account_Usage_Plan TO Admin
+
+GO
+
 CREATE PROCEDURE Benefits_Account
 @MobileNo CHAR(11), @plan_ID INT
 AS
-    DELETE
+    DELETE B
     FROM Benefits B
     WHERE EXISTS (
         SELECT *
         FROM Plan_Provides_Benefits PPB
         WHERE B.benefitID = PPB.benefitID
-            AND B.mobileN0 = @MobileNo
+            AND B.mobileNo = @MobileNo
             AND PPB.planID = @plan_ID
-        )
+   )
+
+GO
+
+GRANT EXECUTE ON Benefits_Account TO Admin
+
 GO
 
 CREATE FUNCTION Account_SMS_Offers (@MobileNo CHAR(11))
@@ -72,7 +81,11 @@ RETURN (
     FROM Exclusive_Offer EO
     JOIN Benefits B ON (EO.benefitID = B.benefitID)
     WHERE B.mobileNo = @MobileNo
-        AND EO.SMS_offered >= 0
+        AND EO.SMS_offered > 0
 )
+
+GO
+
+GRANT SELECT ON Account_SMS_Offers TO Admin
 
 GO
