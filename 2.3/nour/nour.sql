@@ -31,7 +31,7 @@ RETURN (
 
 GO
 
-GRANT EXECUTE ON Account_Plan_Date TO Admin
+GRANT SELECT ON Account_Plan_Date TO Admin
 
 GO
 
