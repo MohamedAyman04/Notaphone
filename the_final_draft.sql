@@ -37,8 +37,6 @@ END
 
 GO
 
-GO
-
 CREATE FUNCTION calculate_amount (
     @plan INT,
     @paymentID INT
@@ -425,7 +423,7 @@ WHERE walletID IS NOT NULL
 GROUP BY walletID;
 
 -- nour's code
-CREATE ROLE Admin;
+CREATE ROLE admin;
 
 GO
 
@@ -438,7 +436,7 @@ JOIN Sevice_Plan SP ON (S.planID = SP.planID)
 
 GO
 
-GRANT EXECUTE ON Account_Plan TO Admin
+GRANT EXECUTE ON Account_Plan TO admin
 
 GO
 
@@ -458,7 +456,7 @@ RETURN (
 
 GO
 
-GRANT SELECT ON Account_Plan_Date TO Admin
+GRANT SELECT ON Account_Plan_Date TO admin
 
 GO
 
@@ -477,7 +475,7 @@ RETURN (
 
 GO
 
-GRANT SELECT ON Account_Usage_Plan TO Admin
+GRANT SELECT ON Account_Usage_Plan TO admin
 
 GO
 
@@ -496,7 +494,7 @@ AS
 
 GO
 
-GRANT EXECUTE ON Benefits_Account TO Admin
+GRANT EXECUTE ON Benefits_Account TO admin
 
 GO
 
@@ -513,7 +511,7 @@ RETURN (
 
 GO
 
-GRANT SELECT ON Account_SMS_Offers TO Admin
+GRANT SELECT ON Account_SMS_Offers TO admin
 
 -- yehia's file
 
@@ -538,7 +536,7 @@ END;
 
 GO
 
-GRANT EXECUTE ON Account_Payment_Points TO Admin
+GRANT EXECUTE ON Account_Payment_Points TO admin
 
 --2.3 g)
 GO
@@ -558,7 +556,7 @@ END;
 
 GO
 
-GRANT EXECUTE ON Wallet_Cashback_Amount TO Admin
+GRANT EXECUTE ON Wallet_Cashback_Amount TO admin
 
 --2.3 h)
 GO
@@ -577,7 +575,7 @@ END;
 
 GO
 
-GRANT EXECUTE ON Wallet_Transfer_Amount TO Admin
+GRANT EXECUTE ON Wallet_Transfer_Amount TO admin
 
 --2.3 i)
 GO
@@ -598,7 +596,7 @@ END;
 
 GO
 
-GRANT EXECUTE  ON Wallet_MobileNo TO Admin
+GRANT EXECUTE  ON Wallet_MobileNo TO admin
 
 --2.3 j)
 GO
@@ -620,6 +618,320 @@ END;
 
 GO
 
-GRANT EXECUTE ON Total_Points_Account TO Admin
+GRANT EXECUTE ON Total_Points_Account TO admin
+
+GO
+
+-- ahmed's part
+-- part a
+
+CREATE ROLE customer
+
+GO
+CREATE FUNCTION AccountLoginValidation
+(@MobileNo CHAR(11), @password VARCHAR(50))
+
+RETURNS BIT
+AS
+BEGIN
+DECLARE @result BIT;
+
+IF EXISTS (SELECT * from Customer_Account C where C.mobileNo=@MobileNo AND C.pass=@password)
+	Set @result= 1
+ELSE
+	Set @result= 0
+
+
+RETURN @result
+END
+
+GO 
+
+GRANT EXECUTE ON AccountLoginValidation TO customer
+
+
+-- part b
+
+GO
+CREATE FUNCTION Consumption
+(@Plan_name VARCHAR(50) ,@start_date DATE ,@end_date DATE)
+
+RETURNS TABLE
+
+AS
+
+RETURN ( SELECT P.data_consumption, P.minutes_used, P.SMS_sent FROM Plan_Usage P INNER JOIN Service_Plan S ON P.planID = S.planID
+WHERE S.name = @Plan_name AND P.start_date >= @start_date AND P.end_date <= @end_date )
+
+GO
+
+GRANT SELECT ON Consumption TO customer
+
+-- part c
+
+GO
+CREATE PROC Unsubscribed_Plans
+@MobileNo char(11)
+AS
+SELECT S.* from Service_Plan P  where S.planID NOT IN (select S.planID from Subscription S where S.mobileNo=@MobileNo)
+GO
+
+GRANT EXECUTE ON Unsubscribed_Plans TO customer
+
+-- part d
+ 
+GO
+CREATE FUNCTION Usage_Plan_CurrentMonth
+(@MobileNo char(11))
+
+RETURNS TABLE
+
+AS
+
+RETURN ( SELECT P.data_consumption, P.minutes_used, P.SMS_sent from Plan_Usage P INNER JOIN Subscription S
+ON P.mobileNo = S.mobileNo AND P.planID = S.planID
+WHERE P.mobileNo = @MobileNo AND MONTH(CURRENT_TIMESTAMP) = MONTH(P.start_date) AND YEAR(CURRENT_TIMESTAMP) = YEAR(P.start_date)
+AND S.status = 'active'
+)
+
+GO
+
+GRANT SELECT ON Usage_Plan_CurrentMonth TO customer
+
+GO
+
+-- part e
+
+CREATE FUNCTION Cashback_Wallet_Customer
+(@NationalID int)
+RETURNS TABLE
+
+AS
+
+RETURN ( SELECT C.* from Cashback C INNER JOIN Wallet W on C.walletID = W.walletID where W.nationalID=@NationalID)
+
+GO
+
+GRANT SELECT ON Cashback_Wallet_Customer TO customer
+
+-- abdelhamid's part
+
+GO
+
+CREATE PROC Ticket_Account_Customer
+@NationalID INT
+AS
+SELECT COUNT(*)
+FROM (SELECT A.mobileNo
+	  FROM Customer_Account A
+	  WHERE A.nationalID = @NationalID
+	  ) AS AM INNER JOIN Technical_Support_Ticket T ON AM.mobileNo = T.mobileNo
+WHERE T.status <> 'Resolved'
+GO
+
+GRANT EXECUTE ON Ticket_Account_Customer TO customer
+
+GO
+CREATE PROC Account_Highest_Voucher
+@MobileNo CHAR(11),
+@Voucher_id INT OUTPUT
+AS
+SELECT TOP 1 @Voucher_id = V.voucherID
+FROM Voucher V
+WHERE V.mobileNo = @MobileNo
+ORDER BY V.value DESC
+GO
+
+GRANT EXECUTE ON Account_Highest_Voucher TO customer
+
+GO
+CREATE FUNCTION Remaining_plan_amount
+(@MobileNo CHAR(11), @plan_name VARCHAR(50))
+RETURNS decimal(10,1)
+AS 
+BEGIN
+DECLARE @result decimal(10,1) = 0
+
+SELECT TOP 1 @result = PP.remaining_balance
+FROM Payment P INNER JOIN Process_Payment PP ON P.paymentID = PP.paymentID
+INNER JOIN Service_Plan SP ON PP.planID = SP.planID
+WHERE P.mobileNo = @MobileNo AND SP.name = @plan_name
+ORDER BY P.date_of_payment DESC
+
+RETURN @result
+END
+
+GO
+
+GRANT EXECUTE ON Remaining_plan_amount TO customer
+
+GO
+CREATE FUNCTION Extra_plan_amount
+(@MobileNo char(11), @plan_name varchar(50))
+RETURNS decimal(10,1)
+AS 
+BEGIN
+DECLARE @result decimal(10,1) = 0
+
+SELECT TOP 1 @result = PP.extra_amount
+FROM Payment P INNER JOIN Process_Payment PP ON P.paymentID = PP.paymentID
+INNER JOIN Service_Plan SP ON PP.planID = SP.planID
+WHERE P.mobileNo = @MobileNo AND SP.name = @plan_name
+ORDER BY P.date_of_payment DESC
+
+RETURN @result
+END
+
+GO
+
+GRANT EXECUTE ON Extra_plan_amount TO customer
+
+GO
+CREATE PROC Top_Successful_Payments
+@MobileNo char(11)
+AS
+SELECT TOP 10 *
+FROM Payment P
+WHERE P.mobileNo = @MobileNo AND P.status = 'successful'
+ORDER BY P.amount DESC
+GO
+
+GRANT EXECUTE ON Top_Successful_Payments TO customer
+
+GO
+
+-- mohamed's part
+-- part k
+GO
+
+CREATE FUNCTION Subscribed_plans_5_Months (
+    @MobileNo CHAR(11)
+)
+RETURNS TABLE
+AS
+RETURN
+(
+    SELECT sp.*
+    FROM Service_Plan sp INNER JOIN Subscription s ON sp.planID = s.planID
+    INNER JOIN Customer_Account c ON s.mobileNo = c.mobileNo
+    WHERE c.mobileNo = @MobileNo AND s.subscription_date >= DATEADD(MONTH, -5, GETDATE())
+)
+
+GO
+
+GRANT SELECT ON Subscribed_plans_5_Months TO customer
+
+-- part l
+GO
+
+CREATE PROCEDURE Initiate_plan_payment
+    @MobileNo CHAR(11),
+    @amount DECIMAL(10, 1),
+    @payment_method VARCHAR(50),
+    @plan_id INT
+AS
+    -- Insert the payment record
+    INSERT INTO Payment (amount, date_of_payment, payment_method, status, mobileNo)
+    VALUES (@amount, CURRENT_TIMESTAMP, @payment_method, 'successful', @MobileNo);
+    
+    -- Updating subscription status to 'active'
+    UPDATE Subscription
+    SET status = 'active'
+    WHERE mobileNo = @MobileNo AND planID = @plan_id;
+
+GO
+
+GRANT EXECUTE ON Initiate_plan_payment TO customer
+
+-- part m
+GO
+
+CREATE PROCEDURE Payment_wallet_cashback
+    @MobileNo CHAR(11),
+    @payment_id INT,
+    @benefit_id INT
+AS
+    DECLARE @walletID INT;
+    DECLARE @cashbackAmount DECIMAL(10, 2);
+
+    -- Retrieve the walletID associated with the given mobile number
+    SELECT @walletID = walletID
+    FROM Wallet
+    WHERE nationalID IN (
+        SELECT nationalID 
+        FROM Customer_Account
+        WHERE mobileNo = @MobileNo
+    );
+
+    -- Calculate 10% of the payment amount
+    SET @cashbackAmount = (SELECT amount * 0.1 FROM Payment WHERE paymentID = @payment_id);
+
+    -- Insert the cashback record with the calculated amount
+    INSERT INTO Cashback (benefitID, walletID, amount, credit_date)
+    VALUES (@benefit_id, @walletID, @cashbackAmount, CURRENT_TIMESTAMP);
+
+    -- Update the wallet's balance with the cashback amount
+    UPDATE Wallet
+    SET current_balance = current_balance + @cashbackAmount
+    WHERE walletID = @walletID;
+
+GO
+
+GRANT EXECUTE ON Payment_wallet_cashback TO customer
+
+-- part n
+GO
+
+CREATE PROCEDURE Initiate_balance_payment
+    @MobileNo CHAR(11),
+    @amount DECIMAL(10,1),
+    @payment_method VARCHAR(50)
+AS
+    -- Insert the payment record
+    INSERT INTO Payment (amount, date_of_payment, payment_method, status, mobileNo)
+    VALUES (@amount, CURRENT_TIMESTAMP, @payment_method, 'successful', @MobileNo);
+
+    -- Updating balance for account for balance recharge
+    UPDATE Customer_Account
+    SET balance = balance + @amount
+    WHERE mobileNo = @MobileNo
+
+GO
+
+GRANT EXECUTE ON Initiate_balance_payment TO customer
+
+-- part o
+GO
+
+CREATE PROCEDURE Redeem_voucher_points
+    @MobileNo CHAR(11),
+    @voucher_id INT
+AS
+    -- Declare variables for points deduction and validation
+    DECLARE @points_to_deduct INT;
+    DECLARE @expiry_date DATE;
+    DECLARE @redeem_date DATE;
+
+    -- Check if the voucher exists for the mobile number and retrieve points, expiry date and redeem_date
+    SELECT @points_to_deduct = points, @expiry_date = expiry_date, @redeem_date = redeem_date
+    FROM Voucher
+    WHERE voucherID = @voucher_id AND mobileNo = @MobileNo;
+
+    -- Verify if the voucher exists and is not expired and not redeemed
+    IF @points_to_deduct IS NOT NULL AND @expiry_date >= CURRENT_TIMESTAMP AND @redeem_date IS NULL
+    BEGIN
+        -- Update the voucher's redeem date to mark it as redeemed
+        UPDATE Voucher
+        SET redeem_date = CURRENT_TIMESTAMP
+        WHERE voucherID = @voucher_id AND mobileNo = @MobileNo;
+
+        -- Deduct points from the customer's account
+        UPDATE Customer_Account
+        SET point = point - @points_to_deduct
+        WHERE mobileNo = @MobileNo;
+    END
+GO
+
+GRANT EXECUTE ON Redeem_voucher_points TO customer
 
 GO

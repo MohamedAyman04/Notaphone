@@ -1,6 +1,6 @@
 ﻿GO
 CREATE PROC Ticket_Account_Customer
-@NationalID int
+@NationalID INT
 AS
 SELECT COUNT(*)
 FROM (SELECT A.mobileNo
@@ -14,8 +14,8 @@ GRANT EXECUTE ON Ticket_Account_Customer TO customer
 
 GO
 CREATE PROC Account_Highest_Voucher
-@MobileNo char(11),
-@Voucher_id int OUTPUT
+@MobileNo CHAR(11),
+@Voucher_id INT OUTPUT
 AS
 SELECT TOP 1 @Voucher_id = V.voucherID
 FROM Voucher V
@@ -27,7 +27,7 @@ GRANT EXECUTE ON Account_Highest_Voucher TO customer
 
 GO
 CREATE FUNCTION Remaining_plan_amount
-(@MobileNo char(11), @plan_name varchar(50))
+(@MobileNo CHAR(11), @plan_name VARCHAR(50))
 RETURNS decimal(10,1)
 AS 
 BEGIN
@@ -36,7 +36,7 @@ DECLARE @result decimal(10,1) = 0
 SELECT TOP 1 @result = PP.remaining_balance
 FROM Payment P INNER JOIN Process_Payment PP ON P.paymentID = PP.paymentID
 INNER JOIN Service_Plan SP ON PP.planID = SP.planID
-WHERE P.mobileNo = @MobileNo AND SP.name = @plan_name AND P.status = 'successful'
+WHERE P.mobileNo = @MobileNo AND SP.name = @plan_name
 ORDER BY P.date_of_payment DESC
 
 RETURN @result
@@ -57,7 +57,7 @@ DECLARE @result decimal(10,1) = 0
 SELECT TOP 1 @result = PP.extra_amount
 FROM Payment P INNER JOIN Process_Payment PP ON P.paymentID = PP.paymentID
 INNER JOIN Service_Plan SP ON PP.planID = SP.planID
-WHERE P.mobileNo = @MobileNo AND SP.name = @plan_name AND P.status = 'successful'
+WHERE P.mobileNo = @MobileNo AND SP.name = @plan_name
 ORDER BY P.date_of_payment DESC
 
 RETURN @result
@@ -79,5 +79,4 @@ GO
 
 GRANT EXECUTE ON Top_Successful_Payments TO customer
 
-
-
+GO

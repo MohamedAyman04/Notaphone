@@ -16,6 +16,8 @@ RETURN
 
 GO
 
+GRANT SELECT ON Subscribed_plans_5_Months TO customer
+
 -- part l
 GO
 
@@ -30,11 +32,13 @@ AS
     VALUES (@amount, CURRENT_TIMESTAMP, @payment_method, 'successful', @MobileNo);
     
     -- Updating subscription status to 'active'
-    UPDATE Subscription 
-    SET status = 'active' 
+    UPDATE Subscription
+    SET status = 'active'
     WHERE mobileNo = @MobileNo AND planID = @plan_id;
 
 GO
+
+GRANT EXECUTE ON Initiate_plan_payment TO customer
 
 -- part m
 GO
@@ -50,7 +54,7 @@ AS
     -- Retrieve the walletID associated with the given mobile number
     SELECT @walletID = walletID
     FROM Wallet
-    WHERE nationalID = (
+    WHERE nationalID IN (
         SELECT nationalID 
         FROM Customer_Account
         WHERE mobileNo = @MobileNo
@@ -69,6 +73,8 @@ AS
     WHERE walletID = @walletID;
 
 GO
+
+GRANT EXECUTE ON Payment_wallet_cashback TO customer
 
 -- part n
 GO
@@ -89,6 +95,8 @@ AS
 
 GO
 
+GRANT EXECUTE ON Initiate_balance_payment TO customer
+
 -- part o
 GO
 
@@ -99,14 +107,15 @@ AS
     -- Declare variables for points deduction and validation
     DECLARE @points_to_deduct INT;
     DECLARE @expiry_date DATE;
+    DECLARE @redeem_date DATE;
 
-    -- Check if the voucher exists for the mobile number and retrieve points and expiry date
-    SELECT @points_to_deduct = points, @expiry_date = expiry_date
+    -- Check if the voucher exists for the mobile number and retrieve points, expiry date and redeem_date
+    SELECT @points_to_deduct = points, @expiry_date = expiry_date, @redeem_date = redeem_date
     FROM Voucher
     WHERE voucherID = @voucher_id AND mobileNo = @MobileNo;
 
-    -- Verify if the voucher exists and is not expired
-    IF @points_to_deduct IS NOT NULL AND @expiry_date >= CURRENT_TIMESTAMP
+    -- Verify if the voucher exists and is not expired and not redeemed
+    IF @points_to_deduct IS NOT NULL AND @expiry_date >= CURRENT_TIMESTAMP AND @redeem_date IS NULL
     BEGIN
         -- Update the voucher's redeem date to mark it as redeemed
         UPDATE Voucher
@@ -118,10 +127,8 @@ AS
         SET point = point - @points_to_deduct
         WHERE mobileNo = @MobileNo;
     END
-    ELSE
-    BEGIN
-        -- Handle the case if voucher is invalid or expired
-        PRINT 'Voucher is either invalid or expired';
-    END
+GO
+
+GRANT EXECUTE ON Redeem_voucher_points TO customer
 
 GO
