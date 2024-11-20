@@ -55,10 +55,13 @@ CREATE PROCEDURE Benefits_Account
 AS
     DELETE
     FROM Benefits B
-    JOIN Plan_Provides_Benefits PPB ON (B.benefitID = PPB.benefitID)
-    WHERE B.mobileN0 = @MobileNo
-        AND PPB.planID = @plan_ID
-
+    WHERE EXISTS (
+        SELECT *
+        FROM Plan_Provides_Benefits PPB
+        WHERE B.benefitID = PPB.benefitID
+            AND B.mobileN0 = @MobileNo
+            AND PPB.planID = @plan_ID
+        )
 GO
 
 CREATE FUNCTION Account_SMS_Offers (@MobileNo CHAR(11))
