@@ -356,10 +356,9 @@ TRUNCATE TABLE Technical_Support_Ticket;
 GO
 
 CREATE VIEW allcustomerAccounts AS
-SELECT *
-FROM Customer_profile, Customer_Account
-WHERE Customer_profile.nationalID = Customer_Account.nationalID
-AND Customer_Account.status = 'active';
+SELECT cp.*,ca.mobileNo, ca.pass, ca.balance, ca.account_type, ca.start_date, ca.status, ca.point 
+FROM Customer_profile cp INNER JOIN Customer_Account ca ON cp.nationalID = ca.nationalID
+WHERE ca.status = 'active';
 
 GO
 
@@ -422,6 +421,7 @@ FROM Cashback
 WHERE walletID IS NOT NULL
 GROUP BY walletID;
 
+GO 
 -- nour's code
 CREATE ROLE admin;
 
@@ -451,7 +451,7 @@ RETURN (
     JOIN Customer_Account C
     ON (S.subscription_date = @Subscription_Date
         AND S.mobileNo = C.mobileNo)
-    JOIN Sevice_Plan SP ON (S.planID = @Plan_id AND S.planID = SP.planID)
+    JOIN Service_Plan SP ON (S.planID = @Plan_id AND S.planID = SP.planID)
 )
 
 GO
@@ -609,7 +609,7 @@ SELECT @TotalPoints = SUM(pg.pointsAmount)
 FROM Points_Group pg
 INNER JOIN Payment p ON pg.PaymentID = p.PaymentID
 INNER JOIN Benefits B ON pg.benefitID = B.benefitID
-WHERE @MobileNo = mobileNo AND B.validity_date >= CURRENT_TIMESTAMP AND B.status = 'active'
+WHERE @MobileNo = P.mobileNo AND @MobileNo = B.mobileNo AND B.validity_date >= CURRENT_TIMESTAMP AND B.status = 'active'
 
 UPDATE Customer_Account
 SET point = @TotalPoints
@@ -673,7 +673,7 @@ GO
 CREATE PROC Unsubscribed_Plans
 @MobileNo char(11)
 AS
-SELECT S.* from Service_Plan P  where S.planID NOT IN (select S.planID from Subscription S where S.mobileNo=@MobileNo)
+SELECT S.* from Service_Plan P, Subscription S  where S.planID NOT IN (select S.planID from S where S.mobileNo=@MobileNo)
 GO
 
 GRANT EXECUTE ON Unsubscribed_Plans TO customer
