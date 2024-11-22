@@ -96,8 +96,10 @@ to the final draft.
 
 ### Tested but unsuccessful
 
-- Proc dropAllTables (FK constrain doesn't allow to drop, either define
+- Proc dropAllTables (FK constraint doesn't allow to drop, either define
     CASCADE or drop constrains first)
+
+- Proc clearAllTables (FK constraint doesn't allow, similar to dropAllTables)
 
 ### Added but not tested
 
