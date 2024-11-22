@@ -67,7 +67,6 @@ END
 
 GO
 
-GO
 CREATE PROCEDURE createAllTables
 AS
 
@@ -263,7 +262,6 @@ GO
 
 CREATE PROCEDURE dropAllTables
 AS
-
 DROP TABLE Customer_profile;
 DROP TABLE Customer_Account;
 DROP TABLE Service_Plan;

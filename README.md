@@ -88,3 +88,8 @@ a database project
 
 - Proc createAllTables
 - Data insertions for all tables except Eshop, Exclusive_Offer, Cashback 
+
+### Tested but unsuccessful
+
+- Proc dropAllTables (FK constrain doesn't allow to drop, either define
+    CASCADE or drop constrains first)
