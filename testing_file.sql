@@ -307,7 +307,10 @@ VALUES
 (5, '2014/02/01', 'cash', 'successful', '00000000000'),
 (7, '2014/01/01', 'credit', 'successful', '00000000001'),
 (50, '2014/01/01', 'credit', 'successful','00000000002'),
-(2, '2014/01/01', 'credit', 'successful', '00000000002')
+(2, '2014/01/01', 'credit', 'successful', '00000000002'),
+(11, '2023/12/20', 'credit', 'successful', '00000000000'),
+(14, '2023/12/21', 'credit', 'successful', '00000000000'),
+(20, '2024/02/02', 'credit', 'rejected', '00000000000')
 
 INSERT INTO Process_Payment
 VALUES
@@ -315,7 +318,10 @@ VALUES
 (2, 3),
 (3, 2),
 (4, 2),
-(5, 3)
+(5, 3),
+(6, 1),
+(7, 3),
+(8, 2)
 
 INSERT INTO Wallet
 VALUES
@@ -330,22 +336,31 @@ INSERT INTO Benefits
 VALUES
 ('desc', '2014/01/01', 'active', '00000000000'),
 ('desc', '2014/01/01', 'active', '00000000004'),
-('desc', '2014/01/01', 'expired', '00000000001')
+('desc', '2014/01/01', 'expired', '00000000001'),
+('desc', '2025/01/01', 'active', '00000000000'),
+('desc', '2025/01/01', 'active', '00000000000'),
+('desc', '2022/01/01', 'expired', '00000000000')
 
 INSERT INTO Plan_Provides_Benefits
 VALUES
 (1, 1),
 (2, 1),
-(3, 2)
+(3, 2),
+(4, 2),
+(5, 3),
+(6, 2)
 
 INSERT INTO Points_Group
 VALUES
-(1, 10, 1);
+(1, 10, 1),
+(4, 10, 6),
+(5, 10, 7),
+(6, 20, 8)
 
 INSERT INTO Cashback
 VALUES
 (2, 2, 10, '2000/01/01'),
-(2, 2, 20, '2000/01/01');
+(3, 2, 20, '2000/01/01');
 
 INSERT INTO Shop
 VALUES
@@ -713,6 +728,7 @@ EXECUTE Benefits_Account '00000000000', 1
 
 GO
 
+/*
 CREATE FUNCTION Account_SMS_Offers (@MobileNo CHAR(11))
 RETURNS TABLE
 AS
@@ -727,9 +743,40 @@ RETURN (
 GO
 
 GRANT SELECT ON Account_SMS_Offers TO admin
+*/
 
 /*
 SELECT *
 FROM dbo.Account_SMS_Offers('00000000000')
 */
 
+GO
+
+CREATE PROCEDURE Account_Payment_Points
+@MobileNo CHAR(11),
+@TotalNumberOftransactions INT OUTPUT, 
+@TotalAmountOfPoints INT OUTPUT
+AS
+BEGIN
+SELECT @TotalNumberOftransactions = COUNT(*)
+FROM Payment
+WHERE mobileNo = @MobileNo AND status = 'successful'
+AND date_of_payment >= DATEADD(YEAR, -1, CURRENT_TIMESTAMP);
+
+SELECT @TotalAmountOfPoints = SUM(pg.pointsAmount)
+FROM Payment p
+INNER JOIN Points_Group pg ON p.PaymentID = pg.PaymentID
+WHERE p.mobileNo = @MobileNo AND p.date_of_payment >= DATEADD(YEAR, -1, CURRENT_TIMESTAMP);
+END;
+
+GO
+
+GRANT EXECUTE ON Account_Payment_Points TO admin
+
+GO
+
+/*
+DECLARE @tnot INT, @taop INT
+EXECUTE Account_Payment_Points '00000000000', @tnot OUTPUT, @taop OUTPUT
+SELECT @tnot, @taop
+*/

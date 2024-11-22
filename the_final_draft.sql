@@ -514,10 +514,8 @@ GO
 
 GRANT SELECT ON Account_SMS_Offers TO admin
 
--- yehia's file
-
---2.3 f)
 GO
+
 CREATE PROCEDURE Account_Payment_Points
 @MobileNo CHAR(11),
 @TotalNumberOftransactions INT OUTPUT, 
