@@ -336,6 +336,11 @@ INSERT INTO Points_Group
 VALUES
 (1, 10, 1);
 
+INSERT INTO Cashback
+VALUES
+(2, 2, 10, '2000/01/01'),
+(2, 2, 20, '2000/01/01');
+
 INSERT INTO Shop
 VALUES
 ('za3bola', 'cat'),
@@ -595,3 +600,19 @@ GO
 SELECT *
 FROM PhysicalStoreVouchers  
 */
+
+GO
+
+CREATE VIEW Num_of_cashback AS
+SELECT walletID, count(CashbackID) AS number_Of_Cashback_Transactions
+FROM Cashback
+WHERE walletID IS NOT NULL
+GROUP BY walletID;
+
+GO
+
+/*
+SELECT *
+FROM Num_of_cashback  
+*/
+
