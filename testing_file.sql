@@ -515,3 +515,16 @@ GO
 SELECT *
 FROM AccountPayments
 */
+
+GO
+
+CREATE VIEW allShops AS
+SELECT * 
+FROM Shop
+
+GO
+
+/*
+SELECT *
+FROM allShops
+*/
