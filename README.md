@@ -92,7 +92,7 @@ in the final draft.
 ### Successfully tested 13/40
 
 - Proc createAllTables
-- Data insertions for all tables except Eshop, Exclusive_Offer, Cashback
+- Data insertions for all tables except ~Eshop~, Exclusive_Offer, ~Cashback~
 - View allCustomerAccounts
 - View allServicePlans
 - View allBenefits
