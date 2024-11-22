@@ -403,7 +403,8 @@ GO
 
 CREATE VIEW E_shopVouchers AS
 SELECT e.*, v.voucherID, v.value
-FROM E_shop e INNER JOIN Voucher v ON e.shopID = v.shopID
+FROM E_shop e
+INNER JOIN Voucher v ON e.shopID = v.shopID
 WHERE v.redeem_date IS NOT NULL
 
 GO
