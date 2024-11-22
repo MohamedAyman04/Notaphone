@@ -81,3 +81,10 @@ a database project
     - Name: Num_of_cashback
     - Input:Nothing
     - Output: Table
+
+## Testing phase
+
+### Successfully tested
+
+- Proc createAllTables
+- Data insertions for all tables except Eshop, Exclusive_Offer, Cashback 

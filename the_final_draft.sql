@@ -136,7 +136,7 @@ AS
     );
 
     CREATE TABLE Process_Payment (
-        paymentID INT PRIMARY KEY IDENTITY(1, 1),
+        paymentID INT PRIMARY KEY,
         planID INT,
         remaining_balance AS dbo.calculate_remaining_balance(planID, paymentID),
         extra_amount AS dbo.calculate_amount(planID, paymentID),
@@ -175,7 +175,7 @@ AS
     );
 
     CREATE TABLE Points_Group (
-        pointID INT,
+        pointID INT IDENTITY (1,1),
         benefitID INT,
         pointsAmount DECIMAL(10, 1),
         PaymentID INT,
@@ -185,7 +185,7 @@ AS
     )
 
     CREATE TABLE Exclusive_Offer (
-        offerID INT,
+        offerID INT IDENTITY (1,1),
         benefitID INT,
         internet_offered INT,
         SMS_offered INT,
@@ -195,7 +195,7 @@ AS
     )
 
     CREATE TABLE Cashback (
-        CashbackID INT,
+        CashbackID INT IDENTITY (1,1),
         benefitID INT,
         walletID INT,
         amount DECIMAL(10, 1),
@@ -214,7 +214,7 @@ AS
     )
 
     CREATE TABLE Shop (
-        shopID INT,
+        shopID INT IDENTITY (1,1),
         name VARCHAR(50),
         category VARCHAR(50),
         PRIMARY KEY (shopID)
@@ -237,7 +237,7 @@ AS
     )
 
     CREATE TABLE Voucher (
-        voucherID INT,
+        voucherID INT IDENTITY (1,1),
         value INT,
         expiry_date DATE,
         points INT,
@@ -250,7 +250,7 @@ AS
     )
 
     CREATE TABLE Technical_Support_Ticket (
-        ticketID INT,
+        ticketID INT IDENTITY (1,1),
         mobileNo CHAR(11),
         Issue_description VARCHAR(50),
         priority_level INT,
