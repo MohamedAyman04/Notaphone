@@ -101,8 +101,9 @@ in the final draft.
 
 - Proc dropAllTables (FK constraint doesn't allow to drop, either define
     CASCADE or drop constraints first)
-
 - Proc clearAllTables (FK constraint doesn't allow, similar to dropAllTables)
+- View AccountPayments (renaming conflicting column 'status', but unsure which
+    names to choose)
 
 ### Added but not tested
 

@@ -504,3 +504,14 @@ FROM allBenefits
 
 GO
 
+CREATE VIEW AccountPayments AS
+SELECT *
+FROM Customer_Account c
+INNER JOIN Payment p ON c.mobileNo = p.mobileNo;
+
+GO
+
+/*
+SELECT *
+FROM AccountPayments
+*/
