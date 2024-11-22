@@ -332,6 +332,12 @@ VALUES
 ('desc', '2014/01/01', 'active', '00000000004'),
 ('desc', '2014/01/01', 'expired', '00000000001')
 
+INSERT INTO Plan_Provides_Benefits
+VALUES
+(1, 1),
+(2, 1),
+(3, 2)
+
 INSERT INTO Points_Group
 VALUES
 (1, 10, 1);
@@ -682,6 +688,27 @@ GRANT SELECT ON Account_Usage_Plan TO admin
 /*
 SELECT *
 FROM dbo.Account_Usage_Plan('00000000000', '2013/01/01')
+*/
+
+GO
+
+CREATE PROCEDURE Benefits_Account
+@MobileNo CHAR(11), @plan_ID INT
+AS
+    DELETE B
+    FROM Benefits B, Plan_Provides_Benefits PPB 
+    WHERE B.benefitID = PPB.benefitID
+        AND B.mobileNo = @MobileNo
+        AND PPB.planID = @plan_ID
+
+GO
+
+GRANT EXECUTE ON Benefits_Account TO admin
+
+GO
+
+/*
+EXECUTE Benefits_Account '00000000000', 1
 */
 
 GO

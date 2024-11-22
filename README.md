@@ -112,6 +112,8 @@ in the final draft.
 - Proc clearAllTables (FK constraint doesn't allow, similar to dropAllTables)
 - View AccountPayments (renaming conflicting column 'status', but unsure which
     names to choose)
+- Proc Benefits_Account (FK constrain violation, potential fix is to delete
+-   in the following order: 1. PPB, 2. sub-entity, 3. benefits)
 
 ### Added but not tested
 
