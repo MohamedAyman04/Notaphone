@@ -350,7 +350,8 @@ VALUES
 
 INSERT INTO Technical_Support_Ticket 
 VALUES
-('00000000001', 'hmm', 1, 'Open');
+('00000000001', 'hmm', 1, 'Open'),
+('00000000002', 'hmmmm', 1, 'Resolved');
 
 GO
 
@@ -527,4 +528,18 @@ GO
 /*
 SELECT *
 FROM allShops
+*/
+
+GO
+
+CREATE VIEW allResolvedTickets AS
+SELECT *
+FROM Technical_Support_Ticket
+WHERE status = 'Resolved'
+
+GO
+
+/*
+SELECT *
+FROM allResolvedTickets
 */
