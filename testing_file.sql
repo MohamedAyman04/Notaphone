@@ -613,6 +613,20 @@ GO
 
 /*
 SELECT *
-FROM Num_of_cashback  
+FROM Num_of_cashback
 */
 
+CREATE ROLE admin;
+
+GO
+
+CREATE PROCEDURE Account_Plan
+AS
+SELECT C.*, SP.*
+FROM Subscription S
+JOIN Customer_Account C ON (S.mobileNo = C.mobileNo)
+JOIN Service_Plan SP ON (S.planID = SP.planID)
+
+GO
+
+--EXECUTE Account_Plan

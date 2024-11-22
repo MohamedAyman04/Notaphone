@@ -422,7 +422,7 @@ WHERE walletID IS NOT NULL
 GROUP BY walletID;
 
 GO 
--- nour's code
+
 CREATE ROLE admin;
 
 GO
