@@ -84,6 +84,11 @@ a database project
 
 ## Testing phase
 
+The following procedures/functions reference the sql file testing_file.sql.
+
+Whatever is referenced here and is successfully tested, will be copied
+to the final draft.
+
 ### Successfully tested
 
 - Proc createAllTables
@@ -93,3 +98,8 @@ a database project
 
 - Proc dropAllTables (FK constrain doesn't allow to drop, either define
     CASCADE or drop constrains first)
+
+### Added but not tested
+
+- Proc dropAllProceduresFunctionsViews (Can't test untill all
+    procedures/functions are added.
