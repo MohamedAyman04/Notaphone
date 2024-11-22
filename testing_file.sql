@@ -351,7 +351,9 @@ VALUES
 
 INSERT INTO Voucher
 VALUES
-(20, '2015/02/01', 20, '00000000000', 2, '2015/01/01');
+(20, '2015/02/01', 20, '00000000000', 2, '2014/01/01'),
+(50, '2016/02/01', 60, '00000000003', 1, '2015/01/01'),
+(30, '2016/02/01', 30, '00000000003', 1, null);
 
 INSERT INTO Technical_Support_Ticket 
 VALUES
@@ -510,10 +512,12 @@ FROM allBenefits
 
 GO
 
+/*
 CREATE VIEW AccountPayments AS
 SELECT *
 FROM Customer_Account c
 INNER JOIN Payment p ON c.mobileNo = p.mobileNo;
+*/
 
 GO
 
@@ -578,3 +582,16 @@ SELECT *
 FROM E_shopVouchers 
 */
 
+GO
+
+CREATE VIEW PhysicalStoreVouchers AS
+SELECT ps.*, v.voucherID, v.value
+FROM Physical_Shop ps INNER JOIN Voucher v ON v.shopID = ps.shopID
+WHERE v.redeem_date IS NOT NULL
+
+GO
+
+/*
+SELECT *
+FROM PhysicalStoreVouchers  
+*/
