@@ -353,9 +353,11 @@ TRUNCATE TABLE Technical_Support_Ticket;
 
 GO
 
-CREATE VIEW allcustomerAccounts AS
-SELECT cp.*,ca.mobileNo, ca.pass, ca.balance, ca.account_type, ca.start_date, ca.status, ca.point 
-FROM Customer_profile cp INNER JOIN Customer_Account ca ON cp.nationalID = ca.nationalID
+CREATE VIEW allCustomerAccounts AS
+SELECT cp.*,ca.mobileNo, ca.pass, ca.balance, ca.account_type, ca.start_date,
+        ca.status, ca.point 
+FROM Customer_profile cp
+INNER JOIN Customer_Account ca ON cp.nationalID = ca.nationalID
 WHERE ca.status = 'active';
 
 GO

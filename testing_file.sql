@@ -275,7 +275,9 @@ INSERT INTO Customer_Account
 VALUES
 ('00000000000', 'abc', 0, 'Post Paid', '2010/01/01', 'active', 0, 1),
 ('00000000001', 'def', 0,  'Prepaid', '2011/01/01', 'active', 0, 2),
-('00000000002', 'ghi', 0,  'Post Paid', '2012/01/01', 'active', 0, 3)
+('00000000002', 'ghi', 0,  'Post Paid', '2012/01/01', 'active', 0, 3),
+('00000000003', 'abc', 0, 'Prepaid', '2011/02/03', 'active', 0, 1),
+('00000000004', 'ghi', 0,  'Post Paid', '2014/01/01', 'onhold', 0, 3)
 
 INSERT INTO Service_Plan
 VALUES
@@ -452,3 +454,22 @@ TRUNCATE TABLE Technical_Support_Ticket;
 GO
 
 -- EXECUTE clearAllTables
+
+
+GO
+
+CREATE VIEW allCustomerAccounts AS
+SELECT cp.*,ca.mobileNo, ca.pass, ca.balance, ca.account_type, ca.start_date,
+        ca.status, ca.point 
+FROM Customer_profile cp
+INNER JOIN Customer_Account ca ON cp.nationalID = ca.nationalID
+WHERE ca.status = 'active';
+
+GO
+
+/*
+SELECT *
+FROM allCustomerAccounts
+*/
+
+
