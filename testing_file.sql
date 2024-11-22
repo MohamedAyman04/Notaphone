@@ -712,3 +712,24 @@ EXECUTE Benefits_Account '00000000000', 1
 */
 
 GO
+
+CREATE FUNCTION Account_SMS_Offers (@MobileNo CHAR(11))
+RETURNS TABLE
+AS
+RETURN (
+    SELECT *
+    FROM Exclusive_Offer EO
+    JOIN Benefits B ON (EO.benefitID = B.benefitID)
+    WHERE B.mobileNo = @MobileNo
+        AND EO.SMS_offered > 0
+)
+
+GO
+
+GRANT SELECT ON Account_SMS_Offers TO admin
+
+/*
+SELECT *
+FROM dbo.Account_SMS_Offers('00000000000')
+*/
+

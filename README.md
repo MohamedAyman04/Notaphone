@@ -113,7 +113,8 @@ in the final draft.
 - View AccountPayments (renaming conflicting column 'status', but unsure which
     names to choose)
 - Proc Benefits_Account (FK constrain violation, potential fix is to delete
--   in the following order: 1. PPB, 2. sub-entity, 3. benefits)
+  in the following order: 1. PPB, 2. sub-entity, 3. benefits)
+- Proc Account_SMS_Offers (conflicting column names)
 
 ### Added but not tested
 
