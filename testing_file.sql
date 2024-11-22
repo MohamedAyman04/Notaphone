@@ -338,15 +338,20 @@ VALUES
 
 INSERT INTO Shop
 VALUES
-('za3bola', 'cat');
+('za3bola', 'cat'),
+('egbg', 'catcat');
 
 INSERT INTO Physical_Shop
 VALUES
 (1, 'abc', '9:00-9:00');
 
+INSERT INTO E_shop
+VALUES
+(2, 'frong.gov', 9);
+
 INSERT INTO Voucher
 VALUES
-(20, '2015/02/01', 20, '00000000000', 1, '2015/01/01');
+(20, '2015/02/01', 20, '00000000000', 2, '2015/01/01');
 
 INSERT INTO Technical_Support_Ticket 
 VALUES
@@ -557,3 +562,19 @@ GO
 SELECT *
 FROM CustomerWallet
 */
+
+GO
+
+CREATE VIEW E_shopVouchers AS
+SELECT e.*, v.voucherID, v.value
+FROM E_shop e
+INNER JOIN Voucher v ON e.shopID = v.shopID
+WHERE v.redeem_date IS NOT NULL
+
+GO
+
+/*
+SELECT *
+FROM E_shopVouchers 
+*/
+
