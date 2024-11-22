@@ -93,6 +93,8 @@ to the final draft.
 
 - Proc createAllTables
 - Data insertions for all tables except Eshop, Exclusive_Offer, Cashback 
+- View allCustomerAccounts
+- View allServicePlans
 
 ### Tested but unsuccessful
 
