@@ -472,4 +472,18 @@ SELECT *
 FROM allCustomerAccounts
 */
 
+GO
 
+CREATE VIEW allServicePlans AS
+SELECT *
+FROM Service_Plan;
+
+
+GO
+
+/*
+SELECT *
+FROM allServicePlans
+*/
+
+GO
