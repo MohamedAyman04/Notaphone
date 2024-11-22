@@ -3,6 +3,7 @@ CREATE DATABASE Telecom_Team_10
 GO
 
 USE Telecom_Team_10;
+
 GO
 
 CREATE FUNCTION calculate_remaining_balance (

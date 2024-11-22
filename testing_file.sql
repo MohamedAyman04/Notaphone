@@ -629,4 +629,59 @@ JOIN Service_Plan SP ON (S.planID = SP.planID)
 
 GO
 
+GRANT EXECUTE ON Account_Plan TO admin
+
+GO
+
 --EXECUTE Account_Plan
+
+GO
+
+CREATE FUNCTION Account_Plan_Date (@Subscription_Date DATE, @Plan_id INT)
+
+RETURNS TABLE
+
+AS
+RETURN (
+    SELECT C.mobileNo, SP.planID, SP.name
+    FROM Subscription S
+    JOIN Customer_Account C
+    ON (S.subscription_date = @Subscription_Date
+        AND S.mobileNo = C.mobileNo)
+    JOIN Service_Plan SP ON (S.planID = @Plan_id AND S.planID = SP.planID)
+)
+
+GO
+
+/*
+SELECT *
+FROM dbo.Account_Plan_Date('2015/01/01', 1)
+*/
+
+GRANT SELECT ON Account_Plan_Date TO admin
+
+GO
+
+CREATE FUNCTION Account_Usage_Plan (@MobileNo CHAR(11), @from_date DATE)
+RETURNS TABLE
+AS
+RETURN (
+    SELECT S.planID, SUM(data_consumption) AS 'total data consumed', SUM(minutes_used) AS 'total minutes used', SUM(SMS_sent) AS 'total SMS'
+    FROM Subscription S
+    JOIN Plan_Usage P ON (S.mobileNo = P.mobileNo)
+    JOIN Service_Plan SP ON (S.planID = SP.planID)
+    WHERE P.start_date >= @from_date
+    AND S.mobileNo = @MobileNo
+    GROUP BY S.planID
+)
+
+GO
+
+GRANT SELECT ON Account_Usage_Plan TO admin
+
+/*
+SELECT *
+FROM dbo.Account_Usage_Plan('00000000000', '2013/01/01')
+*/
+
+GO
