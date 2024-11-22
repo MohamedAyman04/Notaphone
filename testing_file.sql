@@ -328,7 +328,9 @@ VALUES
 
 INSERT INTO Benefits
 VALUES
-('desc', '2014/01/01', 'active', '00000000000')
+('desc', '2014/01/01', 'active', '00000000000'),
+('desc', '2014/01/01', 'active', '00000000004'),
+('desc', '2014/01/01', 'expired', '00000000001')
 
 INSERT INTO Points_Group
 VALUES
@@ -487,3 +489,18 @@ FROM allServicePlans
 */
 
 GO
+
+CREATE VIEW allBenefits AS
+SELECT *
+FROM Benefits
+WHERE status = 'active';
+
+GO
+
+/*
+SELECT *
+FROM allBenefits
+*/
+
+GO
+
