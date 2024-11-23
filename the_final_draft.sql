@@ -263,25 +263,28 @@ GO
 
 CREATE PROCEDURE dropAllTables
 AS
-DROP TABLE Customer_profile;
-DROP TABLE Customer_Account;
-DROP TABLE Service_Plan;
-DROP TABLE Subscription;
-DROP TABLE Plan_Usage;
-DROP TABLE Payment;
-DROP TABLE Process_Payment;
-DROP TABLE Wallet;
-DROP TABLE Transfer_money;
-DROP TABLE Benefits;
+-- Drop tables with foreign keys referencing other tables first
 DROP TABLE Points_Group;
 DROP TABLE Exclusive_Offer;
 DROP TABLE Cashback;
 DROP TABLE Plan_Provides_Benefits;
-DROP TABLE Shop;
 DROP TABLE Physical_Shop;
 DROP TABLE E_shop;
 DROP TABLE Voucher;
 DROP TABLE Technical_Support_Ticket;
+DROP TABLE Transfer_money;
+DROP TABLE Subscription;
+DROP TABLE Plan_Usage;
+DROP TABLE Payment;
+DROP TABLE Process_Payment;
+DROP TABLE Benefits;
+DROP TABLE Wallet;
+
+-- Drop tables referenced by others now that dependencies are removed
+DROP TABLE Customer_Account;
+DROP TABLE Service_Plan;
+DROP TABLE Shop;
+DROP TABLE Customer_profile;
 
 GO
 
