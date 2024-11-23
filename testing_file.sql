@@ -1027,3 +1027,24 @@ GO
 /*
 SELECT * FROM dbo.Cashback_Wallet_Customer(3)
 */
+
+GO
+
+CREATE PROC Ticket_Account_Customer
+@NationalID INT
+AS
+SELECT COUNT(*) AS 'Number of technical support tickets'
+FROM (SELECT A.mobileNo
+	  FROM Customer_Account A
+	  WHERE A.nationalID = @NationalID
+	  ) AS AM INNER JOIN Technical_Support_Ticket T ON AM.mobileNo = T.mobileNo
+WHERE T.status <> 'Resolved'
+GO
+
+GRANT EXECUTE ON Ticket_Account_Customer TO customer
+
+GO
+
+/*
+EXECUTE Ticket_Account_Customer 2
+*/

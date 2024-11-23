@@ -800,7 +800,7 @@ GO
 CREATE PROC Ticket_Account_Customer
 @NationalID INT
 AS
-SELECT COUNT(*)
+SELECT COUNT(*) AS 'Number of technical support tickets'
 FROM (SELECT A.mobileNo
 	  FROM Customer_Account A
 	  WHERE A.nationalID = @NationalID
