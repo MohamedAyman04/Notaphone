@@ -336,11 +336,11 @@ VALUES
 
 INSERT INTO Benefits
 VALUES
-('desc', '2014/01/01', 'active', '00000000000'),
+('desc', '2025/01/01', 'active', '00000000000'),
 ('desc', '2014/01/01', 'active', '00000000004'),
 ('desc', '2014/01/01', 'expired', '00000000001'),
 ('desc', '2025/01/01', 'active', '00000000000'),
-('desc', '2025/01/01', 'active', '00000000000'),
+('desc', '2022/01/01', 'active', '00000000000'),
 ('desc', '2022/01/01', 'expired', '00000000000')
 
 INSERT INTO Plan_Provides_Benefits
@@ -863,3 +863,32 @@ GO
 SELECT dbo.Wallet_MobileNo('00000000003')
 */
 
+GO
+
+CREATE PROCEDURE Total_Points_Account
+@MobileNo char(11),
+@TotalPoints INT OUTPUT
+AS
+BEGIN
+SELECT @TotalPoints = SUM(pg.pointsAmount)
+FROM Points_Group pg
+INNER JOIN Payment p ON pg.PaymentID = p.PaymentID
+INNER JOIN Benefits B ON pg.benefitID = B.benefitID
+WHERE @MobileNo = P.mobileNo AND @MobileNo = B.mobileNo AND B.validity_date >= CURRENT_TIMESTAMP AND B.status = 'active'
+
+UPDATE Customer_Account
+SET point = @TotalPoints
+WHERE @MobileNo = mobileNo
+END;
+
+GO
+
+GRANT EXECUTE ON Total_Points_Account TO admin
+
+GO
+
+/*
+DECLARE @out INT
+EXECUTE Total_Points_Account '00000000000', @out OUTPUT
+SELECT @out
+*/
