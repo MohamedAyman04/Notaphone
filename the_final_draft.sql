@@ -500,18 +500,51 @@ GRANT SELECT ON Account_Usage_Plan TO admin
 GO
 
 CREATE PROCEDURE Benefits_Account
-@MobileNo CHAR(11), @plan_ID INT
+    @MobileNo CHAR(11), 
+    @plan_ID INT
 AS
-    DELETE B
-    FROM Benefits B
-    WHERE EXISTS (
-        SELECT *
-        FROM Plan_Provides_Benefits PPB
-        WHERE B.benefitID = PPB.benefitID
-            AND B.mobileNo = @MobileNo
-            AND PPB.planID = @plan_ID
-   )
+    -- Delete from tables referencing Benefits
+    DELETE FROM Points_Group 
+    WHERE benefitID IN (
+        SELECT B.benefitID
+        FROM Benefits B
+        INNER JOIN Plan_Provides_Benefits PPB ON B.benefitID = PPB.benefitID
+        WHERE B.mobileNo = @MobileNo AND PPB.planID = @plan_ID
+    );
 
+    DELETE FROM Exclusive_Offer 
+    WHERE benefitID IN (
+        SELECT B.benefitID
+        FROM Benefits B
+        INNER JOIN Plan_Provides_Benefits PPB ON B.benefitID = PPB.benefitID
+        WHERE B.mobileNo = @MobileNo AND PPB.planID = @plan_ID
+    );
+
+    DELETE FROM Cashback 
+    WHERE benefitID IN (
+        SELECT B.benefitID
+        FROM Benefits B
+        INNER JOIN Plan_Provides_Benefits PPB ON B.benefitID = PPB.benefitID
+        WHERE B.mobileNo = @MobileNo AND PPB.planID = @plan_ID
+    );
+
+    -- Delete from Plan_Provides_Benefits to remove the plan-benefit relationship
+    DELETE FROM Plan_Provides_Benefits
+    WHERE benefitID IN (
+        SELECT B.benefitID
+        FROM Benefits B
+        INNER JOIN Plan_Provides_Benefits PPB ON B.benefitID = PPB.benefitID
+        WHERE B.mobileNo = @MobileNo AND PPB.planID = @plan_ID
+    );
+
+    -- Delete from Benefits
+    DELETE FROM Benefits 
+    WHERE benefitID IN (
+        SELECT B.benefitID
+        FROM Benefits B
+        INNER JOIN Plan_Provides_Benefits PPB ON B.benefitID = PPB.benefitID
+        WHERE B.mobileNo = @MobileNo AND PPB.planID = @plan_ID
+    );
 GO
 
 GRANT EXECUTE ON Benefits_Account TO admin
@@ -522,9 +555,13 @@ CREATE FUNCTION Account_SMS_Offers (@MobileNo CHAR(11))
 RETURNS TABLE
 AS
 RETURN (
-    SELECT *
+    SELECT 
+        EO.benefitID AS EO_benefitID,   -- Alias for benefitID from Exclusive_Offer
+        EO.SMS_offered,                 -- SMS_offered from Exclusive_Offer
+        B.benefitID AS B_benefitID,     -- Alias for benefitID from Benefits
+        B.mobileNo                      -- mobileNo from Benefits
     FROM Exclusive_Offer EO
-    JOIN Benefits B ON (EO.benefitID = B.benefitID)
+    JOIN Benefits B ON EO.benefitID = B.benefitID
     WHERE B.mobileNo = @MobileNo
         AND EO.SMS_offered > 0
 )
