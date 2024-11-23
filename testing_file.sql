@@ -20,7 +20,7 @@ DECLARE @result DECIMAL(10, 1)
 
 SELECT @price = CAST(SP.price AS DECIMAL(10,1))
     FROM Service_Plan SP
-    WHERE SP.name = @plan
+    WHERE SP.planID = @plan
 
 SELECT TOP 1 @amount = P.amount
     FROM Payment P
@@ -282,7 +282,7 @@ VALUES
 
 INSERT INTO Service_Plan
 VALUES
-(10, 10, 10, 'plan1', 10, null),
+(10, 10, 10, 'plan1xyz', 10, null),
 (20, 20, 20, 'plan2', 20, null),
 (30, 30, 30, 'plan3', 30, null)
 
@@ -1069,4 +1069,33 @@ GO
 DECLARE @o INT
 EXECUTE Account_Highest_Voucher '00000000003', @o OUTPUT
 SELECT @o
+*/
+
+GO
+
+CREATE FUNCTION Remaining_plan_amount
+(@MobileNo CHAR(11), @plan_name VARCHAR(50))
+RETURNS decimal(10,1)
+AS 
+BEGIN
+DECLARE @result decimal(10,1) = 0
+
+SELECT TOP 1 @result = PP.remaining_balance
+FROM Payment P
+INNER JOIN Process_Payment PP ON P.paymentID = PP.paymentID
+INNER JOIN Service_Plan SP ON PP.planID = SP.planID
+WHERE P.mobileNo = @MobileNo AND SP.name = @plan_name
+ORDER BY P.date_of_payment DESC
+
+RETURN @result
+END
+
+GO
+
+GRANT EXECUTE ON Remaining_plan_amount TO customer
+
+GO
+
+/*
+SELECT dbo.Remaining_plan_amount('00000000000', 'plan2')
 */
