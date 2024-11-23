@@ -909,38 +909,50 @@ CREATE PROCEDURE Initiate_plan_payment
     @payment_method VARCHAR(50),
     @plan_id INT
 AS
-    DECLARE @success BIT, @payID INT, @Rem DECIMAL(10,1)
-    
     -- Insert the payment record
     INSERT INTO Payment (amount, date_of_payment, payment_method, status, mobileNo)
     VALUES (@amount, CURRENT_TIMESTAMP, @payment_method, 'successful', @MobileNo);
+    
+    -- Updating subscription status to 'active'
+    UPDATE Subscription
+    SET status = 'active'
+    WHERE mobileNo = @MobileNo AND planID = @plan_id;
 
-    SELECT TOP 1 @payID = paymentID
-    FROM Payment
-    WHERE mobileNo = @MobileNo
-    ORDER BY paymentID DESC
+GO
 
-    INSERT INTO Process_Payment
-    VALUES (@payID, @plan_id)
+GRANT EXECUTE ON Initiate_plan_payment TO customer
 
-    SELECT @Rem = remaining_balance
-    FROM Process_Payment
-    WHERE paymentID = @payID
+-- part m
+GO
 
-    IF @Rem = 0
-        BEGIN
-            -- Updating subscription status to 'active'
-            UPDATE Subscription
-            SET status = 'active'
-            WHERE mobileNo = @MobileNo AND planID = @plan_id;
-        END
-    ELSE
-        BEGIN
-            -- Updating subscription status to 'active'
-            UPDATE Subscription
-            SET status = 'onhold'
-            WHERE mobileNo = @MobileNo AND planID = @plan_id;
-        END
+CREATE PROCEDURE Payment_wallet_cashback
+    @MobileNo CHAR(11),
+    @payment_id INT,
+    @benefit_id INT
+AS
+    DECLARE @walletID INT;
+    DECLARE @cashbackAmount DECIMAL(10, 2);
+
+    -- Retrieve the walletID associated with the given mobile number
+    SELECT @walletID = walletID
+    FROM Wallet
+    WHERE nationalID IN (
+        SELECT nationalID 
+        FROM Customer_Account
+        WHERE mobileNo = @MobileNo
+    );
+
+    -- Calculate 10% of the payment amount
+    SET @cashbackAmount = (SELECT amount * 0.1 FROM Payment WHERE paymentID = @payment_id);
+
+    -- Insert the cashback record with the calculated amount
+    INSERT INTO Cashback (benefitID, walletID, amount, credit_date)
+    VALUES (@benefit_id, @walletID, @cashbackAmount, CURRENT_TIMESTAMP);
+
+    -- Update the wallet's balance with the cashback amount
+    UPDATE Wallet
+    SET current_balance = current_balance + @cashbackAmount
+    WHERE walletID = @walletID;
 
 GO
 
