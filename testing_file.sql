@@ -1127,3 +1127,22 @@ GO
 /*
 SELECT dbo.Extra_plan_amount('00000000000', 'plan2')
 */
+
+GO
+
+CREATE PROC Top_Successful_Payments
+@MobileNo char(11)
+AS
+SELECT TOP 10 *
+FROM Payment P
+WHERE P.mobileNo = @MobileNo AND P.status = 'successful'
+ORDER BY P.amount DESC
+GO
+
+GRANT EXECUTE ON Top_Successful_Payments TO customer
+
+GO
+
+/*
+EXECUTE Top_Successful_Payments '00000000000'
+*/
