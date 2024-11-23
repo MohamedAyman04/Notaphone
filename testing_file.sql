@@ -156,7 +156,7 @@ AS
     CREATE TABLE Transfer_money (
         walletID1 INT,
         walletID2 INT,
-        transfer_id INT,
+        transfer_id INT IDENTITY(1,1),
         amount DECIMAL(10, 1),
         transfer_date DATE,
         PRIMARY KEY (walletID1, walletID2, transfer_id),
@@ -330,7 +330,8 @@ VALUES
 
 INSERT INTO Transfer_money 
 VALUES
-(2, 1, 1, 1, '2013/01/02')
+(2, 1, 10, '2013/01/02'),
+(2, 1, 20, '2015/01/02')
 
 INSERT INTO Benefits
 VALUES
@@ -831,5 +832,5 @@ GRANT EXECUTE ON Wallet_Transfer_Amount TO admin
 GO
 
 /*
-SELECT dbo.Wallet_Transfer_Amount(1, 1)
+SELECT dbo.Wallet_Transfer_Amount(2, '2014/01/01', '2016/01/10')
 */
