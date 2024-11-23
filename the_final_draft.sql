@@ -51,7 +51,7 @@ DECLARE @result DECIMAL(10, 1)
 
 SELECT @price = CAST(SP.price AS DECIMAL(10,1))
     FROM Service_Plan SP
-    WHERE SP.name = @plan
+    WHERE SP.planID = @plan
 
 SELECT TOP 1 @amount = P.amount
     FROM Payment P
