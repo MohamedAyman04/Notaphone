@@ -262,138 +262,9 @@ AS
 
 GO
 
-EXECUTE createAllTables;
+EXECUTE createAllTables
 
-GO
-
-INSERT INTO Customer_profile
-VALUES
-(1, 'jay', 'hay', 'jayhay', 'a', '2000/01/01'),
-(2, 'clay', 'bay', 'claybay', 'b', '1999/01/01'),
-(3, 'bob', 'jack', 'bobjack', 'c', '2001/01/01')
-
-INSERT INTO Customer_Account
-VALUES
-('00000000000', 'abc', 0, 'Post Paid', '2010/01/01', 'active', 0, 1),
-('00000000001', 'def', 0,  'Prepaid', '2011/01/01', 'active', 0, 2),
-('00000000002', 'ghi', 0,  'Post Paid', '2012/01/01', 'active', 0, 3),
-('00000000003', 'abc', 0, 'Prepaid', '2011/02/03', 'active', 100, 1),
-('00000000004', 'ghi', 0,  'Post Paid', '2014/01/01', 'onhold', 0, 3)
-
-INSERT INTO Service_Plan
-VALUES
-(10, 10, 10, 'plan1', 10, null),
-(20, 20, 20, 'plan2', 20, null),
-(30, 30, 30, 'plan3', 30, null)
-
-INSERT INTO Subscription
-VALUES
-('00000000000', 1, '2015/01/01', 'active'),
-('00000000000', 3, '2024/09/01', 'active'),
-('00000000001', 2,  '2015/01/01', 'active'),
-('00000000002', 3,   '2015/01/01', 'active'),
-('00000000002', 2,   '2015/01/01', 'active')
-
-INSERT INTO Plan_Usage
-VALUES
-('2015/01/01', '2015/02/01', 7, 7, 7, '00000000000', 1),
-('2024/11/11', '2025/01/11', 7, 7, 7, '00000000000', 1),
-('2024/11/29', '2024/12/29', 15, 15, 15, '00000000000', 3),
-('2015/01/01', '2015/02/01', 10, 10, 10, '00000000001', 2),
-('2015/01/01', '2015/02/01', 9, 9, 9, '00000000002', 2),
-('2015/01/01', '2015/02/01', 8, 8, 8, '00000000002', 3)
-
-INSERT INTO Payment
-VALUES
-(20, '2014/02/01', 'cash', 'successful', '00000000000'),
-(5, '2014/02/01', 'cash', 'successful', '00000000000'),
-(7, '2014/01/01', 'credit', 'successful', '00000000001'),
-(50, '2014/01/01', 'credit', 'successful','00000000002'),
-(2, '2014/01/01', 'credit', 'successful', '00000000002'),
-(11, '2023/12/20', 'credit', 'successful', '00000000000'),
-(14, '2023/12/21', 'credit', 'successful', '00000000000'),
-(20, '2024/02/02', 'credit', 'rejected', '00000000000')
-
-INSERT INTO Process_Payment
-VALUES
-(1, 1),
-(2, 3),
-(3, 2),
-(4, 2),
-(5, 3),
-(6, 1),
-(7, 3),
-(8, 2)
-
-INSERT INTO Wallet
-VALUES
-(10, 'egp', '2013/01/01', 1, '00000000000'),
-(10, 'usd', '2013/01/01', 3, '00000000002')
-
-INSERT INTO Transfer_money 
-VALUES
-(2, 1, 10, '2013/01/02'),
-(2, 1, 20, '2015/01/02')
-
-INSERT INTO Benefits
-VALUES
-('desc', '2025/01/01', 'active', '00000000000'),
-('desc', '2014/01/01', 'active', '00000000004'),
-('desc', '2014/01/01', 'expired', '00000000001'),
-('desc', '2025/01/01', 'active', '00000000000'),
-('desc', '2022/01/01', 'active', '00000000000'),
-('desc', '2022/01/01', 'expired', '00000000000')
-
-INSERT INTO Plan_Provides_Benefits
-VALUES
-(1, 1),
-(2, 1),
-(3, 2),
-(4, 2),
-(5, 3),
-(6, 2)
-
-INSERT INTO Points_Group
-VALUES
-(1, 10, 1),
-(4, 10, 6),
-(5, 10, 7),
-(6, 20, 8)
-
-INSERT INTO Cashback
-VALUES
-(2, 2, 10, '2000/01/01'),
-(3, 2, 20, '2000/01/01');
-
-INSERT INTO Exclusive_Offer
-VALUES
-(1, 10, 12, 14)
-
-INSERT INTO Shop
-VALUES
-('za3bola', 'cat'),
-('egbg', 'catcat');
-
-INSERT INTO Physical_Shop
-VALUES
-(1, 'abc', '9:00-9:00');
-
-INSERT INTO E_shop
-VALUES
-(2, 'frong.gov', 9);
-
-INSERT INTO Voucher
-VALUES
-(20, '2015/02/01', 20, '00000000000', 2, '2014/01/01'),
-(50, '2016/02/01', 60, '00000000003', 1, '2015/01/01'),
-(30, '2030/02/01', 30, '00000000003', 1, null);
-
-INSERT INTO Technical_Support_Ticket 
-VALUES
-('00000000001', 'hmm', 1, 'Open'),
-('00000000002', 'hmmmm', 1, 'Resolved');
-
-GO
+go
 
 CREATE PROCEDURE dropAllTables
 AS
@@ -417,10 +288,6 @@ DROP TABLE Customer_Account;
 DROP TABLE Service_Plan;
 DROP TABLE Shop;
 DROP TABLE Customer_profile;
-
-GO
-
--- EXECUTE dropAllTables;
 
 GO
 
@@ -464,10 +331,6 @@ DROP FUNCTION Cashback_Wallet_Customer
 DROP FUNCTION Remaining_plan_amount
 DROP FUNCTION Extra_plan_amount
 DROP FUNCTION Subscribed_plans_5_Months
-
-GO
-
--- EXECUTE dropAllProceduresFunctionsViews
 
 GO
 
@@ -626,24 +489,12 @@ ADD CONSTRAINT FK_Technical_Support_Ticket_mobileNo FOREIGN KEY (mobileNo) REFER
 
 GO
 
--- EXECUTE clearAllTables
-
-
-GO
-
 CREATE VIEW allCustomerAccounts AS
 SELECT cp.*,ca.mobileNo, ca.pass, ca.balance, ca.account_type, ca.start_date,
         ca.status, ca.point 
 FROM Customer_profile cp
 INNER JOIN Customer_Account ca ON cp.nationalID = ca.nationalID
 WHERE ca.status = 'active';
-
-GO
-
-/*
-SELECT *
-FROM allCustomerAccounts
-*/
 
 GO
 
@@ -654,24 +505,10 @@ FROM Service_Plan;
 
 GO
 
-/*
-SELECT *
-FROM allServicePlans
-*/
-
-GO
-
 CREATE VIEW allBenefits AS
 SELECT *
 FROM Benefits
 WHERE status = 'active';
-
-GO
-
-/*
-SELECT *
-FROM allBenefits
-*/
 
 GO
 
@@ -697,23 +534,9 @@ INNER JOIN
 
 GO
 
-/*
-SELECT *
-FROM AccountPayments
-*/
-
-GO
-
 CREATE VIEW allShops AS
 SELECT * 
 FROM Shop
-
-GO
-
-/*
-SELECT *
-FROM allShops
-*/
 
 GO
 
@@ -724,24 +547,10 @@ WHERE status = 'Resolved'
 
 GO
 
-/*
-SELECT *
-FROM allResolvedTickets
-*/
-
-GO
-
 CREATE VIEW CustomerWallet AS
 SELECT w.*, c.first_name, c.last_name
 FROM Wallet w
 INNER JOIN Customer_profile c ON w.nationalID = c.nationalID
-
-GO
-
-/*
-SELECT *
-FROM CustomerWallet
-*/
 
 GO
 
@@ -753,24 +562,10 @@ WHERE v.redeem_date IS NOT NULL
 
 GO
 
-/*
-SELECT *
-FROM E_shopVouchers 
-*/
-
-GO
-
 CREATE VIEW PhysicalStoreVouchers AS
 SELECT ps.*, v.voucherID, v.value
 FROM Physical_Shop ps INNER JOIN Voucher v ON v.shopID = ps.shopID
 WHERE v.redeem_date IS NOT NULL
-
-GO
-
-/*
-SELECT *
-FROM PhysicalStoreVouchers  
-*/
 
 GO
 
@@ -781,11 +576,6 @@ WHERE walletID IS NOT NULL
 GROUP BY walletID;
 
 GO
-
-/*
-SELECT *
-FROM Num_of_cashback
-*/
 
 CREATE ROLE admin;
 
@@ -804,10 +594,6 @@ GRANT EXECUTE ON Account_Plan TO admin
 
 GO
 
---EXECUTE Account_Plan
-
-GO
-
 CREATE FUNCTION Account_Plan_Date (@Subscription_Date DATE, @Plan_id INT)
 
 RETURNS TABLE
@@ -823,11 +609,6 @@ RETURN (
 )
 
 GO
-
-/*
-SELECT *
-FROM dbo.Account_Plan_Date('2015/01/01', 1)
-*/
 
 GRANT SELECT ON Account_Plan_Date TO admin
 
@@ -849,11 +630,6 @@ RETURN (
 GO
 
 GRANT SELECT ON Account_Usage_Plan TO admin
-
-/*
-SELECT *
-FROM dbo.Account_Usage_Plan('00000000000', '2013/01/01')
-*/
 
 GO
 
@@ -917,12 +693,6 @@ GRANT EXECUTE ON Benefits_Account TO admin
 
 GO
 
-/*
-EXECUTE Benefits_Account '00000000000', 1
-*/
-
-GO
-
 CREATE FUNCTION Account_SMS_Offers (@MobileNo CHAR(11))
 RETURNS TABLE
 AS
@@ -946,11 +716,6 @@ RETURN (
 GO
 
 GRANT SELECT ON Account_SMS_Offers TO admin
-
-/*
-SELECT *
-FROM dbo.Account_SMS_Offers('00000000000')
-*/
 
 GO
 
@@ -984,18 +749,6 @@ ELSE SET @TotalAmountOfPoints = @tp2
 
 GO
 
-GRANT EXECUTE ON Account_Payment_Points TO admin
-
-GO
-
-/*
-DECLARE @tnot INT, @taop INT
-EXECUTE Account_Payment_Points '00000000000', @tnot OUTPUT, @taop OUTPUT
-SELECT @tnot, @taop
-*/
-
-GO
-
 CREATE FUNCTION Wallet_Cashback_Amount
 (@WalletId INT, @planId INT)
 RETURNS INT
@@ -1021,12 +774,6 @@ GRANT EXECUTE ON Wallet_Cashback_Amount TO admin
 
 GO
 
-/*
-SELECT dbo.Wallet_Cashback_Amount(1, 1)
-*/
-
-GO
-
 CREATE FUNCTION Wallet_Transfer_Amount
 (@Wallet_id INT, @start_date DATE, @end_date DATE)
 RETURNS DECIMAL(10,2)
@@ -1043,12 +790,6 @@ END;
 GO
 
 GRANT EXECUTE ON Wallet_Transfer_Amount TO admin
-
-GO
-
-/*
-SELECT dbo.Wallet_Transfer_Amount(2, '2054/01/01', '2016/01/10')
-*/
 
 GO
 
@@ -1073,39 +814,33 @@ GRANT EXECUTE  ON Wallet_MobileNo TO admin
 
 GO
 
-/*
-SELECT dbo.Wallet_MobileNo('00000000003')
-*/
-
-GO
-
 CREATE PROCEDURE Total_Points_Account
 @MobileNo char(11),
 @TotalPoints INT OUTPUT
 AS
 BEGIN
-SELECT @TotalPoints = SUM(pg.pointsAmount)
+DECLARE @tp INT
+SELECT @tp = SUM(pg.pointsAmount)
 FROM Points_Group pg
 INNER JOIN Payment p ON pg.PaymentID = p.PaymentID
 INNER JOIN Benefits B ON pg.benefitID = B.benefitID
 WHERE @MobileNo = P.mobileNo AND @MobileNo = B.mobileNo AND B.validity_date >= CURRENT_TIMESTAMP AND B.status = 'active'
 
+IF @tp IS NULL
+    SET @TotalPoints = 0
+ELSE
+    SET @TotalPoints = @tp
+
 UPDATE Customer_Account
 SET point = @TotalPoints
 WHERE @MobileNo = mobileNo
+
+
 END;
 
 GO
 
 GRANT EXECUTE ON Total_Points_Account TO admin
-
-GO
-
-/*
-DECLARE @out INT
-EXECUTE Total_Points_Account '00000000000', @out OUTPUT
-SELECT @out
-*/
 
 GO
 
@@ -1135,12 +870,6 @@ GRANT EXECUTE ON AccountLoginValidation TO customer
 
 GO
 
-/*
-SELECT dbo.AccountLoginValidation('00000000000', '2bc')
-*/
-
-GO
-
 CREATE FUNCTION Consumption
 (@Plan_name VARCHAR(50) ,@start_date DATE ,@end_date DATE)
 
@@ -1149,9 +878,9 @@ RETURNS TABLE
 AS
 
 RETURN (
-    SELECT SUM(P.data_consumption) AS 'Data consumption',
-        SUM(P.minutes_used) AS 'Minutes used',
-        SUM(P.SMS_sent) AS 'SMS sent'
+    SELECT ISNULL(SUM(P.data_consumption), 0) AS 'Data consumption',
+        ISNULL(SUM(P.minutes_used), 0) AS 'Minutes used',
+        ISNULL(SUM(P.SMS_sent), 0) AS 'SMS sent'
     FROM Plan_Usage P
     INNER JOIN Service_Plan S ON P.planID = S.planID
     WHERE S.name = @Plan_name
@@ -1162,12 +891,6 @@ RETURN (
 GO
 
 GRANT SELECT ON Consumption TO customer
-
-GO
-
-/*
-SELECT * FROM dbo.Consumption('plan1', '2010/01/01',  '2020/01/01')
-*/
 
 GO
 
@@ -1184,12 +907,6 @@ where P.planID NOT IN (
 GO
 
 GRANT EXECUTE ON Unsubscribed_Plans TO customer
-
-GO
-
-/*
-EXECUTE Unsubscribed_Plans '00000000000'
-*/
 
 GO
 
@@ -1218,11 +935,6 @@ GRANT SELECT ON Usage_Plan_CurrentMonth TO customer
 
 GO
 
-/*
-SELECT * FROM dbo.Usage_Plan_CurrentMonth('00000000000')
-*/
-GO
-
 CREATE FUNCTION Cashback_Wallet_Customer
 (@NationalID int)
 RETURNS TABLE
@@ -1234,12 +946,6 @@ RETURN ( SELECT C.* from Cashback C INNER JOIN Wallet W on C.walletID = W.wallet
 GO
 
 GRANT SELECT ON Cashback_Wallet_Customer TO customer
-
-GO
-
-/*
-SELECT * FROM dbo.Cashback_Wallet_Customer(3)
-*/
 
 GO
 
@@ -1258,31 +964,17 @@ GRANT EXECUTE ON Ticket_Account_Customer TO customer
 
 GO
 
-/*
-EXECUTE Ticket_Account_Customer 2
-*/
-
-GO
-
 CREATE PROC Account_Highest_Voucher
 @MobileNo CHAR(11),
 @Voucher_id INT OUTPUT
 AS
-SELECT TOP 1 @Voucher_id = V.voucherID
+SELECT TOP 1 @Voucher_id = ISNULL(V.voucherID, 0)
 FROM Voucher V
 WHERE V.mobileNo = @MobileNo
 ORDER BY V.value DESC
 GO
 
 GRANT EXECUTE ON Account_Highest_Voucher TO customer
-
-GO
-
-/*
-DECLARE @o INT
-EXECUTE Account_Highest_Voucher '00000000003', @o OUTPUT
-SELECT @o
-*/
 
 GO
 
@@ -1309,12 +1001,6 @@ GRANT EXECUTE ON Remaining_plan_amount TO customer
 
 GO
 
-/*
-SELECT dbo.Remaining_plan_amount('00000000000', 'plan2')
-*/
-
-GO
-
 CREATE FUNCTION Extra_plan_amount
 (@MobileNo char(11), @plan_name varchar(50))
 RETURNS decimal(10,1)
@@ -1337,12 +1023,6 @@ GRANT EXECUTE ON Extra_plan_amount TO customer
 
 GO
 
-/*
-SELECT dbo.Extra_plan_amount('00000000000', 'plan2')
-*/
-
-GO
-
 CREATE PROC Top_Successful_Payments
 @MobileNo char(11)
 AS
@@ -1353,12 +1033,6 @@ ORDER BY P.amount DESC
 GO
 
 GRANT EXECUTE ON Top_Successful_Payments TO customer
-
-GO
-
-/*
-EXECUTE Top_Successful_Payments '00000000000'
-*/
 
 GO
 
@@ -1378,12 +1052,6 @@ RETURN
 GO
 
 GRANT SELECT ON Subscribed_plans_5_Months TO customer
-
-GO
-
-/*
-SELECT * FROM dbo.Subscribed_plans_5_Months('00000000000')
-*/
 
 GO
 
@@ -1430,11 +1098,6 @@ GO
 
 GRANT EXECUTE ON Initiate_plan_payment TO customer
 
-GO
-
-/*
-EXECUTE Initiate_plan_payment '00000000000', 1, 'cash', 1
-*/
 
 GO
 
@@ -1471,10 +1134,6 @@ GO
 
 GRANT EXECUTE ON Payment_wallet_cashback TO customer
 
-/*
-EXECUTE Payment_wallet_cashback '00000000000', 1, 1
-*/
-
 GO
 
 CREATE PROCEDURE Initiate_balance_payment
@@ -1494,10 +1153,6 @@ AS
 GO
 
 GRANT EXECUTE ON Initiate_balance_payment TO customer
-
-/*
-EXECUTE Initiate_balance_payment '00000000000', 1, 'credit'
-*/
 
 GO
 
@@ -1538,7 +1193,3 @@ GO
 GRANT EXECUTE ON Redeem_voucher_points TO customer
 
 GO
-
-/*
-EXECUTE Redeem_voucher_points '00000000003', 3
-*/
