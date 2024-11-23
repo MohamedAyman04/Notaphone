@@ -150,6 +150,7 @@ AS
         currency VARCHAR(50),
         last_modified_date DATE,
         nationalID INT,
+        mobileNo CHAR(11),
         CONSTRAINT FK_Wallet_nationalID FOREIGN KEY (nationalID) REFERENCES Customer_profile(nationalID)
     );
 
@@ -325,8 +326,8 @@ VALUES
 
 INSERT INTO Wallet
 VALUES
-(10, 'egp', '2013/01/01', 1),
-(10, 'usd', '2013/01/01', 3)
+(10, 'egp', '2013/01/01', 1, '00000000000'),
+(10, 'usd', '2013/01/01', 3, '00000000002')
 
 INSERT INTO Transfer_money 
 VALUES
@@ -834,3 +835,31 @@ GO
 /*
 SELECT dbo.Wallet_Transfer_Amount(2, '2014/01/01', '2016/01/10')
 */
+
+GO
+
+CREATE FUNCTION Wallet_MobileNo
+(@MobileNo char(11))
+RETURNS BIT
+AS
+BEGIN
+DECLARE @outBit BIT
+IF(EXISTS(SELECT w.mobileNo
+FROM Wallet w
+WHERE @MobileNo = w.mobileNo))
+SET @outBit = 1
+ELSE
+SET @outBit = 0
+RETURN @outBit
+END;
+
+GO
+
+GRANT EXECUTE  ON Wallet_MobileNo TO admin
+
+GO
+
+/*
+SELECT dbo.Wallet_MobileNo('00000000003')
+*/
+
