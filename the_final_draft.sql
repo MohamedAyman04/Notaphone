@@ -263,25 +263,28 @@ GO
 
 CREATE PROCEDURE dropAllTables
 AS
-DROP TABLE Customer_profile;
-DROP TABLE Customer_Account;
-DROP TABLE Service_Plan;
-DROP TABLE Subscription;
-DROP TABLE Plan_Usage;
-DROP TABLE Payment;
-DROP TABLE Process_Payment;
-DROP TABLE Wallet;
-DROP TABLE Transfer_money;
-DROP TABLE Benefits;
+-- Drop tables with foreign keys referencing other tables first
 DROP TABLE Points_Group;
 DROP TABLE Exclusive_Offer;
 DROP TABLE Cashback;
 DROP TABLE Plan_Provides_Benefits;
-DROP TABLE Shop;
 DROP TABLE Physical_Shop;
 DROP TABLE E_shop;
 DROP TABLE Voucher;
 DROP TABLE Technical_Support_Ticket;
+DROP TABLE Transfer_money;
+DROP TABLE Subscription;
+DROP TABLE Plan_Usage;
+DROP TABLE Payment;
+DROP TABLE Process_Payment;
+DROP TABLE Benefits;
+DROP TABLE Wallet;
+
+-- Drop tables referenced by others now that dependencies are removed
+DROP TABLE Customer_Account;
+DROP TABLE Service_Plan;
+DROP TABLE Shop;
+DROP TABLE Customer_profile;
 
 GO
 
@@ -377,9 +380,25 @@ WHERE status = 'active';
 GO
 
 CREATE VIEW AccountPayments AS
-SELECT *
-FROM Customer_Account c
-INNER JOIN Payment p ON c.mobileNo = p.mobileNo;
+SELECT 
+    c.mobileNo,
+    c.pass,
+    c.balance,
+    c.account_type,
+    c.start_date,
+    c.status AS account_status,  -- Alias for Customer_Account status
+    c.point,
+    c.nationalID,
+    p.paymentID,
+    p.amount,
+    p.date_of_payment,
+    p.payment_method,
+    p.status AS payment_status  -- Alias for Payment status
+FROM 
+    Customer_Account c
+INNER JOIN 
+    Payment p ON c.mobileNo = p.mobileNo;
+
 
 GO
 
@@ -481,18 +500,51 @@ GRANT SELECT ON Account_Usage_Plan TO admin
 GO
 
 CREATE PROCEDURE Benefits_Account
-@MobileNo CHAR(11), @plan_ID INT
+    @MobileNo CHAR(11), 
+    @plan_ID INT
 AS
-    DELETE B
-    FROM Benefits B
-    WHERE EXISTS (
-        SELECT *
-        FROM Plan_Provides_Benefits PPB
-        WHERE B.benefitID = PPB.benefitID
-            AND B.mobileNo = @MobileNo
-            AND PPB.planID = @plan_ID
-   )
+    -- Delete from tables referencing Benefits
+    DELETE FROM Points_Group 
+    WHERE benefitID IN (
+        SELECT B.benefitID
+        FROM Benefits B
+        INNER JOIN Plan_Provides_Benefits PPB ON B.benefitID = PPB.benefitID
+        WHERE B.mobileNo = @MobileNo AND PPB.planID = @plan_ID
+    );
 
+    DELETE FROM Exclusive_Offer 
+    WHERE benefitID IN (
+        SELECT B.benefitID
+        FROM Benefits B
+        INNER JOIN Plan_Provides_Benefits PPB ON B.benefitID = PPB.benefitID
+        WHERE B.mobileNo = @MobileNo AND PPB.planID = @plan_ID
+    );
+
+    DELETE FROM Cashback 
+    WHERE benefitID IN (
+        SELECT B.benefitID
+        FROM Benefits B
+        INNER JOIN Plan_Provides_Benefits PPB ON B.benefitID = PPB.benefitID
+        WHERE B.mobileNo = @MobileNo AND PPB.planID = @plan_ID
+    );
+
+    -- Delete from Plan_Provides_Benefits to remove the plan-benefit relationship
+    DELETE FROM Plan_Provides_Benefits
+    WHERE benefitID IN (
+        SELECT B.benefitID
+        FROM Benefits B
+        INNER JOIN Plan_Provides_Benefits PPB ON B.benefitID = PPB.benefitID
+        WHERE B.mobileNo = @MobileNo AND PPB.planID = @plan_ID
+    );
+
+    -- Delete from Benefits
+    DELETE FROM Benefits 
+    WHERE benefitID IN (
+        SELECT B.benefitID
+        FROM Benefits B
+        INNER JOIN Plan_Provides_Benefits PPB ON B.benefitID = PPB.benefitID
+        WHERE B.mobileNo = @MobileNo AND PPB.planID = @plan_ID
+    );
 GO
 
 GRANT EXECUTE ON Benefits_Account TO admin
@@ -503,9 +555,13 @@ CREATE FUNCTION Account_SMS_Offers (@MobileNo CHAR(11))
 RETURNS TABLE
 AS
 RETURN (
-    SELECT *
+    SELECT 
+        EO.benefitID AS EO_benefitID,   -- Alias for benefitID from Exclusive_Offer
+        EO.SMS_offered,                 -- SMS_offered from Exclusive_Offer
+        B.benefitID AS B_benefitID,     -- Alias for benefitID from Benefits
+        B.mobileNo                      -- mobileNo from Benefits
     FROM Exclusive_Offer EO
-    JOIN Benefits B ON (EO.benefitID = B.benefitID)
+    JOIN Benefits B ON EO.benefitID = B.benefitID
     WHERE B.mobileNo = @MobileNo
         AND EO.SMS_offered > 0
 )
