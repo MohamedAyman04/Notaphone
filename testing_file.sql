@@ -1261,3 +1261,27 @@ GRANT EXECUTE ON Payment_wallet_cashback TO customer
 /*
 EXECUTE Payment_wallet_cashback '00000000000', 1, 1
 */
+
+GO
+
+CREATE PROCEDURE Initiate_balance_payment
+    @MobileNo CHAR(11),
+    @amount DECIMAL(10,1),
+    @payment_method VARCHAR(50)
+AS
+    -- Insert the payment record
+    INSERT INTO Payment (amount, date_of_payment, payment_method, status, mobileNo)
+    VALUES (@amount, CURRENT_TIMESTAMP, @payment_method, 'successful', @MobileNo);
+
+    -- Updating balance for account for balance recharge
+    UPDATE Customer_Account
+    SET balance = balance + @amount
+    WHERE mobileNo = @MobileNo
+
+GO
+
+GRANT EXECUTE ON Initiate_balance_payment TO customer
+
+/*
+EXECUTE Initiate_balance_payment '00000000000', 1, 'credit'
+*/
