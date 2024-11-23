@@ -753,6 +753,7 @@ GRANT EXECUTE ON Unsubscribed_Plans TO customer
 -- part d
  
 GO
+
 CREATE FUNCTION Usage_Plan_CurrentMonth
 (@MobileNo char(11))
 
@@ -760,10 +761,16 @@ RETURNS TABLE
 
 AS
 
-RETURN ( SELECT P.data_consumption, P.minutes_used, P.SMS_sent from Plan_Usage P INNER JOIN Subscription S
-ON P.mobileNo = S.mobileNo AND P.planID = S.planID
-WHERE P.mobileNo = @MobileNo AND MONTH(CURRENT_TIMESTAMP) = MONTH(P.start_date) AND YEAR(CURRENT_TIMESTAMP) = YEAR(P.start_date)
-AND S.status = 'active'
+RETURN (
+    SELECT P.data_consumption AS 'Data consumption',
+        P.minutes_used AS 'Minutes used',
+        P.SMS_sent AS 'SMS sent'
+    from Plan_Usage P
+    INNER JOIN Subscription S ON P.mobileNo = S.mobileNo AND P.planID = S.planID
+    WHERE P.mobileNo = @MobileNo
+    AND MONTH(CURRENT_TIMESTAMP) = MONTH(P.start_date)
+    AND YEAR(CURRENT_TIMESTAMP) = YEAR(P.start_date)
+    AND S.status = 'active'
 )
 
 GO

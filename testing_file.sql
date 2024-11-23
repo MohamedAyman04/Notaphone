@@ -297,8 +297,8 @@ VALUES
 INSERT INTO Plan_Usage
 VALUES
 ('2015/01/01', '2015/02/01', 7, 7, 7, '00000000000', 1),
-('2015/01/01', '2015/02/01', 7, 7, 7, '00000000000', 1),
-('2015/01/01', '2015/02/01', 15, 15, 15, '00000000000', 3),
+('2024/11/11', '2025/01/11', 7, 7, 7, '00000000000', 1),
+('2024/11/29', '2024/12/29', 15, 15, 15, '00000000000', 3),
 ('2015/01/01', '2015/02/01', 10, 10, 10, '00000000001', 2),
 ('2015/01/01', '2015/02/01', 9, 9, 9, '00000000002', 2),
 ('2015/01/01', '2015/02/01', 8, 8, 8, '00000000002', 3)
@@ -976,4 +976,35 @@ GO
 
 /*
 EXECUTE Unsubscribed_Plans '00000000000'
+*/
+
+GO
+
+CREATE FUNCTION Usage_Plan_CurrentMonth
+(@MobileNo char(11))
+
+RETURNS TABLE
+
+AS
+
+RETURN (
+    SELECT P.data_consumption AS 'Data consumption',
+        P.minutes_used AS 'Minutes used',
+        P.SMS_sent AS 'SMS sent'
+    from Plan_Usage P
+    INNER JOIN Subscription S ON P.mobileNo = S.mobileNo AND P.planID = S.planID
+    WHERE P.mobileNo = @MobileNo
+    AND MONTH(CURRENT_TIMESTAMP) = MONTH(P.start_date)
+    AND YEAR(CURRENT_TIMESTAMP) = YEAR(P.start_date)
+    AND S.status = 'active'
+)
+
+GO
+
+GRANT SELECT ON Usage_Plan_CurrentMonth TO customer
+
+GO
+
+/*
+SELECT * FROM dbo.Usage_Plan_CurrentMonth('00000000000')
 */
