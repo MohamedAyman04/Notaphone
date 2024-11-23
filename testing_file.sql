@@ -277,7 +277,7 @@ VALUES
 ('00000000000', 'abc', 0, 'Post Paid', '2010/01/01', 'active', 0, 1),
 ('00000000001', 'def', 0,  'Prepaid', '2011/01/01', 'active', 0, 2),
 ('00000000002', 'ghi', 0,  'Post Paid', '2012/01/01', 'active', 0, 3),
-('00000000003', 'abc', 0, 'Prepaid', '2011/02/03', 'active', 0, 1),
+('00000000003', 'abc', 0, 'Prepaid', '2011/02/03', 'active', 100, 1),
 ('00000000004', 'ghi', 0,  'Post Paid', '2014/01/01', 'onhold', 0, 3)
 
 INSERT INTO Service_Plan
@@ -382,7 +382,7 @@ INSERT INTO Voucher
 VALUES
 (20, '2015/02/01', 20, '00000000000', 2, '2014/01/01'),
 (50, '2016/02/01', 60, '00000000003', 1, '2015/01/01'),
-(30, '2016/02/01', 30, '00000000003', 1, null);
+(30, '2030/02/01', 30, '00000000003', 1, null);
 
 INSERT INTO Technical_Support_Ticket 
 VALUES
@@ -1284,4 +1284,48 @@ GRANT EXECUTE ON Initiate_balance_payment TO customer
 
 /*
 EXECUTE Initiate_balance_payment '00000000000', 1, 'credit'
+*/
+
+GO
+
+CREATE PROCEDURE Redeem_voucher_points
+    @MobileNo CHAR(11),
+    @voucher_id INT
+AS
+    -- Declare variables for points deduction and validation
+    DECLARE @points_to_deduct INT;
+    DECLARE @points INT;
+    DECLARE @expiry_date DATE;
+    DECLARE @redeem_date DATE;
+
+    -- Check if the voucher exists for the mobile number and retrieve points, expiry date and redeem_date
+    SELECT @points_to_deduct = points, @expiry_date = expiry_date, @redeem_date = redeem_date
+    FROM Voucher
+    WHERE voucherID = @voucher_id AND mobileNo = @MobileNo;
+
+    SELECT @points = point
+    FROM Customer_Account
+    WHERE mobileNo = @MobileNo
+
+    -- Verify if the voucher exists and is not expired and not redeemed
+    IF @points_to_deduct <= @points AND @expiry_date >= CURRENT_TIMESTAMP AND @redeem_date IS NULL
+    BEGIN
+        -- Update the voucher's redeem date to mark it as redeemed
+        UPDATE Voucher
+        SET redeem_date = CURRENT_TIMESTAMP
+        WHERE voucherID = @voucher_id AND mobileNo = @MobileNo;
+
+        -- Deduct points from the customer's account
+        UPDATE Customer_Account
+        SET point = point - @points_to_deduct
+        WHERE mobileNo = @MobileNo;
+    END
+GO
+
+GRANT EXECUTE ON Redeem_voucher_points TO customer
+
+GO
+
+/*
+EXECUTE Redeem_voucher_points '00000000003', 3
 */
