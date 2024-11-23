@@ -380,9 +380,25 @@ WHERE status = 'active';
 GO
 
 CREATE VIEW AccountPayments AS
-SELECT *
-FROM Customer_Account c
-INNER JOIN Payment p ON c.mobileNo = p.mobileNo;
+SELECT 
+    c.mobileNo,
+    c.pass,
+    c.balance,
+    c.account_type,
+    c.start_date,
+    c.status AS account_status,  -- Alias for Customer_Account status
+    c.point,
+    c.nationalID,
+    p.paymentID,
+    p.amount,
+    p.date_of_payment,
+    p.payment_method,
+    p.status AS payment_status  -- Alias for Payment status
+FROM 
+    Customer_Account c
+INNER JOIN 
+    Payment p ON c.mobileNo = p.mobileNo;
+
 
 GO
 
