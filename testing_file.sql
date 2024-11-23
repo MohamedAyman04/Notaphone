@@ -1171,3 +1171,54 @@ GO
 /*
 SELECT * FROM dbo.Subscribed_plans_5_Months('00000000000')
 */
+
+GO
+
+CREATE PROCEDURE Initiate_plan_payment
+    @MobileNo CHAR(11),
+    @amount DECIMAL(10, 1),
+    @payment_method VARCHAR(50),
+    @plan_id INT
+AS
+    DECLARE @success BIT, @payID INT, @Rem DECIMAL(10,1)
+    
+    -- Insert the payment record
+    INSERT INTO Payment (amount, date_of_payment, payment_method, status, mobileNo)
+    VALUES (@amount, CURRENT_TIMESTAMP, @payment_method, 'successful', @MobileNo);
+
+    SELECT TOP 1 @payID = paymentID
+    FROM Payment
+    WHERE mobileNo = @MobileNo
+    ORDER BY paymentID DESC
+
+    INSERT INTO Process_Payment
+    VALUES (@payID, @plan_id)
+
+    SELECT @Rem = remaining_balance
+    FROM Process_Payment
+    WHERE paymentID = @payID
+
+    IF @Rem = 0
+        BEGIN
+            -- Updating subscription status to 'active'
+            UPDATE Subscription
+            SET status = 'active'
+            WHERE mobileNo = @MobileNo AND planID = @plan_id;
+        END
+    ELSE
+        BEGIN
+            -- Updating subscription status to 'active'
+            UPDATE Subscription
+            SET status = 'onhold'
+            WHERE mobileNo = @MobileNo AND planID = @plan_id;
+        END
+
+GO
+
+GRANT EXECUTE ON Initiate_plan_payment TO customer
+
+GO
+
+/*
+EXECUTE Initiate_plan_payment '00000000000', 1, 'cash', 1
+*/
