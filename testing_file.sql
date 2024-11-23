@@ -1008,3 +1008,22 @@ GO
 /*
 SELECT * FROM dbo.Usage_Plan_CurrentMonth('00000000000')
 */
+GO
+
+CREATE FUNCTION Cashback_Wallet_Customer
+(@NationalID int)
+RETURNS TABLE
+
+AS
+
+RETURN ( SELECT C.* from Cashback C INNER JOIN Wallet W on C.walletID = W.walletID where W.nationalID=@NationalID)
+
+GO
+
+GRANT SELECT ON Cashback_Wallet_Customer TO customer
+
+GO
+
+/*
+SELECT * FROM dbo.Cashback_Wallet_Customer(3)
+*/
