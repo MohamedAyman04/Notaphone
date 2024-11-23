@@ -766,7 +766,9 @@ AND date_of_payment >= DATEADD(YEAR, -1, CURRENT_TIMESTAMP);
 SELECT @TotalAmountOfPoints = SUM(pg.pointsAmount)
 FROM Payment p
 INNER JOIN Points_Group pg ON p.PaymentID = pg.PaymentID
-WHERE p.mobileNo = @MobileNo AND p.date_of_payment >= DATEADD(YEAR, -1, CURRENT_TIMESTAMP);
+WHERE p.mobileNo = @MobileNo
+    AND p.date_of_payment >= DATEADD(YEAR, -1, CURRENT_TIMESTAMP)
+    AND p.status = 'successful';
 END;
 
 GO
