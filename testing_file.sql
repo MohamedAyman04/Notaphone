@@ -892,3 +892,37 @@ DECLARE @out INT
 EXECUTE Total_Points_Account '00000000000', @out OUTPUT
 SELECT @out
 */
+
+GO
+
+CREATE ROLE customer
+
+GO
+CREATE FUNCTION AccountLoginValidation
+(@MobileNo CHAR(11), @password VARCHAR(50))
+
+RETURNS BIT
+AS
+BEGIN
+DECLARE @result BIT;
+
+IF EXISTS (SELECT * from Customer_Account C where C.mobileNo=@MobileNo AND C.pass=@password)
+	Set @result= 1
+ELSE
+	Set @result= 0
+
+
+RETURN @result
+END
+
+GO 
+
+GRANT EXECUTE ON AccountLoginValidation TO customer
+
+GO
+
+/*
+SELECT dbo.AccountLoginValidation('00000000000', '2bc')
+*/
+
+GO
