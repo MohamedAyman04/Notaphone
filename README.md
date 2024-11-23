@@ -89,7 +89,7 @@ The following procedures/functions reference the sql file testing_file.sql.
 Whatever is referenced here and is successfully tested, will be reflected
 in the final draft.
 
-### Successfully tested 18/40
+### Successfully tested 19/40
 
 - Proc createAllTables
 - Data insertions for all tables except ~Eshop~, Exclusive_Offer, ~Cashback~
@@ -109,6 +109,7 @@ in the final draft.
 - Func Wallet_MobileNo
 - Proc Total_Points_Account
 - Func AccountLoginValidation
+- Func Consumption
 
 ### Tested but unsuccessful
 

@@ -297,6 +297,7 @@ VALUES
 INSERT INTO Plan_Usage
 VALUES
 ('2015/01/01', '2015/02/01', 7, 7, 7, '00000000000', 1),
+('2015/01/01', '2015/02/01', 7, 7, 7, '00000000000', 1),
 ('2015/01/01', '2015/02/01', 15, 15, 15, '00000000000', 3),
 ('2015/01/01', '2015/02/01', 10, 10, 10, '00000000001', 2),
 ('2015/01/01', '2015/02/01', 9, 9, 9, '00000000002', 2),
@@ -926,3 +927,31 @@ SELECT dbo.AccountLoginValidation('00000000000', '2bc')
 */
 
 GO
+
+CREATE FUNCTION Consumption
+(@Plan_name VARCHAR(50) ,@start_date DATE ,@end_date DATE)
+
+RETURNS TABLE
+
+AS
+
+RETURN (
+    SELECT SUM(P.data_consumption) AS 'Data consumption',
+        SUM(P.minutes_used) AS 'Minutes used',
+        SUM(P.SMS_sent) AS 'SMS sent'
+    FROM Plan_Usage P
+    INNER JOIN Service_Plan S ON P.planID = S.planID
+    WHERE S.name = @Plan_name
+        AND P.start_date >= @start_date
+        AND P.end_date <= @end_date
+)
+
+GO
+
+GRANT SELECT ON Consumption TO customer
+
+GO
+
+/*
+SELECT * FROM dbo.Consumption('plan1', '2010/01/01',  '2020/01/01')
+*/

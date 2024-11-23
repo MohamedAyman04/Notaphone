@@ -709,7 +709,6 @@ GRANT EXECUTE ON AccountLoginValidation TO customer
 
 -- part b
 
-GO
 CREATE FUNCTION Consumption
 (@Plan_name VARCHAR(50) ,@start_date DATE ,@end_date DATE)
 
@@ -717,12 +716,22 @@ RETURNS TABLE
 
 AS
 
-RETURN ( SELECT P.data_consumption, P.minutes_used, P.SMS_sent FROM Plan_Usage P INNER JOIN Service_Plan S ON P.planID = S.planID
-WHERE S.name = @Plan_name AND P.start_date >= @start_date AND P.end_date <= @end_date )
+RETURN (
+    SELECT SUM(P.data_consumption) AS 'Data consumption',
+        SUM(P.minutes_used) AS 'Minutes used',
+        SUM(P.SMS_sent) AS 'SMS sent'
+    FROM Plan_Usage P
+    INNER JOIN Service_Plan S ON P.planID = S.planID
+    WHERE S.name = @Plan_name
+        AND P.start_date >= @start_date
+        AND P.end_date <= @end_date
+)
 
 GO
 
 GRANT SELECT ON Consumption TO customer
+
+GO
 
 -- part c
 
