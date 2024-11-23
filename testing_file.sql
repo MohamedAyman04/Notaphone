@@ -1048,3 +1048,25 @@ GO
 /*
 EXECUTE Ticket_Account_Customer 2
 */
+
+GO
+
+CREATE PROC Account_Highest_Voucher
+@MobileNo CHAR(11),
+@Voucher_id INT OUTPUT
+AS
+SELECT TOP 1 @Voucher_id = V.voucherID
+FROM Voucher V
+WHERE V.mobileNo = @MobileNo
+ORDER BY V.value DESC
+GO
+
+GRANT EXECUTE ON Account_Highest_Voucher TO customer
+
+GO
+
+/*
+DECLARE @o INT
+EXECUTE Account_Highest_Voucher '00000000003', @o OUTPUT
+SELECT @o
+*/
