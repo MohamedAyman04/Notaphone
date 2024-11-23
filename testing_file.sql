@@ -289,7 +289,7 @@ VALUES
 INSERT INTO Subscription
 VALUES
 ('00000000000', 1, '2015/01/01', 'active'),
-('00000000000', 3, '2015/01/01', 'active'),
+('00000000000', 3, '2024/09/01', 'active'),
 ('00000000001', 2,  '2015/01/01', 'active'),
 ('00000000002', 3,   '2015/01/01', 'active'),
 ('00000000002', 2,   '2015/01/01', 'active')
@@ -1145,4 +1145,29 @@ GO
 
 /*
 EXECUTE Top_Successful_Payments '00000000000'
+*/
+
+GO
+
+CREATE FUNCTION Subscribed_plans_5_Months (
+    @MobileNo CHAR(11)
+)
+RETURNS TABLE
+AS
+RETURN
+(
+    SELECT sp.*
+    FROM Service_Plan sp INNER JOIN Subscription s ON sp.planID = s.planID
+    INNER JOIN Customer_Account c ON s.mobileNo = c.mobileNo
+    WHERE c.mobileNo = @MobileNo AND s.subscription_date >= DATEADD(MONTH, -5, GETDATE())
+)
+
+GO
+
+GRANT SELECT ON Subscribed_plans_5_Months TO customer
+
+GO
+
+/*
+SELECT * FROM dbo.Subscribed_plans_5_Months('00000000000')
 */
