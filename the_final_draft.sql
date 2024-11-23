@@ -739,7 +739,13 @@ GO
 CREATE PROC Unsubscribed_Plans
 @MobileNo char(11)
 AS
-SELECT S.* from Service_Plan P, Subscription S  where S.planID NOT IN (select S.planID from S where S.mobileNo=@MobileNo)
+SELECT DISTINCT P.* from Service_Plan P
+where P.planID NOT IN (
+        select S.planID
+        FROM Subscription S
+        where S.planID = P.planID
+            AND S.mobileNo=@MobileNo)
+
 GO
 
 GRANT EXECUTE ON Unsubscribed_Plans TO customer

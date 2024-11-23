@@ -955,3 +955,25 @@ GO
 /*
 SELECT * FROM dbo.Consumption('plan1', '2010/01/01',  '2020/01/01')
 */
+
+GO
+
+CREATE PROC Unsubscribed_Plans
+@MobileNo char(11)
+AS
+SELECT DISTINCT P.* from Service_Plan P
+where P.planID NOT IN (
+        select S.planID
+        FROM Subscription S
+        where S.planID = P.planID
+            AND S.mobileNo=@MobileNo)
+
+GO
+
+GRANT EXECUTE ON Unsubscribed_Plans TO customer
+
+GO
+
+/*
+EXECUTE Unsubscribed_Plans '00000000000'
+*/
