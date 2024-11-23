@@ -89,7 +89,7 @@ AS
         status VARCHAR(50) CHECK (status IN ('active', 'onhold')),
         point INT DEFAULT 0,
         nationalID INT,
-        FOREIGN KEY (nationalID) REFERENCES Customer_profile(nationalID)
+        CONSTRAINT FK_Customer_Account_nationalID FOREIGN KEY (nationalID) REFERENCES Customer_profile(nationalID)
     );
 
     CREATE TABLE Service_Plan (
@@ -108,8 +108,8 @@ AS
         subscription_date DATE,
         status VARCHAR(50) CHECK (status in ('active', 'onhold')),
         PRIMARY KEY (mobileNo, planID),
-        FOREIGN KEY (mobileNo) REFERENCES Customer_Account(mobileNo),
-        FOREIGN KEY (planID) REFERENCES Service_Plan(planID)
+        CONSTRAINT FK_Subscription_mobileNo FOREIGN KEY (mobileNo) REFERENCES Customer_Account(mobileNo),
+        CONSTRAINT FK_Subscription_planID FOREIGN KEY (planID) REFERENCES Service_Plan(planID)
     );
 
     CREATE TABLE Plan_Usage (
@@ -121,8 +121,8 @@ AS
         SMS_sent INT,
         mobileNo CHAR(11),
         planID INT,
-        FOREIGN KEY (mobileNo) REFERENCES Customer_Account(mobileNo),
-        FOREIGN KEY (planID) REFERENCES Service_Plan(planID)
+        CONSTRAINT FK_Plan_Usage_mobileNo FOREIGN KEY (mobileNo) REFERENCES Customer_Account(mobileNo),
+        CONSTRAINT FK_Plan_Usage_planID FOREIGN KEY (planID) REFERENCES Service_Plan(planID)
     );
 
     CREATE TABLE Payment (
@@ -132,7 +132,7 @@ AS
         payment_method VARCHAR(50) CHECK (payment_method in ('cash', 'credit')),
         status VARCHAR(50) CHECK (status in ('successful', 'pending', 'rejected')),
         mobileNo CHAR(11),
-        FOREIGN KEY (mobileNo) REFERENCES Customer_Account(mobileNo)
+        CONSTRAINT FK_Payment_mobileNo FOREIGN KEY (mobileNo) REFERENCES Customer_Account(mobileNo)
     );
 
     CREATE TABLE Process_Payment (
@@ -140,8 +140,8 @@ AS
         planID INT,
         remaining_balance AS dbo.calculate_remaining_balance(planID, paymentID),
         extra_amount AS dbo.calculate_amount(planID, paymentID),
-        FOREIGN KEY (paymentID) REFERENCES Payment(paymentID),
-        FOREIGN KEY (planID) REFERENCES Service_Plan(planID)
+        CONSTRAINT FK_Process_Payment_paymentID FOREIGN KEY (paymentID) REFERENCES Payment(paymentID),
+        CONSTRAINT FK_Process_Payment_planID FOREIGN KEY (planID) REFERENCES Service_Plan(planID)
     );
 
     CREATE TABLE Wallet (
@@ -150,7 +150,7 @@ AS
         currency VARCHAR(50),
         last_modified_date DATE,
         nationalID INT,
-        FOREIGN KEY (nationalID) REFERENCES Customer_profile(nationalID)
+        CONSTRAINT FK_Wallet_nationalID FOREIGN KEY (nationalID) REFERENCES Customer_profile(nationalID)
     );
 
     CREATE TABLE Transfer_money (
@@ -160,8 +160,8 @@ AS
         amount DECIMAL(10, 1),
         transfer_date DATE,
         PRIMARY KEY (walletID1, walletID2, transfer_id),
-        FOREIGN KEY (walletID1) REFERENCES Wallet(walletID),
-        FOREIGN KEY (walletID2) REFERENCES Wallet(walletID)
+        CONSTRAINT FK_Transfer_money_walletID1 FOREIGN KEY (walletID1) REFERENCES Wallet(walletID),
+        CONSTRAINT FK_Transfer_money_walletID2 FOREIGN KEY (walletID2) REFERENCES Wallet(walletID)
     );
 
 
@@ -171,7 +171,7 @@ AS
         validity_date DATE,
         status VARCHAR(50) CHECK (status in ('active', 'expired')),
         mobileNo CHAR(11),
-        FOREIGN KEY (mobileNo) REFERENCES Customer_Account(mobileNo)
+        CONSTRAINT FK_Benefits_mobileNo FOREIGN KEY (mobileNo) REFERENCES Customer_Account(mobileNo)
     );
 
     CREATE TABLE Points_Group (
@@ -180,8 +180,8 @@ AS
         pointsAmount DECIMAL(10, 1),
         PaymentID INT,
         PRIMARY KEY (pointID, benefitID),
-        FOREIGN KEY (benefitID) REFERENCES Benefits(benefitID),
-        FOREIGN KEY (paymentID) REFERENCES Payment(paymentID),
+        CONSTRAINT FK_Points_Group_benefitID FOREIGN KEY (benefitID) REFERENCES Benefits(benefitID),
+        CONSTRAINT FK_Points_Group_paymentID FOREIGN KEY (paymentID) REFERENCES Payment(paymentID),
     )
 
     CREATE TABLE Exclusive_Offer (
@@ -191,7 +191,7 @@ AS
         SMS_offered INT,
         minutes_offered INT,
         PRIMARY KEY (offerID, benefitID),
-        FOREIGN KEY (benefitID) REFERENCES Benefits(benefitID)
+        CONSTRAINT FK_Exclusive_Offer_benefitID FOREIGN KEY (benefitID) REFERENCES Benefits(benefitID)
     )
 
     CREATE TABLE Cashback (
@@ -201,16 +201,16 @@ AS
         amount DECIMAL(10, 1),
         credit_date DATE,
         PRIMARY KEY (CashbackID, benefitID),
-        FOREIGN KEY (benefitID) REFERENCES Benefits(benefitID),
-        FOREIGN KEY (walletID) REFERENCES Wallet(walletID)
+        CONSTRAINT FK_Cashback_benefitID FOREIGN KEY (benefitID) REFERENCES Benefits(benefitID),
+        CONSTRAINT FK_Cashback_walletID FOREIGN KEY (walletID) REFERENCES Wallet(walletID)
     )
 
     CREATE TABLE Plan_Provides_Benefits (
         benefitID INT,
         planID INT,
         PRIMARY KEY (benefitID, planID),
-        FOREIGN KEY (benefitID) REFERENCES Benefits(benefitID),
-        FOREIGN KEY (planID) REFERENCES Service_Plan(planID)
+        CONSTRAINT FK_Plan_Provides_Benefits_benefitID FOREIGN KEY (benefitID) REFERENCES Benefits(benefitID),
+        CONSTRAINT FK_Plan_Provides_Benefits_planID FOREIGN KEY (planID) REFERENCES Service_Plan(planID)
     )
 
     CREATE TABLE Shop (
@@ -225,7 +225,7 @@ AS
         address VARCHAR(50),
         working_hours VARCHAR(50),
         PRIMARY KEY (shopID),
-        FOREIGN KEY (shopID) REFERENCES Shop(shopID)
+        CONSTRAINT FK_Physical_Shop_shopID FOREIGN KEY (shopID) REFERENCES Shop(shopID)
     )
 
     CREATE TABLE E_shop (
@@ -233,7 +233,7 @@ AS
         URL VARCHAR(50),
         rating INT,
         PRIMARY KEY (shopID),
-        FOREIGN KEY (shopID) REFERENCES Shop(shopID)
+        CONSTRAINT FK_E_shop_shopID FOREIGN KEY (shopID) REFERENCES Shop(shopID)
     )
 
     CREATE TABLE Voucher (
@@ -245,8 +245,8 @@ AS
         shopID INT,
         redeem_date DATE,
         PRIMARY KEY (voucherID),
-        FOREIGN KEY (mobileNo) REFERENCES Customer_Account(mobileNo),
-        FOREIGN KEY (shopID) REFERENCES Shop(shopID)
+        CONSTRAINT FK_Voucher_mobileNo FOREIGN KEY (mobileNo) REFERENCES Customer_Account(mobileNo),
+        CONSTRAINT FK_Voucher_shopID FOREIGN KEY (shopID) REFERENCES Shop(shopID)
     )
 
     CREATE TABLE Technical_Support_Ticket (
@@ -256,7 +256,7 @@ AS
         priority_level INT,
         status VARCHAR(50) CHECK (status in ('Open', 'In Progress', 'Resolved')),
         PRIMARY KEY (ticketID, mobileNo),
-        FOREIGN KEY (mobileNo) REFERENCES Customer_Account(mobileNo)
+        CONSTRAINT FK_Technical_Support_Ticket_mobileNo FOREIGN KEY (mobileNo) REFERENCES Customer_Account(mobileNo)
     )
 
 GO
@@ -781,4 +781,55 @@ GO
 DECLARE @tnot INT, @taop INT
 EXECUTE Account_Payment_Points '00000000000', @tnot OUTPUT, @taop OUTPUT
 SELECT @tnot, @taop
+*/
+
+GO
+
+CREATE FUNCTION Wallet_Cashback_Amount
+(@WalletId INT, @planId INT)
+RETURNS INT
+AS
+BEGIN
+DECLARE @AmountOfCashback INT
+SELECT @AmountOfCashback = SUM(cb.amount)
+FROM Cashback cb
+INNER JOIN Plan_Provides_Benefits ppb ON cb.benefitID = ppb.benefitID
+WHERE @WalletId = cb.walletID AND @planId = ppb.planID
+
+RETURN @AmountOfCashback
+END;
+
+GO
+
+GRANT EXECUTE ON Wallet_Cashback_Amount TO admin
+
+GO
+
+/*
+SELECT dbo.Wallet_Cashback_Amount(1, 1)
+*/
+
+GO
+
+CREATE FUNCTION Wallet_Transfer_Amount
+(@Wallet_id INT, @start_date DATE, @end_date DATE)
+RETURNS DECIMAL(10,2)
+AS
+BEGIN
+DECLARE @TransactionAmountAverage DECIMAL(10,2)
+SELECT @TransactionAmountAverage = AVG(tm.amount)
+FROM Wallet w
+INNER JOIN Transfer_money tm ON W.walletID = tm.walletID1
+WHERE @Wallet_id = tm.walletID1 AND tm.transfer_date BETWEEN @start_date AND @end_date
+RETURN @TransactionAmountAverage
+END;
+
+GO
+
+GRANT EXECUTE ON Wallet_Transfer_Amount TO admin
+
+GO
+
+/*
+SELECT dbo.Wallet_Transfer_Amount(1, 1)
 */
