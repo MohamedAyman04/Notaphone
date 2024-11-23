@@ -1222,3 +1222,42 @@ GO
 /*
 EXECUTE Initiate_plan_payment '00000000000', 1, 'cash', 1
 */
+
+GO
+
+CREATE PROCEDURE Payment_wallet_cashback
+    @MobileNo CHAR(11),
+    @payment_id INT,
+    @benefit_id INT
+AS
+    DECLARE @walletID INT;
+    DECLARE @cashbackAmount DECIMAL(10, 2);
+
+    -- Retrieve the walletID associated with the given mobile number
+    SELECT @walletID = walletID
+    FROM Wallet
+    WHERE nationalID IN (
+        SELECT nationalID 
+        FROM Customer_Account
+        WHERE mobileNo = @MobileNo
+    );
+
+    -- Calculate 10% of the payment amount
+    SET @cashbackAmount = (SELECT amount * 0.1 FROM Payment WHERE paymentID = @payment_id);
+
+    -- Insert the cashback record with the calculated amount
+    INSERT INTO Cashback (benefitID, walletID, amount, credit_date)
+    VALUES (@benefit_id, @walletID, @cashbackAmount, CURRENT_TIMESTAMP);
+
+    -- Update the wallet's balance with the cashback amount
+    UPDATE Wallet
+    SET current_balance = current_balance + @cashbackAmount
+    WHERE walletID = @walletID;
+
+GO
+
+GRANT EXECUTE ON Payment_wallet_cashback TO customer
+
+/*
+EXECUTE Payment_wallet_cashback '00000000000', 1, 1
+*/
