@@ -365,6 +365,10 @@ VALUES
 (2, 2, 10, '2000/01/01'),
 (3, 2, 20, '2000/01/01');
 
+INSERT INTO Exclusive_Offer
+VALUES
+(1, 10, 12, 14)
+
 INSERT INTO Shop
 VALUES
 ('za3bola', 'cat'),
@@ -393,25 +397,26 @@ GO
 
 CREATE PROCEDURE dropAllTables
 AS
-DROP TABLE Customer_profile;
-DROP TABLE Customer_Account;
-DROP TABLE Service_Plan;
-DROP TABLE Subscription;
-DROP TABLE Plan_Usage;
-DROP TABLE Payment;
-DROP TABLE Process_Payment;
-DROP TABLE Wallet;
-DROP TABLE Transfer_money;
-DROP TABLE Benefits;
+-- Drop tables with foreign keys referencing other tables first
 DROP TABLE Points_Group;
 DROP TABLE Exclusive_Offer;
 DROP TABLE Cashback;
 DROP TABLE Plan_Provides_Benefits;
-DROP TABLE Shop;
 DROP TABLE Physical_Shop;
 DROP TABLE E_shop;
 DROP TABLE Voucher;
 DROP TABLE Technical_Support_Ticket;
+DROP TABLE Transfer_money;
+DROP TABLE Subscription;
+DROP TABLE Plan_Usage;
+DROP TABLE Process_Payment;
+DROP TABLE Payment;
+DROP TABLE Benefits;
+DROP TABLE Wallet;
+DROP TABLE Customer_Account;
+DROP TABLE Service_Plan;
+DROP TABLE Shop;
+DROP TABLE Customer_profile;
 
 GO
 
@@ -459,8 +464,6 @@ DROP FUNCTION Cashback_Wallet_Customer
 DROP FUNCTION Remaining_plan_amount
 DROP FUNCTION Extra_plan_amount
 DROP FUNCTION Subscribed_plans_5_Months
-DROP FUNCTION calculate_remaining_balance
-DROP FUNCTION calculate_amount
 
 GO
 
@@ -470,6 +473,72 @@ GO
 
 CREATE PROC clearAllTables
 AS
+-- Drop foreign key constraints
+ALTER TABLE Customer_Account
+DROP CONSTRAINT FK_Customer_Account_nationalID;
+
+ALTER TABLE Subscription
+DROP CONSTRAINT FK_Subscription_mobileNo;
+ALTER TABLE Subscription
+DROP CONSTRAINT FK_Subscription_planID;
+
+ALTER TABLE Plan_Usage
+DROP CONSTRAINT FK_Plan_Usage_mobileNo;
+ALTER TABLE Plan_Usage
+DROP CONSTRAINT FK_Plan_Usage_planID;
+
+ALTER TABLE Payment
+DROP CONSTRAINT FK_Payment_mobileNo;
+
+ALTER TABLE Process_Payment
+DROP CONSTRAINT FK_Process_Payment_paymentID;
+ALTER TABLE Process_Payment
+DROP CONSTRAINT FK_Process_Payment_planID;
+
+ALTER TABLE Wallet
+DROP CONSTRAINT FK_Wallet_nationalID;
+
+ALTER TABLE Transfer_money
+DROP CONSTRAINT FK_Transfer_money_walletID1;
+ALTER TABLE Transfer_money
+DROP CONSTRAINT FK_Transfer_money_walletID2;
+
+ALTER TABLE Benefits
+DROP CONSTRAINT FK_Benefits_mobileNo;
+
+ALTER TABLE Points_Group
+DROP CONSTRAINT FK_Points_Group_benefitID;
+ALTER TABLE Points_Group
+DROP CONSTRAINT FK_Points_Group_paymentID;
+
+ALTER TABLE Exclusive_Offer
+DROP CONSTRAINT FK_Exclusive_Offer_benefitID;
+
+ALTER TABLE Cashback
+DROP CONSTRAINT FK_Cashback_benefitID;
+ALTER TABLE Cashback
+DROP CONSTRAINT FK_Cashback_walletID;
+
+ALTER TABLE Plan_Provides_Benefits
+DROP CONSTRAINT FK_Plan_Provides_Benefits_benefitID;
+ALTER TABLE Plan_Provides_Benefits
+DROP CONSTRAINT FK_Plan_Provides_Benefits_planID;
+
+ALTER TABLE Physical_Shop
+DROP CONSTRAINT FK_Physical_Shop_shopID;
+
+ALTER TABLE E_shop
+DROP CONSTRAINT FK_E_shop_shopID;
+
+ALTER TABLE Voucher
+DROP CONSTRAINT FK_Voucher_mobileNo;
+ALTER TABLE Voucher
+DROP CONSTRAINT FK_Voucher_shopID;
+
+ALTER TABLE Technical_Support_Ticket
+DROP CONSTRAINT FK_Technical_Support_Ticket_mobileNo;
+
+-- Truncate tables
 TRUNCATE TABLE Customer_profile;
 TRUNCATE TABLE Customer_Account;
 TRUNCATE TABLE Service_Plan;
@@ -489,6 +558,71 @@ TRUNCATE TABLE Physical_Shop;
 TRUNCATE TABLE E_shop;
 TRUNCATE TABLE Voucher;
 TRUNCATE TABLE Technical_Support_Ticket;
+
+-- Re-add foreign key constraints
+ALTER TABLE Customer_Account
+ADD CONSTRAINT FK_Customer_Account_nationalID FOREIGN KEY (nationalID) REFERENCES Customer_profile(nationalID);
+
+ALTER TABLE Subscription
+ADD CONSTRAINT FK_Subscription_mobileNo FOREIGN KEY (mobileNo) REFERENCES Customer_Account(mobileNo);
+ALTER TABLE Subscription
+ADD CONSTRAINT FK_Subscription_planID FOREIGN KEY (planID) REFERENCES Service_Plan(planID);
+
+ALTER TABLE Plan_Usage
+ADD CONSTRAINT FK_Plan_Usage_mobileNo FOREIGN KEY (mobileNo) REFERENCES Customer_Account(mobileNo);
+ALTER TABLE Plan_Usage
+ADD CONSTRAINT FK_Plan_Usage_planID FOREIGN KEY (planID) REFERENCES Service_Plan(planID);
+
+ALTER TABLE Payment
+ADD CONSTRAINT FK_Payment_mobileNo FOREIGN KEY (mobileNo) REFERENCES Customer_Account(mobileNo);
+
+ALTER TABLE Process_Payment
+ADD CONSTRAINT FK_Process_Payment_paymentID FOREIGN KEY (paymentID) REFERENCES Payment(paymentID);
+ALTER TABLE Process_Payment
+ADD CONSTRAINT FK_Process_Payment_planID FOREIGN KEY (planID) REFERENCES Service_Plan(planID);
+
+ALTER TABLE Wallet
+ADD CONSTRAINT FK_Wallet_nationalID FOREIGN KEY (nationalID) REFERENCES Customer_profile(nationalID);
+
+ALTER TABLE Transfer_money
+ADD CONSTRAINT FK_Transfer_money_walletID1 FOREIGN KEY (walletID1) REFERENCES Wallet(walletID);
+ALTER TABLE Transfer_money
+ADD CONSTRAINT FK_Transfer_money_walletID2 FOREIGN KEY (walletID2) REFERENCES Wallet(walletID);
+
+ALTER TABLE Benefits
+ADD CONSTRAINT FK_Benefits_mobileNo FOREIGN KEY (mobileNo) REFERENCES Customer_Account(mobileNo);
+
+ALTER TABLE Points_Group
+ADD CONSTRAINT FK_Points_Group_benefitID FOREIGN KEY (benefitID) REFERENCES Benefits(benefitID);
+ALTER TABLE Points_Group
+ADD CONSTRAINT FK_Points_Group_paymentID FOREIGN KEY (paymentID) REFERENCES Payment(paymentID);
+
+ALTER TABLE Exclusive_Offer
+ADD CONSTRAINT FK_Exclusive_Offer_benefitID FOREIGN KEY (benefitID) REFERENCES Benefits(benefitID);
+
+ALTER TABLE Cashback
+ADD CONSTRAINT FK_Cashback_benefitID FOREIGN KEY (benefitID) REFERENCES Benefits(benefitID);
+ALTER TABLE Cashback
+ADD CONSTRAINT FK_Cashback_walletID FOREIGN KEY (walletID) REFERENCES Wallet(walletID);
+
+ALTER TABLE Plan_Provides_Benefits
+ADD CONSTRAINT FK_Plan_Provides_Benefits_benefitID FOREIGN KEY (benefitID) REFERENCES Benefits(benefitID);
+ALTER TABLE Plan_Provides_Benefits
+ADD CONSTRAINT FK_Plan_Provides_Benefits_planID FOREIGN KEY (planID) REFERENCES Service_Plan(planID);
+
+ALTER TABLE Physical_Shop
+ADD CONSTRAINT FK_Physical_Shop_shopID FOREIGN KEY (shopID) REFERENCES Shop(shopID);
+
+ALTER TABLE E_shop
+ADD CONSTRAINT FK_E_shop_shopID FOREIGN KEY (shopID) REFERENCES Shop(shopID);
+
+ALTER TABLE Voucher
+ADD CONSTRAINT FK_Voucher_mobileNo FOREIGN KEY (mobileNo) REFERENCES Customer_Account(mobileNo);
+ALTER TABLE Voucher
+ADD CONSTRAINT FK_Voucher_shopID FOREIGN KEY (shopID) REFERENCES Shop(shopID);
+
+ALTER TABLE Technical_Support_Ticket
+ADD CONSTRAINT FK_Technical_Support_Ticket_mobileNo FOREIGN KEY (mobileNo) REFERENCES Customer_Account(mobileNo);
 
 GO
 
@@ -541,12 +675,25 @@ FROM allBenefits
 
 GO
 
-/*
 CREATE VIEW AccountPayments AS
-SELECT *
-FROM Customer_Account c
-INNER JOIN Payment p ON c.mobileNo = p.mobileNo;
-*/
+SELECT 
+    c.mobileNo,
+    c.pass,
+    c.balance,
+    c.account_type,
+    c.start_date,
+    c.status AS account_status,  -- Alias for Customer_Account status
+    c.point,
+    c.nationalID,
+    p.paymentID,
+    p.amount,
+    p.date_of_payment,
+    p.payment_method,
+    p.status AS payment_status  -- Alias for Payment status
+FROM 
+    Customer_Account c
+INNER JOIN 
+    Payment p ON c.mobileNo = p.mobileNo;
 
 GO
 
@@ -711,13 +858,58 @@ FROM dbo.Account_Usage_Plan('00000000000', '2013/01/01')
 GO
 
 CREATE PROCEDURE Benefits_Account
-@MobileNo CHAR(11), @plan_ID INT
+    @MobileNo CHAR(11), 
+    @plan_ID INT
 AS
-    DELETE B
-    FROM Benefits B, Plan_Provides_Benefits PPB 
-    WHERE B.benefitID = PPB.benefitID
-        AND B.mobileNo = @MobileNo
-        AND PPB.planID = @plan_ID
+    -- Delete from tables referencing Benefits
+    DELETE FROM Points_Group 
+    WHERE benefitID IN (
+        SELECT B.benefitID
+        FROM Benefits B
+        INNER JOIN Plan_Provides_Benefits PPB ON B.benefitID = PPB.benefitID
+        WHERE B.mobileNo = @MobileNo AND PPB.planID = @plan_ID
+    );
+
+    DELETE FROM Exclusive_Offer 
+    WHERE benefitID IN (
+        SELECT B.benefitID
+        FROM Benefits B
+        INNER JOIN Plan_Provides_Benefits PPB ON B.benefitID = PPB.benefitID
+        WHERE B.mobileNo = @MobileNo AND PPB.planID = @plan_ID
+    );
+
+    DELETE FROM Cashback 
+    WHERE benefitID IN (
+        SELECT B.benefitID
+        FROM Benefits B
+        INNER JOIN Plan_Provides_Benefits PPB ON B.benefitID = PPB.benefitID
+        WHERE B.mobileNo = @MobileNo AND PPB.planID = @plan_ID
+    );
+
+    DECLARE @t TABLE(bid INT)
+
+    INSERT INTO @t
+    SELECT B.benefitID
+    FROM Plan_Provides_Benefits PPB
+    INNER JOIN Benefits B ON (PPB.benefitID = B.benefitID)
+    WHERE PPB.planID = @plan_ID
+
+    -- Delete from Plan_Provides_Benefits to remove the plan-benefit relationship
+    DELETE FROM Plan_Provides_Benefits
+    WHERE benefitID IN (
+        SELECT B.benefitID
+        FROM Benefits B
+        INNER JOIN Plan_Provides_Benefits PPB ON B.benefitID = PPB.benefitID
+        WHERE B.mobileNo = @MobileNo AND PPB.planID = @plan_ID
+    );
+
+    -- Delete from Benefits
+    DELETE FROM Benefits 
+    WHERE benefitID IN (
+        SELECT B.benefitID
+        FROM Benefits B
+        WHERE B.mobileNo = @MobileNo AND benefitID IN (SELECT * FROM @t)
+    );
 
 GO
 
@@ -731,14 +923,22 @@ EXECUTE Benefits_Account '00000000000', 1
 
 GO
 
-/*
 CREATE FUNCTION Account_SMS_Offers (@MobileNo CHAR(11))
 RETURNS TABLE
 AS
 RETURN (
-    SELECT *
+    SELECT 
+        B.benefitID,
+        B.description,
+        B.validity_date,
+        B.status,
+        B.mobileNo,
+        EO.offerID,
+        EO.internet_offered,
+        EO.SMS_offered,
+        EO.minutes_offered,
     FROM Exclusive_Offer EO
-    JOIN Benefits B ON (EO.benefitID = B.benefitID)
+    JOIN Benefits B ON EO.benefitID = B.benefitID
     WHERE B.mobileNo = @MobileNo
         AND EO.SMS_offered > 0
 )
@@ -746,7 +946,6 @@ RETURN (
 GO
 
 GRANT SELECT ON Account_SMS_Offers TO admin
-*/
 
 /*
 SELECT *
