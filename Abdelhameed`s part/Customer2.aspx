@@ -6,24 +6,43 @@
 <head runat="server">
     <title></title>
 </head>
-<body>
+<body style="background-color: #D4D9D5;">
     <form id="form1" runat="server">
-        <div>
+        <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 220px; gap: 40px;">
+        <br />
+            <div style="display: flex; gap: 20px;">
+                <asp:Button ID="btnActiveBenefits" runat="server" Text="Active Benefits" CssClass="custom-button" OnClick="ActiveBenefitsClick" />
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <asp:Button ID="btnNotResolvedTickets" runat="server" Text="Not Resolved Tickets" CssClass="custom-button" OnClick="NotResolvedTicketsClick" />
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <asp:Button ID="btnHighestVoucher" runat="server" Text="Highest Voucher" CssClass="custom-button" OnClick="HighestVoucherClick" />
+                <br />
+                <br />
+            </div>
+
+            <div style="display: flex; gap: 20px;">
+                <asp:Button ID="btnRemainingAmount" runat="server" Text="Remaining Amount" CssClass="custom-button" OnClick="RemainingAmountClick" />
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <asp:Button ID="btnExtraAmount" runat="server" Text="Extra Amount" CssClass="custom-button" OnClick="ExtraAmountClick" />
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <asp:Button ID="btnTopSuccessfulPayaments" runat="server" Text="Top Successful Payments" CssClass="custom-button" OnClick="TopSuccessfulPaymentsClick" />
+            </div>
         </div>
-        <asp:Button ID="allBenefits" runat="server" OnClick="ActiveBenefitsView" Text="Active Benefits" />
-        <p>
-            <asp:Button ID="NotResTickets" runat="server" OnClick="TicketAccountCustomerProc" Text="Not Resolved Tickets" />
-        </p>
-        <asp:Button ID="Button1" runat="server" Text="Highest Voucher" OnClick="Button1_Click" />
-        <p>
-            <asp:Button ID="Button2" runat="server" Text="Remaining amount" OnClick="Button2_Click" />
-        </p>
-        <p>
-            <asp:Button ID="Button3" runat="server" Text="Extra amount" OnClick="Button3_Click" />
-        </p>
-        <p>
-            <asp:Button ID="Button4" runat="server" Text="Top Successful Payments" OnClick="Button4_Click" />
-        </p>
+        <style>
+            .custom-button {
+                background-color: transparent;
+                border: 2px solid #007bff;
+                color: #007bff;
+                padding: 10px 20px;
+                border-radius: 5px;
+                font-size: 16px;
+                cursor: pointer;
+            }
+            .custom-button:hover {
+                background-color: #007bff;
+                color: white;
+            }
+        </style>
     </form>
 </body>
 </html>

@@ -24,57 +24,57 @@ namespace Abdelhameed_s_part
         protected global::System.Web.UI.HtmlControls.HtmlForm form1;
 
         /// <summary>
-        /// allBenefits control.
+        /// btnActiveBenefits control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button allBenefits;
+        protected global::System.Web.UI.WebControls.Button btnActiveBenefits;
 
         /// <summary>
-        /// NotResTickets control.
+        /// btnNotResolvedTickets control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button NotResTickets;
+        protected global::System.Web.UI.WebControls.Button btnNotResolvedTickets;
 
         /// <summary>
-        /// Button1 control.
+        /// btnHighestVoucher control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button Button1;
+        protected global::System.Web.UI.WebControls.Button btnHighestVoucher;
 
         /// <summary>
-        /// Button2 control.
+        /// btnRemainingAmount control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button Button2;
+        protected global::System.Web.UI.WebControls.Button btnRemainingAmount;
 
         /// <summary>
-        /// Button3 control.
+        /// btnExtraAmount control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button Button3;
+        protected global::System.Web.UI.WebControls.Button btnExtraAmount;
 
         /// <summary>
-        /// Button4 control.
+        /// btnTopSuccessfulPayaments control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button Button4;
+        protected global::System.Web.UI.WebControls.Button btnTopSuccessfulPayaments;
     }
 }

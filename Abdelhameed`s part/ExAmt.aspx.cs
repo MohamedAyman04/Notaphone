@@ -31,7 +31,7 @@ namespace Abdelhameed_s_part
 
         protected void Button1_Click1(object sender, EventArgs e)
         {
-            Label1.Text = GetSingleValue().ToString();
+            Label2.Text = GetSingleValue().ToString();
         }
 
         protected void Button2_Click(object sender, EventArgs e)

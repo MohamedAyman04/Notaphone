@@ -16,33 +16,33 @@ namespace Abdelhameed_s_part
             
         }
 
-        protected void ActiveBenefitsView(object sender, EventArgs e)
+        protected void ActiveBenefitsClick(object sender, EventArgs e)
         {
             Response.Redirect("AcBs.aspx");
 
         }
 
-        protected void TicketAccountCustomerProc(object sender, EventArgs e)
+        protected void NotResolvedTicketsClick(object sender, EventArgs e)
         {
             Response.Redirect("NRT.aspx");
         }
 
-        protected void Button1_Click(object sender, EventArgs e)
+        protected void HighestVoucherClick(object sender, EventArgs e)
         {
             Response.Redirect("HighestVoucher.aspx");
         }
 
-        protected void Button2_Click(object sender, EventArgs e)
+        protected void RemainingAmountClick(object sender, EventArgs e)
         {
             Response.Redirect("RemAmt.aspx");
         }
 
-        protected void Button3_Click(object sender, EventArgs e)
+        protected void ExtraAmountClick(object sender, EventArgs e)
         {
             Response.Redirect("ExAmt.aspx");
         }
 
-        protected void Button4_Click(object sender, EventArgs e)
+        protected void TopSuccessfulPaymentsClick(object sender, EventArgs e)
         {
             Response.Redirect("TSP.aspx");
         }
