@@ -36,5 +36,6 @@
         using var context = DbFactory.CreateDbContext();
         accountPaymentPointsResults = await context.Database.SqlQuery<AccountPaymentPointsResult>($"execute Account_Payment_Points {mobileNo}").ToListAsync();
         Console.WriteLine("done");
+        StateHasChanged();
     }
 }

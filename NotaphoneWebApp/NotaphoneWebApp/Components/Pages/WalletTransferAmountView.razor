@@ -7,9 +7,9 @@
 <h1>Wallet Transfer</h1>
 
 <input type="number" name="walletID" @bind="walletID">
-<input type="date" name="start_date" @bind="startDate" @bind:format="yyyy-mm-dd"/>
+<input type="date" name="start_date" @bind="startDate" @bind:format="yyyy-mm-dd" />
 <input type="date" name="end_date" @bind="endDate" @bind:format="yyyy-mm-dd" />
-<button @onclick=SubmitInput>Submit</button>
+<button @onclick="SubmitInput">Submit</button>
 
 <table class="table">
     <thead>
@@ -17,14 +17,14 @@
             <th>wallet</th>
         </tr>
     </thead>
-    <tbody>
-        @foreach (var wallet in wallterTransferAmount)
-        {
-            <tr>
-                <td>@wallet</td>
-            </tr>
-        }
-    </tbody>
+	<tbody>
+		@foreach (var wallet in wallterTransferAmount)
+		{
+			<tr>
+				<td>@wallet</td>
+			</tr>
+		}
+	</tbody>
 </table>
 
 @code {
@@ -33,10 +33,12 @@
     public DateTime startDate;
     public DateTime endDate;
 
-    public async void SubmitInput()
+    private async Task SubmitInput()
     {
         using var context = DbFactory.CreateDbContext();
-        var wallterTransferAmount = await context.Database.SqlQuery<int>($"SELECT dbo.Wallet_Transfer_Amount({walletID}, {startDate}, {endDate})").ToListAsync();
-        Console.WriteLine(wallterTransferAmount[0]);
+        wallterTransferAmount = await context.Database
+            .SqlQuery<int>($"SELECT dbo.Wallet_Transfer_Amount({walletID}, {startDate}, {endDate})")
+            .ToListAsync();
+        StateHasChanged();
     }
 }

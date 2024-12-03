@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("NotaphoneWebApp")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+405bf237fae387547ffdc64428d2e3e6f10ac83b")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+b68818148cbdf26e7961fcfe916f3a766800ce29")]
 [assembly: System.Reflection.AssemblyProductAttribute("NotaphoneWebApp")]
 [assembly: System.Reflection.AssemblyTitleAttribute("NotaphoneWebApp")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
