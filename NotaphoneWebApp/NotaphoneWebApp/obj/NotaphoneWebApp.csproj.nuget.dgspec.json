@@ -1,20 +1,24 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Amr\\Desktop\\GUC\\Sem5\\CSEN501\\Project\\Notaphone\\NotaphoneWebApp\\NotaphoneWebApp\\NotaphoneWebApp.csproj": {}
+    "F:\\Neutral Files\\GUC\\Semester 5\\Data Bases\\Project\\mileStone2\\Notaphone\\NotaphoneWebApp\\NotaphoneWebApp\\NotaphoneWebApp.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Amr\\Desktop\\GUC\\Sem5\\CSEN501\\Project\\Notaphone\\NotaphoneWebApp\\NotaphoneWebApp\\NotaphoneWebApp.csproj": {
+    "F:\\Neutral Files\\GUC\\Semester 5\\Data Bases\\Project\\mileStone2\\Notaphone\\NotaphoneWebApp\\NotaphoneWebApp\\NotaphoneWebApp.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Amr\\Desktop\\GUC\\Sem5\\CSEN501\\Project\\Notaphone\\NotaphoneWebApp\\NotaphoneWebApp\\NotaphoneWebApp.csproj",
+        "projectUniqueName": "F:\\Neutral Files\\GUC\\Semester 5\\Data Bases\\Project\\mileStone2\\Notaphone\\NotaphoneWebApp\\NotaphoneWebApp\\NotaphoneWebApp.csproj",
         "projectName": "NotaphoneWebApp",
-        "projectPath": "C:\\Users\\Amr\\Desktop\\GUC\\Sem5\\CSEN501\\Project\\Notaphone\\NotaphoneWebApp\\NotaphoneWebApp\\NotaphoneWebApp.csproj",
-        "packagesPath": "C:\\Users\\Amr\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Amr\\Desktop\\GUC\\Sem5\\CSEN501\\Project\\Notaphone\\NotaphoneWebApp\\NotaphoneWebApp\\obj\\",
+        "projectPath": "F:\\Neutral Files\\GUC\\Semester 5\\Data Bases\\Project\\mileStone2\\Notaphone\\NotaphoneWebApp\\NotaphoneWebApp\\NotaphoneWebApp.csproj",
+        "packagesPath": "C:\\Users\\g.version\\.nuget\\packages\\",
+        "outputPath": "F:\\Neutral Files\\GUC\\Semester 5\\Data Bases\\Project\\mileStone2\\Notaphone\\NotaphoneWebApp\\NotaphoneWebApp\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
         "configFilePaths": [
-          "C:\\Users\\Amr\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\g.version\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -22,7 +26,6 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -39,8 +42,9 @@
         "restoreAuditProperties": {
           "enableAudit": "true",
           "auditLevel": "low",
-          "auditMode": "direct"
-        }
+          "auditMode": "all"
+        },
+        "SdkAnalysisLevel": "9.0.100"
       },
       "frameworks": {
         "net8.0": {
@@ -50,17 +54,17 @@
               "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
               "suppressParent": "All",
               "target": "Package",
-              "version": "[7.0.9, )"
+              "version": "[9.0.0, )"
             },
             "Microsoft.EntityFrameworkCore.SqlServer": {
               "target": "Package",
-              "version": "[7.0.9, )"
+              "version": "[9.0.0, )"
             },
             "Microsoft.EntityFrameworkCore.Tools": {
               "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
               "suppressParent": "All",
               "target": "Package",
-              "version": "[7.0.9, )"
+              "version": "[9.0.0, )"
             }
           },
           "imports": [
@@ -82,7 +86,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.404/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.100/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

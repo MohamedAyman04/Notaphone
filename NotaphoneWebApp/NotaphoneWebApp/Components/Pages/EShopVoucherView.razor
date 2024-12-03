@@ -1,0 +1,61 @@
+﻿@page "/EShopVoucherView"
+@rendermode InteractiveServer
+@inject IDbContextFactory<ApplicationDbContext> DbFactory;
+
+<PageTitle>E-Shop Voucher Redemtion View</PageTitle>
+
+<h1>E-shop Vouchers</h1>
+
+@if (isLoading)
+{
+    <p>Loading data...</p>
+}
+else if (eShopVouchers == null || eShopVouchers.Count == 0)
+{
+    <p>No E-shop Vouchers found</p>
+}
+<table class="table">
+    <thead>
+        <tr>
+            <th>Shop ID</th>
+            <th>URL</th>
+            <th>Rating</th>
+            <th>Voucher ID</th>
+            <th>Value</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var shop in eShopVouchers)
+        {
+            <tr>
+                <td>@shop.ShopId</td>
+                <td>@shop.Url</td>
+                <td>@shop.Rating</td>
+                <td>@shop.VoucherId</td>
+                <td>@shop.Value</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@code {
+    private List<EShopVoucher> eShopVouchers = new();
+    private bool isLoading = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            using var context = DbFactory.CreateDbContext();
+            eShopVouchers = await context.EShopVouchers.ToListAsync();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error loading customer wallets: {ex.Message}");
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+}
