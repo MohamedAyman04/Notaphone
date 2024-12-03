@@ -1,0 +1,63 @@
+﻿@page "/AccountPaymentView"
+@rendermode InteractiveServer
+@inject IDbContextFactory<ApplicationDbContext> DbFactory;
+
+<PageTitle>Account Payments</PageTitle>
+
+<h1>Account Payments</h1>
+
+@if (isLoading)
+{
+    <p>Loading data...</p>
+}
+else if (accountPayments == null || accountPayments.Count == 0)
+{
+    <p>No Payments Available</p>
+}
+<table class="table">
+    <thead>
+        <tr>
+            <th>Payment ID</th>
+            <th>Amount</th>
+            <th>Date Of Payment</th>
+            <th>Payment Method</th>
+            <th>Status</th>
+            <th>Mobile Number</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var payment in accountPayments)
+        {
+            <tr>
+                <td>@payment.PaymentId</td>
+                <td>@payment.Amount</td>
+                <td>@payment.DateOfPayment</td>
+                <td>@payment.PaymentMethod</td>
+                <td>@payment.Status</td>
+                <td>@payment.MobileNo</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@code {
+    private List<AccountPayment> accountPayments = new();
+    private bool isLoading = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            using var context = DbFactory.CreateDbContext();
+            accountPayments = await context.AccountPayments.ToListAsync();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error loading customer wallets: {ex.Message}");
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+}

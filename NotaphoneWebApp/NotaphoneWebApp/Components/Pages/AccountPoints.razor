@@ -1,0 +1,40 @@
+﻿@page "/AccountPoints"
+@rendermode InteractiveServer
+@inject IDbContextFactory<ApplicationDbContext> DbFactory;
+
+<PageTitle>Account Payments Points</PageTitle>
+
+<h1>Account Payments Points</h1>
+
+<input type="text" name="mobileNumber" @bind="mobileNo"/>
+<button @onclick=SubmitInput>Submit</button>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Number Of Payment IDs</th>
+            <th>Total Points</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var account in accountPaymentPointsResults)
+        {
+            <tr>
+                <td>@account.NumberOfPaymentID</td>
+                <td>@account.TotalPoints</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@code {
+    private List<AccountPaymentPointsResult> accountPaymentPointsResults = new();
+    private bool isLoading = true;
+    public String mobileNo = "";
+
+    public async void SubmitInput() {
+        using var context = DbFactory.CreateDbContext();
+        accountPaymentPointsResults = await context.Database.SqlQuery<AccountPaymentPointsResult>($"execute Account_Payment_Points {mobileNo}").ToListAsync();
+        Console.WriteLine("done");
+    }
+}

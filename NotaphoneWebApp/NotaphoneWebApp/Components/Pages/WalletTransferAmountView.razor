@@ -1,0 +1,42 @@
+﻿@page "/WalletTransferAmountView"
+@rendermode InteractiveServer
+@inject IDbContextFactory<ApplicationDbContext> DbFactory;
+
+<PageTitle>Wallet Transfer</PageTitle>
+
+<h1>Wallet Transfer</h1>
+
+<input type="number" name="walletID" @bind="walletID">
+<input type="date" name="start_date" @bind="startDate" @bind:format="yyyy-mm-dd"/>
+<input type="date" name="end_date" @bind="endDate" @bind:format="yyyy-mm-dd" />
+<button @onclick=SubmitInput>Submit</button>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>wallet</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var wallet in wallterTransferAmount)
+        {
+            <tr>
+                <td>@wallet</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@code {
+    private List<int> wallterTransferAmount = new();
+    public int walletID;
+    public DateTime startDate;
+    public DateTime endDate;
+
+    public async void SubmitInput()
+    {
+        using var context = DbFactory.CreateDbContext();
+        var wallterTransferAmount = await context.Database.SqlQuery<int>($"SELECT dbo.Wallet_Transfer_Amount({walletID}, {startDate}, {endDate})").ToListAsync();
+        Console.WriteLine(wallterTransferAmount[0]);
+    }
+}
