@@ -57,7 +57,6 @@ namespace NotaphoneWebApp.Models
 			set => _nationalId = value ?? 0;
 		}
 
-
 		private int _planId { get; set; }
 		public int? PlanId
 		{

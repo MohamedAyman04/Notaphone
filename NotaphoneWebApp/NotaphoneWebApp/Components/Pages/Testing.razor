@@ -5,15 +5,59 @@
 
 <h3>@text</h3>
 
+<input type="number" @bind="input1"/>
+<input @bind="input2"/>
+<input type="date" @bind="input3" @bind:format="yyyy-mm-dd"/>
+<button @onclick="Submit">Submit</button>
+
 @code {
 	string text = "";
+	int input1;
+	string input2;
+	DateTime input3;
 
-	protected override async Task OnInitializedAsync()
+	protected override async Task OnAfterRenderAsync(bool firstRender)
+	{
+		if (!firstRender) return;
+
+		using var context = DbFactory.CreateDbContext();
+
+		// var list = await context.Database.SqlQuery<AccountPlanResult>($"exec Account_Plan").ToListAsync();
+		var list = await context.Database
+			.SqlQuery<AccountPlanDateResult>($"Select * from dbo.Account_Plan_Date({input3}, {input1})")
+			.ToListAsync();
+
+		list.ForEach(Console.WriteLine);
+	}
+
+	async void Submit()
 	{
 		using var context = DbFactory.CreateDbContext();
 
-		var list = await context.Database.SqlQuery<AccountPlanResult>($"exec Account_Plan").ToListAsync();
+		// Procedure - no input - returns table
+		// var list = await context.Database
+		// 	.SqlQuery<AccountPlanResult>($"exec Account_Plan").ToListAsync();
 
-		list.ForEach(Console.WriteLine);
+		// Function - with input - returns table
+		// var list = await context.Database
+		// 	.SqlQuery<AccountPlanDateResult>($"Select * from dbo.Account_Plan_Date({input3}, {input1})")
+		// 	.ToListAsync();
+
+		// Function - with input - returns table
+		// var list = await context.Database
+		// 	.SqlQuery<AccountUsagePlanResult>(
+		// 		$"Select * from dbo.Account_Usage_Plan({input2}, {input3})"
+		// 	).ToListAsync();
+
+		// Procedure - with input - returns nothing
+		var rowsAffected = await context.Database.
+			ExecuteSqlAsync(
+				$"exec Benefits_Account {input2}, {input1}"
+			);
+
+		// list.ForEach(Console.WriteLine);
+		Console.WriteLine(rowsAffected);
+
+		StateHasChanged();
 	}
 }
