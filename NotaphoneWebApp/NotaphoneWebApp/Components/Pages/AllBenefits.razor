@@ -1,0 +1,48 @@
+﻿@page "/AllBenefits"
+@rendermode InteractiveServer
+@inject IDbContextFactory<ApplicationDbContext> DbFactory;
+
+<PageTitle>All Active Benefits Details</PageTitle>
+
+<h1>All Active Benefits Details</h1>
+
+@if (Benefits == null || Benefits.Count == 0)
+{
+    <p>No Active Benefits are available</p>
+}
+
+<div class="table-container">
+    <table class="styled-table">
+        <thead>
+            <tr>
+                <th>Benefit ID</th>
+                <th>Description</th>
+                <th>ValidityDate</th>
+                <th>Status</th>
+                <th>MobileNo</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var benefit in Benefits)
+            {
+                <tr>
+                    <td>@benefit.BenefitId</td>
+                    <td>@benefit.Description</td>
+                    <td>@benefit.ValidityDate</td>
+                    <td>@benefit.Status</td>
+                    <td>@benefit.MobileNo</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@code {
+    private List<AllBenefit> Benefits = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        using var context = DbFactory.CreateDbContext();
+        Benefits = await context.AllBenefits.ToListAsync();
+    }
+}

@@ -1,0 +1,44 @@
+﻿@page "/HighestVoucher"
+@rendermode InteractiveServer
+@inject IDbContextFactory<ApplicationDbContext> DbFactory;
+
+<PageTitle>Highest Voucher</PageTitle>
+
+<h1>Highest Voucher</h1>
+
+<div class="table-container">
+
+    <div class="form-style">
+        <input type="text" placeholder="Mobile Number" name="mobileNumber" @bind="mobileNo" />
+        <button @onclick=SubmitInput>Submit</button>
+    </div>
+
+    <table class="styled-table">
+        <thead>
+            <tr>
+                <th>Voucher ID</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var voucher in vouchers)
+            {
+                <tr>
+                    <td>@voucher</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@code {
+    private List<int> vouchers = new();
+    public String mobileNo = "";
+
+    public async void SubmitInput()
+    {
+        using var context = DbFactory.CreateDbContext();
+        vouchers = await context.Database.SqlQuery<int>($"execute Account_Highest_Voucher {mobileNo}").ToListAsync();
+        Console.WriteLine("done");
+        StateHasChanged();
+    }
+}

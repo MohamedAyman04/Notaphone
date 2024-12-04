@@ -1,0 +1,61 @@
+﻿@page "/TopTenPayments"
+@rendermode InteractiveServer
+@inject IDbContextFactory<ApplicationDbContext> DbFactory;
+
+<PageTitle>Top Ten Payments</PageTitle>
+
+<h1>Top 10 Successful Payments</h1>
+
+
+<div class="table-container">
+    <div class="form-style">
+        <input type="text" placeholder="Mobile Number" name="mobileNumber" @bind="mobileNo" />
+        <button @onclick="SubmitInput">Submit</button>
+    </div>
+
+    <table class="styled-table">
+        <thead>
+            <tr>
+                <th>Payment ID</th>
+                <th>Amount</th>
+                <th>Date Of Payment</th>
+                <th>Payment Method</th>
+                <th>Status</th>
+                <th>MobileNo</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var payment in Payments)
+            {
+                <tr>
+                    <td>@payment.PaymentId</td>
+                    <td>@payment.Amount</td>
+                    <td>@payment.DateOfPayment</td>
+                    <td>@payment.PaymentMethod</td>
+                    <td>@payment.Status</td>
+                    <td>@payment.MobileNo</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@code {
+    private List<Payment> Payments = new();
+    public string mobileNo = "";
+
+    private async Task SubmitInput()
+    {
+        using var context = DbFactory.CreateDbContext();
+
+        var list = await context.Database
+        .SqlQuery<Payment>
+        (
+            $"exec Top_Successful_Payments {mobileNo}"
+        )
+        .ToListAsync();
+
+
+    StateHasChanged();
+    }
+}

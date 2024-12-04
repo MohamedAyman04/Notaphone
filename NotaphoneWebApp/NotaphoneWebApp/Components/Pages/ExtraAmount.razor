@@ -1,0 +1,54 @@
+﻿@page "/ExtraAmount"
+@rendermode InteractiveServer
+@inject IDbContextFactory<ApplicationDbContext> DbFactory;
+
+<PageTitle>Extra Amount</PageTitle>
+
+<h1>Extra Amount</h1>
+
+<div class="table-container">
+    <div class="form-style">
+        <input type="text" placeholder="Mobile Number" name="mobileNumber" @bind="mobileNo" />
+        <input type="text" placeholder="Plan Name" name="planName" @bind="planName" />
+        <button @onclick="SubmitInput">Submit</button>
+    </div>
+
+    <table class="styled-table">
+        <thead>
+            <tr>
+                <th>Extra Amount</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var ex in Extra)
+            {
+                <tr>
+                    <td>@ex</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+
+
+@code {
+    private List<int> Extra = new();
+    public string mobileNo = "";
+    public string planName = "";
+
+    private async Task SubmitInput()
+    {
+        using var context = DbFactory.CreateDbContext();
+
+        Extra = await context.Database
+        .SqlQuery<int>
+        (
+            $"Select dbo.Extra_plan_amount ({mobileNo}, {planName})"
+        )
+        .ToListAsync();
+
+
+        StateHasChanged();
+    }
+}
