@@ -31,20 +31,18 @@
 </div>
 
 @code {
-    private List<int> NotResTickets = new();
+    private List<int?> NotResTickets = new();
     public int NID;
 
     private async Task SubmitInput()
     {
         using var context = DbFactory.CreateDbContext();
 
-        var list = await context.Database
+        NotResTickets = await context.Database
         .SqlQuery<int?>(
        		$"exec Ticket_Account_Customer {NID}"
        	).ToListAsync();
 
-
-        NotResTickets = list.Select(number => number ?? 0).ToList();
 
         StateHasChanged();
     }

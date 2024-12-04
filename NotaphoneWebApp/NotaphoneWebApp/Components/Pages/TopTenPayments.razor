@@ -41,15 +41,15 @@
 </div>
 
 @code {
-    private List<Payment> Payments = new();
+    private List<TopSuccessfulPaymentsResult> Payments = new();
     public string mobileNo = "";
 
     private async Task SubmitInput()
     {
         using var context = DbFactory.CreateDbContext();
 
-        var list = await context.Database
-        .SqlQuery<Payment>
+        Payments = await context.Database
+        .SqlQuery<TopSuccessfulPaymentsResult>
         (
             $"exec Top_Successful_Payments {mobileNo}"
         )
