@@ -36,10 +36,11 @@ else if (numOfCashbacks == null || numOfCashbacks.Count == 0)
 </div>
 
 @code {
+    bool loading;
     private List<NumOfCashback> numOfCashbacks = new();
     private bool isLoading = true;
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         try
         {

@@ -47,8 +47,10 @@ else if (accountPayments == null || accountPayments.Count == 0)
     private List<AccountPayment> accountPayments = new();
     private bool isLoading = true;
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
+
+        if (!isLoading) return;
         try
         {
             using var context = DbFactory.CreateDbContext();
@@ -62,5 +64,7 @@ else if (accountPayments == null || accountPayments.Count == 0)
         {
             isLoading = false;
         }
+
+        StateHasChanged();
     }
 }
