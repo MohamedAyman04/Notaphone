@@ -12,7 +12,7 @@ namespace NotaphoneWebApp.Models
 		}
 
 		private int _benefitId { get; set; }
-		public int? BenfitId
+		public int? BenefitId
 		{
 			get => _benefitId;
 			set => _benefitId = value ?? 0;
@@ -46,7 +46,7 @@ namespace NotaphoneWebApp.Models
 		{
 			return
 				OfferId.ToString() + ", " +
-				BenfitId.ToString() + ", " +
+				BenefitId.ToString() + ", " +
 				InternetOffered.ToString() + ", " +
 				SMSOffered.ToString() + ", " +
 				MinutesOffered.ToString() + ", ";
