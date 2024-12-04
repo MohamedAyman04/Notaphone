@@ -1,0 +1,19 @@
+﻿@page "/Testing"
+@rendermode InteractiveServer
+@inject IDbContextFactory<ApplicationDbContext> DbFactory
+
+
+<h3>@text</h3>
+
+@code {
+	string text = "";
+
+	protected override async Task OnInitializedAsync()
+	{
+		using var context = DbFactory.CreateDbContext();
+
+		var list = await context.Database.SqlQuery<AccountPlanResult>($"exec Account_Plan").ToListAsync();
+
+		list.ForEach(Console.WriteLine);
+	}
+}
