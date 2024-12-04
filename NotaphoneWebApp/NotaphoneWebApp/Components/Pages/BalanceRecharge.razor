@@ -1,0 +1,48 @@
+﻿@page "/BalanceRecharge"
+@rendermode InteractiveServer
+@inject IDbContextFactory<ApplicationDbContext> DbFactory;
+
+<PageTitle>Balance recharge</PageTitle>
+
+<h1>Balance recharge</h1>
+
+<div class="form-style">
+    <input type="text" placeholder="mobile number" @bind="mobileNo" />
+    <input type="number" step=".1" @bind="amount" />
+    <input type="text" placeholder="payment method" @bind="paymentMethod" />
+    <button @onclick="SubmitInput">Submit</button>
+</div>
+
+@if (isDone)
+{
+    <p>done</p>
+}
+
+@code {
+    private bool isDone = false;
+    public string mobileNo = "";
+    public decimal amount;
+    public string paymentMethod = "";
+
+    private async Task SubmitInput()
+    {
+        try
+        {
+            isDone = false;
+            using var context = DbFactory.CreateDbContext();
+
+            int rowsAffected = await context.Database
+                .ExecuteSqlAsync($"execute Initiate_balance_payment {mobileNo}, {amount}, {paymentMethod}");
+
+            Console.WriteLine("done");
+            isDone = true;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error: {ex.Message}");
+            isDone = false;
+        }
+
+        StateHasChanged();
+    }
+}

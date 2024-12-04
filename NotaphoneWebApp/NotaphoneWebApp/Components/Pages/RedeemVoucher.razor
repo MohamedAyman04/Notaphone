@@ -1,0 +1,46 @@
+﻿@page "/RedeemVoucher"
+@rendermode InteractiveServer
+@inject IDbContextFactory<ApplicationDbContext> DbFactory;
+
+<PageTitle>Redeem voucher</PageTitle>
+
+<h1>Redeem voucher</h1>
+
+<div class="form-style">
+    <input type="text" placeholder="mobile number" @bind="mobileNo" />
+    <input type="number" @bind="voucherID" />
+    <button @onclick="SubmitInput">Submit</button>
+</div>
+
+@if (isDone)
+{
+    <p>done</p>
+}
+
+@code {
+    private bool isDone = false;
+    public string mobileNo = "";
+    public int voucherID;
+
+    private async Task SubmitInput()
+    {
+        try
+        {
+            isDone = false;
+            using var context = DbFactory.CreateDbContext();
+
+            int rowsAffected = await context.Database
+                .ExecuteSqlAsync($"execute Redeem_voucher_points {mobileNo}, {voucherID}");
+
+            Console.WriteLine("done");
+            isDone = true;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error: {ex.Message}");
+            isDone = false;
+        }
+
+        StateHasChanged();
+    }
+}

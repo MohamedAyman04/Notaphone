@@ -1,0 +1,48 @@
+﻿@page "/CalculateCashback"
+@rendermode InteractiveServer
+@inject IDbContextFactory<ApplicationDbContext> DbFactory;
+
+<PageTitle>Calculate Cashback</PageTitle>
+
+<h1>Calculate Cashback</h1>
+
+<div class="form-style">
+    <input type="text" placeholder="mobile number" @bind="mobileNo" />
+    <input type="number" @bind="paymentID" />
+    <input type="number" @bind="benefitID" />
+    <button @onclick="SubmitInput">Submit</button>
+</div>
+
+@if (isDone)
+{
+    <p>done</p>
+}
+
+@code {
+    private bool isDone = false;
+    public string mobileNo = "";
+    public int paymentID;
+    public int benefitID;
+
+    private async Task SubmitInput()
+    {
+        try
+        {
+            isDone = false;
+            using var context = DbFactory.CreateDbContext();
+
+            int rowsAffected = await context.Database
+                .ExecuteSqlAsync($"execute Payment_wallet_cashback {mobileNo}, {paymentID}, {benefitID}");
+
+            Console.WriteLine("done");
+            isDone = true;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error: {ex.Message}");
+            isDone = false;
+        }
+
+        StateHasChanged();
+    }
+}

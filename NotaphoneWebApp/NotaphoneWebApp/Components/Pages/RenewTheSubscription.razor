@@ -1,0 +1,52 @@
+﻿@page "/RenewTheSubscription"
+@rendermode InteractiveServer
+@inject IDbContextFactory<ApplicationDbContext> DbFactory;
+
+<PageTitle>Renew Subscription</PageTitle>
+
+<h1>Renew Subscription</h1>
+
+<div class="form-style">
+    <input type="text" placeholder="mobile number" @bind="mobileNo" />
+    <input type="number" step=".1" @bind="amount" />
+</div>
+
+<div class="form-style">
+    <input type="text" placeholder="payment method" @bind="PaymentMethod" />
+    <input type="number" @bind="planID" />
+    <button @onclick="SubmitInput">Submit</button>
+</div>
+
+@if (isDone)
+{
+    <p>done</p>
+}
+
+@code {
+    public bool isDone;
+    public string mobileNo;
+    public decimal amount;
+    public string PaymentMethod;
+    public int planID;
+
+    async void SubmitInput()
+    {
+        try{
+            isDone = false;
+            using var context = DbFactory.CreateDbContext();
+            var rowsAffected = await context.Database.
+            ExecuteSqlAsync(
+            $"exec Initiate_plan_payment {mobileNo}, {amount}, {PaymentMethod}, {planID}"
+            );
+
+            Console.WriteLine("done");
+            isDone = true;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error: {ex.Message}");
+            isDone = false;
+        }
+        StateHasChanged();
+    }
+}

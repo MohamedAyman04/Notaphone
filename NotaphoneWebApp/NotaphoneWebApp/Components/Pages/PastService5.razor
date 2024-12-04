@@ -1,0 +1,57 @@
+﻿@page "/PastService5"
+@rendermode InteractiveServer
+@inject IDbContextFactory<ApplicationDbContext> DbFactory;
+
+<PageTitle>Service Plans 5 month</PageTitle>
+
+<h1>Service plans in the past 5 month</h1>
+
+@if (ServicePlans == null || ServicePlans.Count == 0)
+{
+    <p>No available service plans</p>
+}
+
+<div class="table-container">
+    <div class="form-style">
+        <input type="text" @bind=MobileNo placeholder="mobile number"/>
+        <button @onclick=submit>Submit</button>
+    </div>
+    <table class="styled-table">
+        <thead>
+            <tr>
+                <th>Plan ID</th>
+                <th>Name</th>
+                <th>Price</th>
+                <th>SMS Offered</th>
+                <th>Minutes Offered</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var Service in ServicePlans)
+            {
+                <tr>
+                    <td>@Service.PlanId</td>
+                    <td>@Service.Name</td>
+                    <td>@Service.Price</td>
+                    <td>@Service.SMSOffered</td>
+                    <td>@Service.MinutesOffered</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@code {
+    private List<SubscribedPlans5MonthsResult> ServicePlans = new();
+    public string MobileNo;
+
+    async void submit()
+    {
+        using var context = DbFactory.CreateDbContext();
+        ServicePlans = await context.Database
+        .SqlQuery<SubscribedPlans5MonthsResult>(
+        $"Select * from dbo.Subscribed_plans_5_Months({MobileNo})"
+        ).ToListAsync();
+
+    }
+}

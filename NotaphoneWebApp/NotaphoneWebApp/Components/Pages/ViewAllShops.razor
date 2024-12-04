@@ -1,0 +1,44 @@
+﻿@page "/ViewAllShops"
+@rendermode InteractiveServer
+@inject IDbContextFactory<ApplicationDbContext> DbFactory;
+
+<PageTitle>All Shops</PageTitle>
+
+<h1>All Shops</h1>
+
+@if (Shops == null || Shops.Count == 0)
+{
+    <p>No Active Benefits are available</p>
+}
+
+<div class="table-container">
+    <table class="styled-table">
+        <thead>
+            <tr>
+                <th>Shop ID</th>
+                <th>Name</th>
+                <th>Category</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var shop in Shops)
+            {
+                <tr>
+                    <td>@shop.ShopId</td>
+                    <td>@shop.Name</td>
+                    <td>@shop.Category</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@code {
+    private List<AllShop> Shops = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        using var context = DbFactory.CreateDbContext();
+        Shops = await context.AllShops.ToListAsync();
+    }
+}
