@@ -1,0 +1,54 @@
+﻿@page "/RemainingAmount"
+@rendermode InteractiveServer
+@inject IDbContextFactory<ApplicationDbContext> DbFactory;
+
+<PageTitle>Remaining Amount</PageTitle>
+
+<h1>Remaining Amount</h1>
+
+<div class="table-container">
+    <div class="form-style">
+        <input type="text" placeholder="Mobile Number" name="mobileNumber" @bind="mobileNo" />
+        <input type="text" placeholder="Plan Name"  name="planName" @bind="planName" />
+        <button @onclick="SubmitInput">Submit</button>
+    </div>
+
+    <table class="styled-table">
+        <thead>
+            <tr>
+                <th>Remaining Amount</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var rem in Remaining)
+            {
+                <tr>
+                    <td>@rem</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+
+
+@code {
+    private List<int> Remaining = new();
+    public string mobileNo = "";
+    public string planName = "";
+
+    private async Task SubmitInput()
+    {
+        using var context = DbFactory.CreateDbContext();
+
+        Remaining = await context.Database
+        .SqlQuery<int>
+        (
+            $"Select dbo.Remaining_plan_amount ({mobileNo}, {planName})"
+        )
+        .ToListAsync();
+        
+        
+        StateHasChanged();
+    }
+}

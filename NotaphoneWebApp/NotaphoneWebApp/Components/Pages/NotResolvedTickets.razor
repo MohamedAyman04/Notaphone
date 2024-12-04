@@ -1,0 +1,49 @@
+﻿@page "/NotResolvedTickets"
+@rendermode InteractiveServer
+@inject IDbContextFactory<ApplicationDbContext> DbFactory;
+
+<PageTitle>Not Resolved Tickets</PageTitle>
+
+<h1>Not Resolved Tickets</h1>
+
+<div class="table-container">
+
+    <div class="form-style">
+        <input type="number" placeholder="National ID" name="NationalID" @bind="NID">
+        <button @onclick="SubmitInput">Submit</button>
+    </div>
+
+    <table class="styled-table">
+        <thead>
+            <tr>
+                <th>Number of Technical Support Tickets</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var num  in NotResTickets)
+            {
+                <tr>
+                    <td>@num</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@code {
+    private List<int?> NotResTickets = new();
+    public int NID;
+
+    private async Task SubmitInput()
+    {
+        using var context = DbFactory.CreateDbContext();
+
+        NotResTickets = await context.Database
+        .SqlQuery<int?>(
+       		$"exec Ticket_Account_Customer {NID}"
+       	).ToListAsync();
+
+
+        StateHasChanged();
+    }
+}
