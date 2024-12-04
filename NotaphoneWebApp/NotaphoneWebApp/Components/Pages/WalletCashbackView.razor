@@ -52,7 +52,7 @@
     {
         using var context = DbFactory.CreateDbContext();
         cashbackWallet = await context.Database
-            .SqlQuery<CashbackWalletCustomerResult>($"Select * from dbo.CashbackWalletCustomerResult({NID})"
+            .SqlQuery<CashbackWalletCustomerResult>($"Select * from dbo.Cashback_Wallet_Customer({NID})"
              ).ToListAsync();
 
      cashbackWallet.ForEach(Console.WriteLine);

@@ -12,7 +12,7 @@
 <div class="table-container">
 
     <div class="form-style">
-        <input type="int" name="mobile_num" @bind="mobile_num">
+        <input type="text" name="mobile_num" @bind="mobile_num">
         
         <button @onclick="SubmitInput">Submit</button>
     </div>
@@ -48,15 +48,15 @@
 @code {
     private List<UnsubscribedPlansResult> unsubscribedPlans = new();
     private bool isLoading = true;
-    public int mobile_num;
+    public string mobile_num;
     
 
     private async Task SubmitInput()
     {
         using var context = DbFactory.CreateDbContext();
         unsubscribedPlans = await context.Database
-            .SqlQuery<UnsubscribedPlansResult>($"Select * from dbo.Unsubscribed_Plans({mobile_num})")
-         .ToListAsync();
+            .SqlQuery<UnsubscribedPlansResult>($"exec Unsubscribed_Plans {mobile_num}"
+		 	).ToListAsync();
 
         unsubscribedPlans.ForEach(Console.WriteLine);
 
