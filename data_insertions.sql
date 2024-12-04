@@ -17,9 +17,9 @@ VALUES
 ('00000000004', 'ghi', 0,  'postpaid', '2014/01/01', 'onhold', 0, 3)
 INSERT INTO Service_Plan
 VALUES
-(10, 10, 10, 1, 10, null),
-(20, 20, 20, 2, 20, null),
-(30, 30, 30, 3, 30, null)
+('plan1', 10, 10, 1, 10, 'desc'),
+('plan2', 20, 20, 2, 20, null),
+('plan3', 30, 30, 3, 30, null)
 INSERT INTO Subscription
 VALUES
 ('00000000000', 1, '2015/01/01', 'active'),

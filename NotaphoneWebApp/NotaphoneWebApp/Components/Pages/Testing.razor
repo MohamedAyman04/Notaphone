@@ -1,0 +1,141 @@
+﻿@page "/Testing"
+@rendermode InteractiveServer
+@inject IDbContextFactory<ApplicationDbContext> DbFactory
+
+
+<h3>@text</h3>
+
+<input type="number" @bind="input1"/>
+<input @bind="input2"/>
+<input type="date" @bind="input3" @bind:format="yyyy-mm-dd"/>
+<input type="number" @bind="input4"/>
+<input type="date" @bind="input5" @bind:format="yyyy-mm-dd"/>
+<input @bind="input6"/>
+<button @onclick="Submit">Submit</button>
+
+@code {
+	string text = "";
+	int input1;
+	string input2;
+	DateTime input3;
+	int input4;
+	DateTime input5;
+	string input6;
+
+	protected override async Task OnAfterRenderAsync(bool firstRender)
+	{
+		if (!firstRender) return;
+
+		using var context = DbFactory.CreateDbContext();
+
+		// var list = await context.Database.SqlQuery<AccountPlanResult>($"exec Account_Plan").ToListAsync();
+		var list = await context.Database
+			.SqlQuery<AccountPlanDateResult>($"Select * from dbo.Account_Plan_Date({input3}, {input1})")
+			.ToListAsync();
+
+		list.ForEach(Console.WriteLine);
+	}
+
+	async void Submit()
+	{
+		using var context = DbFactory.CreateDbContext();
+
+		// Procedure - no input - returns table
+		// var list = await context.Database
+		// 	.SqlQuery<AccountPlanResult>($"exec Account_Plan").ToListAsync();
+
+		// Function - with input - returns table
+		// var list = await context.Database
+		// 	.SqlQuery<AccountPlanDateResult>($"Select * from dbo.Account_Plan_Date({input3}, {input1})")
+		// 	.ToListAsync();
+
+		// Function - with input - returns table
+		// var list = await context.Database
+		// 	.SqlQuery<AccountUsagePlanResult>(
+		// 		$"Select * from dbo.Account_Usage_Plan({input2}, {input3})"
+		// 	).ToListAsync();
+
+		// Procedure - with input - returns nothing
+		// var rowsAffected = await context.Database.
+		// 	ExecuteSqlAsync(
+		// 		$"exec Benefits_Account {input2}, {input1}"
+		// 	);
+
+		// Function - with input - returns table
+		// var list = await context.Database
+		// 	.SqlQuery<AccountSMSOffersResult>(
+		// 		$"Select * from Account_SMS_Offers({input2})"
+		// 	).ToListAsync();
+
+		// Function - with input - returns scalar
+		// var list = await context.Database
+		// 	.SqlQuery<int?>(
+		// 		$"Select dbo.Wallet_Cashback_Amount({input1}, {input4})"
+		// 	).ToListAsync();
+
+		// Function - with input - returns scalar
+		// var list = await context.Database
+		// 	.SqlQuery<int?>(
+		// 		$"Select dbo.Wallet_Transfer_Amount({input1}, {input3} {input4})"
+		// 	).ToListAsync();
+
+		// Function - with input - returns scalar
+		// var list = await context.Database
+		// 	.SqlQuery<bool?>(
+		// 		$"Select dbo.Wallet_MobileNo({input2})"
+		// 	).ToListAsync();
+
+		// Procedure - with input - returns nothing
+		// var rowsAffected = await context.Database
+		// 	.ExecuteSqlAsync(
+		// 		$"exec Total_Points_Account {input2}"
+		// 	);
+
+		// Function - with input - returns table
+		// var list = await context.Database
+		// 	.SqlQuery<ConsumptionResult>(
+		// 		$"Select * from dbo.Consumption({input2}, {input3}, {input5})"
+		// 	).ToListAsync();
+
+		// Procedure - with input - returns table
+		// var list = await context.Database
+		// 	.SqlQuery<UnsubscribedPlansResult>(
+		// 		$"exec Unsubscribed_Plans {input2}"
+		// 	).ToListAsync();
+
+		// Function - with input - returns table
+		// var list = await context.Database
+		// 	.SqlQuery<UsagePlanCurrentMonthResult>(
+		// 		$"Select * from dbo.Usage_Plan_CurrentMonth({input2})"
+		// 	).ToListAsync();
+
+		// Function - with input - returns table
+		// var list = await context.Database
+		// 	.SqlQuery<CashbackWalletCustomerResult>(
+		// 		$"Select * from dbo.Cashback_Wallet_Customer({input1})"
+		// 	).ToListAsync();
+
+		// Procedure - with input - returns scalar
+		// var list = await context.Database
+		// 	.SqlQuery<int?>(
+		// 		$"exec Ticket_Account_Customer {input1}"
+		// 	).ToListAsync();
+
+		// Procedure - with input - returns scalar
+		var list = await context.Database
+			.SqlQuery<int?>(
+				$"exec Account_Highest_Voucher {input2}"
+			).ToListAsync();
+
+		list.ForEach((item) => {
+			if (item != null)
+				Console.WriteLine(item);
+			else
+				Console.WriteLine("null");
+		});
+
+		// Console.WriteLine(rowsAffected);
+
+		StateHasChanged();
+	}
+}

@@ -1,5 +1,7 @@
 create database Milestone2DB_24
 
+go
+
 use  Milestone2DB_24
 
 go
@@ -626,7 +628,7 @@ Return(select p.data_consumption, p.minutes_used, p.SMS_sent from Plan_Usage p
 inner join Subscription s 
 on p.planID = s.planID and p.mobileNo = s.mobileNo
 where p.mobileNo = @mobile_num and s.status = 'active' 
-and month(p.start_date)= month(current_timestamp) or month(p.end_date)= month(current_timestamp) and year(p.start_date)= year(current_timestamp) or year(p.end_date)= year(current_timestamp))
+and (month(p.start_date)= month(current_timestamp) or month(p.end_date)= month(current_timestamp)) and (year(p.start_date)= year(current_timestamp) or year(p.end_date)= year(current_timestamp)))
 go 
 
 --//////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -672,8 +674,7 @@ go
 
 go
 CREATE PROCEDURE [Account_Highest_Voucher]
-@mobile_num char(11)  
-
+@mobile_num char(11)
 AS
 declare @max int
 select @max =  max(v.value) from Voucher v 
@@ -683,7 +684,6 @@ select v.voucherID from voucher v
 where v.mobileNo = @mobile_num and v.value = @max
 
 go
-
 
 --//////////////////////////////////////////////////////////////////////////////////////////////////////
 ------------------------------------------------------------------------------------------------------------
