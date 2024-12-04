@@ -14,23 +14,26 @@ else if (numOfCashbacks == null || numOfCashbacks.Count == 0)
 {
     <p>No Transactions Found</p>
 }
-<table class="table">
-    <thead>
-        <tr>
-            <th>Wallet ID</th>
-            <th>Transaction Count</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var cash in numOfCashbacks)
-        {
+
+<div class="table-container">
+    <table class="styled-table">
+        <thead>
             <tr>
-                <td>@cash.WalletId</td>
-                <td>@cash.CountOfTransactions</td>
+                <th>Wallet ID</th>
+                <th>Transaction Count</th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @foreach (var cash in numOfCashbacks)
+            {
+                <tr>
+                    <td>@cash.WalletId</td>
+                    <td>@cash.CountOfTransactions</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
 
 @code {
     private List<NumOfCashback> numOfCashbacks = new();

@@ -6,26 +6,31 @@
 
 <h1>Wallet Transfer</h1>
 
-<input type="number" name="walletID" @bind="walletID">
-<input type="date" name="start_date" @bind="startDate" @bind:format="yyyy-mm-dd" />
-<input type="date" name="end_date" @bind="endDate" @bind:format="yyyy-mm-dd" />
-<button @onclick="SubmitInput">Submit</button>
+<div class="table-container">
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>wallet</th>
-        </tr>
-    </thead>
-	<tbody>
-		@foreach (var wallet in wallterTransferAmount)
-		{
-			<tr>
-				<td>@wallet</td>
-			</tr>
-		}
-	</tbody>
-</table>
+    <div class="form-style">
+        <input type="number" name="walletID" @bind="walletID">
+        <input type="date" name="start_date" @bind="startDate" @bind:format="yyyy-mm-dd" />
+        <input type="date" name="end_date" @bind="endDate" @bind:format="yyyy-mm-dd" />
+        <button @onclick="SubmitInput">Submit</button>
+    </div>
+
+    <table class="styled-table">
+        <thead>
+            <tr>
+                <th>Wallet</th>
+            </tr>
+        </thead>
+	    <tbody>
+		    @foreach (var wallet in wallterTransferAmount)
+		    {
+			    <tr>
+				    <td>@wallet</td>
+			    </tr>
+		    }
+	    </tbody>
+    </table>
+</div>
 
 @code {
     private List<int> wallterTransferAmount = new();

@@ -6,26 +6,31 @@
 
 <h1>Account Payments Points</h1>
 
-<input type="text" name="mobileNumber" @bind="mobileNo"/>
-<button @onclick=SubmitInput>Submit</button>
+<div class="table-container">
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>Number Of Payment IDs</th>
-            <th>Total Points</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var account in accountPaymentPointsResults)
-        {
+    <div class="form-style">
+        <input type="text" placeholder="Mobile Number" name="mobileNumber" @bind="mobileNo" />
+        <button @onclick=SubmitInput>Submit</button>
+    </div>
+
+    <table class="styled-table">
+        <thead>
             <tr>
-                <td>@account.NumberOfPaymentID</td>
-                <td>@account.TotalPoints</td>
+                <th>Number Of Payment IDs</th>
+                <th>Total Points</th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @foreach (var account in accountPaymentPointsResults)
+            {
+                <tr>
+                    <td>@account.NumberOfPaymentID</td>
+                    <td>@account.TotalPoints</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
 
 @code {
     private List<AccountPaymentPointsResult> accountPaymentPointsResults = new();

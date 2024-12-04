@@ -14,35 +14,38 @@ else if (customerWallets == null || customerWallets.Count == 0)
 {
     <p>No customer wallets found.</p>
 }
-<table class="table">
-    <thead>
-        <tr>
-            <th>Wallet ID</th>
-            <th>Current Balance</th>
-            <th>Currency</th>
-            <th>Last Modified Date</th>
-            <th>National ID</th>
-            <th>Mobile Number</th>
-            <th>First Name</th>
-            <th>Last Name</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var wallet in customerWallets)
-        {
+
+<div class="table-container">
+    <table class="styled-table">
+        <thead>
             <tr>
-                <td>@wallet.WalletId</td>
-                <td>@wallet.CurrentBalance</td>
-                <td>@wallet.Currency</td>
-                <td>@wallet.LastModifiedDate</td>
-                <td>@wallet.NationalId</td>
-                <td>@wallet.MobileNo</td>
-                <td>@wallet.FirstName</td>
-                <td>@wallet.LastName</td>
+                <th>Wallet ID</th>
+                <th>Current Balance</th>
+                <th>Currency</th>
+                <th>Last Modified Date</th>
+                <th>National ID</th>
+                <th>Mobile Number</th>
+                <th>First Name</th>
+                <th>Last Name</th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @foreach (var wallet in customerWallets)
+            {
+                <tr>
+                    <td>@wallet.WalletId</td>
+                    <td>@wallet.CurrentBalance</td>
+                    <td>@wallet.Currency</td>
+                    <td>@wallet.LastModifiedDate</td>
+                    <td>@wallet.NationalId</td>
+                    <td>@wallet.MobileNo</td>
+                    <td>@wallet.FirstName</td>
+                    <td>@wallet.LastName</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
 
 @code {
     private List<CustomerWallet> customerWallets = new ();

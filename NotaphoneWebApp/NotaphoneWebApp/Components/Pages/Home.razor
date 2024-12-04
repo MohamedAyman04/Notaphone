@@ -1,13 +1,12 @@
 ﻿@page "/"
-@rendermode InteractiveServer
-@inject IDbContextFactory<ApplicationDbContext> DbFactory;
+@inject IJSRuntime JSRuntime
 
 <PageTitle>Home</PageTitle>
 
-<h1>Welcome to Notaphone</h1>
+<h1>
+    Notaphone
+</h1>
 
-Welcome to your telecom app.
-
-@code {
-
-}
+<div style="margin: 20px auto; width: 100%;">
+    <img style="margin: 0 auto; display: block;" src="Notaphone_slogan.png" alt="slogan"/>
+</div>

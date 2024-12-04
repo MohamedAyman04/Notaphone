@@ -14,31 +14,34 @@ else if (accountPayments == null || accountPayments.Count == 0)
 {
     <p>No Payments Available</p>
 }
-<table class="table">
-    <thead>
-        <tr>
-            <th>Payment ID</th>
-            <th>Amount</th>
-            <th>Date Of Payment</th>
-            <th>Payment Method</th>
-            <th>Status</th>
-            <th>Mobile Number</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var payment in accountPayments)
-        {
+
+<div class="table-container">
+    <table class="styled-table">
+        <thead>
             <tr>
-                <td>@payment.PaymentId</td>
-                <td>@payment.Amount</td>
-                <td>@payment.DateOfPayment</td>
-                <td>@payment.PaymentMethod</td>
-                <td>@payment.Status</td>
-                <td>@payment.MobileNo</td>
+                <th>Payment ID</th>
+                <th>Amount</th>
+                <th>Date Of Payment</th>
+                <th>Payment Method</th>
+                <th>Status</th>
+                <th>Mobile Number</th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @foreach (var payment in accountPayments)
+            {
+                <tr>
+                    <td>@payment.PaymentId</td>
+                    <td>@payment.Amount</td>
+                    <td>@payment.DateOfPayment</td>
+                    <td>@payment.PaymentMethod</td>
+                    <td>@payment.Status</td>
+                    <td>@payment.MobileNo</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
 
 @code {
     private List<AccountPayment> accountPayments = new();

@@ -14,29 +14,32 @@ else if (eShopVouchers == null || eShopVouchers.Count == 0)
 {
     <p>No E-shop Vouchers found</p>
 }
-<table class="table">
-    <thead>
-        <tr>
-            <th>Shop ID</th>
-            <th>URL</th>
-            <th>Rating</th>
-            <th>Voucher ID</th>
-            <th>Value</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var shop in eShopVouchers)
-        {
+
+<div class="table-container">
+    <table class="styled-table">
+        <thead>
             <tr>
-                <td>@shop.ShopId</td>
-                <td>@shop.Url</td>
-                <td>@shop.Rating</td>
-                <td>@shop.VoucherId</td>
-                <td>@shop.Value</td>
+                <th>Shop ID</th>
+                <th>URL</th>
+                <th>Rating</th>
+                <th>Voucher ID</th>
+                <th>Value</th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @foreach (var shop in eShopVouchers)
+            {
+                <tr>
+                    <td>@shop.ShopId</td>
+                    <td>@shop.Url</td>
+                    <td>@shop.Rating</td>
+                    <td>@shop.VoucherId</td>
+                    <td>@shop.Value</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
 
 @code {
     private List<EShopVoucher> eShopVouchers = new();
