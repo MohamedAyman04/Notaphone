@@ -122,9 +122,21 @@
 		// 	).ToListAsync();
 
 		// Procedure - with input - returns scalar
+		// var list = await context.Database
+		// 	.SqlQuery<int?>(
+		// 		$"exec Account_Highest_Voucher {input2}"
+		// 	).ToListAsync();
+
+		// Procedure - no input - returns table
+		// var list = await context.Database
+		// 	.SqlQuery<TopSuccessfulPaymentsResult>(
+		// 		$"exec Top_Successful_Payments {input2}"
+		// 	).ToListAsync();
+
+		// Function - with input - returns table
 		var list = await context.Database
-			.SqlQuery<int?>(
-				$"exec Account_Highest_Voucher {input2}"
+			.SqlQuery<SubscribedPlans5MonthsResult>(
+				$"Select * from dbo.Subscribed_Plans_5_Months({input2})"
 			).ToListAsync();
 
 		list.ForEach((item) => {

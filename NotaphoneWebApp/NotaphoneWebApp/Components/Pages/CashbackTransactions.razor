@@ -40,7 +40,7 @@ else if (numOfCashbacks == null || numOfCashbacks.Count == 0)
     private List<NumOfCashback> numOfCashbacks = new();
     private bool isLoading = true;
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
+    protected override async Task OnInitializedAsync()
     {
         try
         {
