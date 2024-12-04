@@ -1,0 +1,68 @@
+﻿@page "/UnsubscribedPlansRetrieve"
+@rendermode InteractiveServer
+@inject IDbContextFactory<ApplicationDbContext> DbFactory;
+
+<PageTitle>Offered Plans</PageTitle>
+
+@if (unsubscribedPlans == null || unsubscribedPlans.Count == 0)
+{
+    <p>No services are available</p>
+}
+
+<div class="table-container">
+
+    <div class="form-style">
+        <input type="int" name="mobile_num" @bind="mobile_num">
+        
+        <button @onclick="SubmitInput">Submit</button>
+    </div>
+
+    <table class="styled-table">
+        <thead>
+            <tr>
+                <td>Plan ID</td>
+                <td>Name</td>
+                <td>Price</td>
+                <td>SMS Offered</td>
+                <td>Minutes Offered</td>
+                <td>Data Offered</td>
+                <td>Description</td>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var unsubscribed in unsubscribedPlans)
+            {
+                <tr>
+                    <td>@unsubscribed.PlanId</td>
+                    <td>@unsubscribed.Name</td>
+                    <td>@unsubscribed.Price</td>
+                    <td>@unsubscribed.SMSOffered</td>
+                    <td>@unsubscribed.MinutesOffered</td>
+                    <td>@unsubscribed.DataOffered</td>
+                    <td>@unsubscribed.Description</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+@code {
+    private List<UnsubscribedPlansResult> unsubscribedPlans = new();
+    private bool isLoading = true;
+    public int mobile_num;
+    
+
+    private async Task SubmitInput()
+    {
+        using var context = DbFactory.CreateDbContext();
+        unsubscribedPlans = await context.Database
+            .SqlQuery<UnsubscribedPlansResult>($"Select * from dbo.Unsubscribed_Plans({mobile_num})")
+         .ToListAsync();
+
+        unsubscribedPlans.ForEach(Console.WriteLine);
+
+
+        StateHasChanged();
+       
+    }
+}
+

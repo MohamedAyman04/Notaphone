@@ -1,0 +1,60 @@
+﻿@page "/PlanUsageShow"
+@rendermode InteractiveServer
+@inject IDbContextFactory<ApplicationDbContext> DbFactory;
+
+<PageTitle>Plan Usage in the Current Month</PageTitle>
+
+@if (usagePlan == null || usagePlan.Count == 0)
+{
+    <p>No services are available</p>
+}
+<div class="table-container">
+
+    <div class="form-style">
+        <input type="int" name="mobile_num" @bind="mobile_num">
+
+        <button @onclick="SubmitInput">Submit</button>
+    </div>
+
+    <table class="styled-table">
+        <thead>
+            <tr>
+                <td>Data Consumption</td>
+                <td>Minutes Used</td>
+                <td>SMS Sent</td>
+                
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var usage in usagePlan)
+            {
+                <tr>
+                    <td>@usage.DataConsumption</td>
+                    <td>@usage.MinutesUsed</td>
+                    <td>@usage.SMSSent</td>
+                    
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+@code {
+    private List<UsagePlanCurrentMonthResult> usagePlan = new();
+    private bool isLoading = true;
+    public int mobile_num;
+
+
+    private async Task SubmitInput()
+    {
+        using var context = DbFactory.CreateDbContext();
+        usagePlan = await context.Database
+            .SqlQuery<UsagePlanCurrentMonthResult>($"Select * from dbo.UsagePlanCurrentMonthResult({mobile_num})"
+		 	).ToListAsync();
+        
+        usagePlan.ForEach(Console.WriteLine);
+
+
+        StateHasChanged();
+
+    }
+}

@@ -1,0 +1,64 @@
+﻿@page "/WalletCashbackView"
+@rendermode InteractiveServer
+@inject IDbContextFactory<ApplicationDbContext> DbFactory;
+	
+<PageTitle>Cashback Transactions</PageTitle>
+<h1>Cashback Transactions</h1>
+
+@if (cashbackWallet == null || cashbackWallet.Count == 0)
+{
+	<p>No services are available</p>
+}
+<div class="table-container">
+
+    <div class="form-style">
+        <input type="int" name="NID" @bind="NID">
+
+        <button @onclick="SubmitInput">Submit</button>
+    </div>
+
+    <table class="styled-table">
+        <thead>
+            <tr>
+                <td>Cashback ID</td>
+                <td>Benefit ID </td>
+                <td>Wallet ID</td>
+                <td>Amount</td>
+                <td>Credit Date</td>
+
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var cashback in cashbackWallet)
+            {
+                <tr>
+                    <td>@cashback.CashbackId</td>
+                    <td>@cashback.BenefitId </td>
+                    <td>@cashback.WalletId</td>
+                    <td>@cashback.Amount</td>
+                    <td>@cashback.CreditDate</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+@code {
+    private List<CashbackWalletCustomerResult> cashbackWallet = new();
+    private bool isLoading = true;
+    public int NID;
+
+
+    private async Task SubmitInput()
+    {
+        using var context = DbFactory.CreateDbContext();
+        cashbackWallet = await context.Database
+            .SqlQuery<CashbackWalletCustomerResult>($"Select * from dbo.CashbackWalletCustomerResult({NID})"
+             ).ToListAsync();
+
+     cashbackWallet.ForEach(Console.WriteLine);
+
+
+     StateHasChanged();
+
+    }
+}

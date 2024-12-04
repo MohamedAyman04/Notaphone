@@ -7,53 +7,69 @@
 <h1>Consumption Details</h1>
 
 @if (consumptionResults == null || consumptionResults.Count == 0)
+
 {
-    <p>No services are available</p>
+	<p>No services are available</p>
 }
 
 <div class="table-container">
 
-    <div class="form-style">
-        <input type="text" name="Plan_name" @bind="Plan_name">
-        <input type="date" name="start_date" @bind="startDate" @bind:format="yyyy-mm-dd" />
-        <input type="date" name="end_date" @bind="endDate" @bind:format="yyyy-mm-dd" />
-        <button @onclick="SubmitInput">Submit</button>
-    </div>
+	<div class="form-style">
+		<input type="text" name="Plan_name" @bind="Plan_name">
+		<input type="date" name="start_date" @bind="startDate" @bind:format="yyyy-mm-dd" />
+		<input type="date" name="end_date" @bind="endDate" @bind:format="yyyy-mm-dd" />
+		<button @onclick="SubmitInput">Submit</button>
+	</div>
 
-    <table class="styled-table">
-        <thead>
-            <tr>
-                <th>SMS Sent</th>
-                <th>Minutes Used</th>
-                <th>Data Consumption</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var consumption in consumptionResults)
-            {
-                <tr>
-                    <td>@consumption.SMSSent</td>
-                    <td>@consumption.MinutesUsed</td>
-                    <td>@consumption.DataConsumption</td>
-                </tr>
-            }
-        </tbody>
-    </table>
+	<table class="styled-table">
+		<thead>
+			<tr>
+				<th>SMS Sent</th>
+				<th>Minutes Used</th>
+				<th>Data Consumption</th>
+			</tr>
+		</thead>
+		<tbody>
+			@foreach (var consumption in consumptionResults)
+			{
+				<tr>
+					<td>@consumption.SMSSent</td>
+					<td>@consumption.MinutesUsed</td>
+					<td>@consumption.DataConsumption</td>
+				</tr>
+			}
+		</tbody>
+	</table>
 </div>
 
 @code {
-    private List<ConsumptionResult> consumptionResults = new();
-    private bool isLoading = true;
-    public String Plan_name;
-    public DateTime startDate;
-    public DateTime endDate;
+	private List<ConsumptionResult> consumptionResults = new();
 
-    private async Task SubmitInput()
-    {
-        using var context = DbFactory.CreateDbContext();
-        var list = await context.Database
-        	.SqlQuery<ConsumptionResult>(
-                $"Select * from dbo.Consumption({Plan_name}, {startDate}, {endDate})"
-         	).ToListAsync();
-    }
+	private bool isLoading = true;
+
+	public string Plan_name;
+
+	public DateTime startDate;
+
+	public DateTime endDate;
+
+
+
+	private async Task SubmitInput()
+	{
+
+		using var context = DbFactory.CreateDbContext();
+
+		consumptionResults = await context.Database
+			.SqlQuery<ConsumptionResult>(
+
+				$"Select * from dbo.Consumption({Plan_name}, {startDate}, {endDate})"
+
+			).ToListAsync();
+
+		consumptionResults.ForEach(Console.WriteLine);
+
+
+		StateHasChanged();
+	}
 }
