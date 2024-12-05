@@ -14,13 +14,11 @@
 <div class="form-style">
 	<form @onsubmit=Submit>
 		<input type="date" placeholder="date" @bind="inputDate" @bind:format="yyyy-mm-dd" required/>
-		<input type="number" step="1" min="1" placeholder="1" @bind="inputPlanID" required/>
+		<input type="number" step="1" min="1" title="plan id" placeholder="plan id" @bind="planID" required/>
 
 		<button type="submit">Submit</button>
 	</form>
 </div>
-
-
 
 <div class="table-container">
     <table class="styled-table">
@@ -46,8 +44,8 @@
 
 @code {
     private List<AccountPlanDateResult> Accounts = new();
-    DateTime inputDate;
-    int inputPlanID = 1;
+    DateTime? inputDate;
+    int? planID;
     bool loading = true;
 
     protected override async Task OnInitializedAsync()
@@ -63,7 +61,7 @@
     {
 		using var context = DbFactory.CreateDbContext();
 		Accounts = await context.Database
-			.SqlQuery<AccountPlanDateResult>($"Select * from dbo.Account_Plan_Date({inputDate}, {inputPlanID})")
+			.SqlQuery<AccountPlanDateResult>($"Select * from dbo.Account_Plan_Date({inputDate}, {planID})")
 			.ToListAsync();
 
 		loading = false;

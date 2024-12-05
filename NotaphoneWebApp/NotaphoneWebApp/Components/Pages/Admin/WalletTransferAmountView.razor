@@ -6,15 +6,18 @@
 
 <h1>Wallet Transfer</h1>
 
+<div class="form-style">
+	<form @onsubmit=Submit>
+		<input type="number" step="1" min="1" title="wallet id" placeholder="wallet id" @bind="walletID" required/>
+		<input type="date" title="start date" @bind="startDate" @bind:format="yyyy-MM-dd" required/>
+		<input type="date" title="end date" @bind="endDate" @bind:format="yyyy-MM-dd" required/>
+
+		<button type="submit">Submit</button>
+	</form>
+</div>
+
+
 <div class="table-container">
-
-    <div class="form-style">
-        <input type="number" name="walletID" @bind="walletID">
-        <input type="date" name="start_date" @bind="startDate" @bind:format="yyyy-mm-dd" />
-        <input type="date" name="end_date" @bind="endDate" @bind:format="yyyy-mm-dd" />
-        <button @onclick="SubmitInput">Submit</button>
-    </div>
-
     <table class="styled-table">
         <thead>
             <tr>
@@ -34,11 +37,11 @@
 
 @code {
     private List<int> wallterTransferAmount = new();
-    public int walletID;
-    public DateTime startDate;
-    public DateTime endDate;
+    public int? walletID;
+    public DateTime? startDate;
+    public DateTime? endDate;
 
-    private async Task SubmitInput()
+    private async Task Submit()
     {
         using var context = DbFactory.CreateDbContext();
         wallterTransferAmount = await context.Database

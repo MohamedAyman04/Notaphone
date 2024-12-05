@@ -6,13 +6,16 @@
 
 <h1>Account Has Wallet</h1>
 
+<div class="form-style">
+	<form @onsubmit=Submit>
+		<input type="text" maxlength="11" pattern="[0-9]{11}" title="11-digit mobile no" placeholder="mobile no" @bind="mobileNo" required/>
+
+		<button type="submit">Submit</button>
+	</form>
+</div>
+
+
 <div class="table-container">
-
-    <div class="form-style">
-        <input type="text" name="walletID" placeholder="Mobile Number" @bind="mobileNo">
-        <button @onclick="SubmitInput">Submit</button>
-    </div>
-
     <table class="styled-table">
         <thead>
             <tr>
@@ -32,9 +35,9 @@
 
 @code {
     private List<Boolean> hasWallet = new();
-    public String mobileNo = "";
+    public string? mobileNo;
 
-    private async Task SubmitInput()
+    private async Task Submit()
     {
         using var context = DbFactory.CreateDbContext();
 

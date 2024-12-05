@@ -6,14 +6,16 @@
 
 <h1>Wallet Cashback Amount</h1>
 
-<div class="table-container">
+<div class="form-style">
+	<form @onsubmit=Submit>
+		<input type="number" step="1" min="1" title="wallet id" placeholder="wallet id" @bind="walletID" required/>
+		<input type="number" step="1" min="1" title="plan id" placeholder="plan id" @bind="planID" required/>
 
-    <div class="form-style">
-        <input type="number" placeholder="Wallet ID" name="walletID" @bind="walletID">
-        <input type="number" placeholder="Plan ID" name="planID" @bind="planID">
-        <button @onclick="SubmitInput">Submit</button>
-    </div>
-    
+		<button type="submit">Submit</button>
+	</form>
+</div>
+
+<div class="table-container">
     <table class="styled-table">
         <thead>
             <tr>
@@ -33,10 +35,10 @@
 
 @code {
     private List<int> walletAmount = new();
-    public int walletID;
-    public int planID;
+    public int? walletID;
+    public int? planID;
 
-    private async Task SubmitInput()
+    private async Task Submit()
     {
         using var context = DbFactory.CreateDbContext();
 

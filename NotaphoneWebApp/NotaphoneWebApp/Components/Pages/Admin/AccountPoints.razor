@@ -6,12 +6,16 @@
 
 <h1>Account Payments Points</h1>
 
+<div class="form-style">
+	<form @onsubmit=Submit>
+		<input type="text" maxlength="11" pattern="[0-9]{11}" title="11-digit mobile no" placeholder="mobile no" @bind="mobileNo" required/>
+
+		<button type="submit">Submit</button>
+	</form>
+</div>
+
 <div class="table-container">
 
-    <div class="form-style">
-        <input type="text" placeholder="Mobile Number" name="mobileNumber" @bind="mobileNo" />
-        <button @onclick=SubmitInput>Submit</button>
-    </div>
 
     <table class="styled-table">
         <thead>
@@ -35,9 +39,9 @@
 @code {
     private List<AccountPaymentPointsResult> accountPaymentPointsResults = new();
     private bool isLoading = true;
-    public String mobileNo = "";
+    public string? mobileNo;
 
-    public async void SubmitInput() {
+    public async void Submit() {
         using var context = DbFactory.CreateDbContext();
         accountPaymentPointsResults = await context.Database.SqlQuery<AccountPaymentPointsResult>($"execute Account_Payment_Points {mobileNo}").ToListAsync();
         Console.WriteLine("done");

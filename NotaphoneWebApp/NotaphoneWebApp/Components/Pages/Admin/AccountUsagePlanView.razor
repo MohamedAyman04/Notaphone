@@ -12,13 +12,13 @@
 }
 
 <div class="form-style">
-	<input type="text" placeholder="mobile no" @bind="inputMobileNo" />
-	<input type="date" @bind="inputDate" @bind:format="yyyy-MM-dd" />
+	<form @onsubmit=Submit>
+		<input type="text" maxlength="11" pattern="[0-9]{11}" title="11-digit mobile no" placeholder="mobile no" @bind="mobileNo" required/>
+		<input type="date" @bind="inputDate" @bind:format="yyyy-MM-dd" required/>
 
-	<button @onclick=Submit>Submit</button>
+		<button type="submit">Submit</button>
+	</form>
 </div>
-
-
 
 <div class="table-container">
     <table class="styled-table">
@@ -46,8 +46,8 @@
 
 @code {
     private List<AccountUsagePlanResult> AccountUsages = new();
-    DateTime inputDate;
-    string inputMobileNo;
+    DateTime? inputDate;
+    string? mobileNo;
     bool loading = true;
 
     protected override async Task OnInitializedAsync()
@@ -64,7 +64,7 @@
 		using var context = DbFactory.CreateDbContext();
 		AccountUsages = await context.Database
 			.SqlQuery<AccountUsagePlanResult>(
-				$"Select * from dbo.Account_Usage_Plan({inputMobileNo}, {inputDate})"
+				$"Select * from dbo.Account_Usage_Plan({mobileNo}, {inputDate})"
 			).ToListAsync();
 
 		loading = false;

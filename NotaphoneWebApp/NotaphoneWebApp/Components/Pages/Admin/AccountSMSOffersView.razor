@@ -12,12 +12,12 @@
 }
 
 <div class="form-style">
-	<input type="text" placeholder="mobile no" @bind="inputMobileNo" />
+	<form @onsubmit=Submit>
+		<input type="text" maxlength="11" pattern="[0-9]{11}" title="11-digit mobile no" placeholder="mobile no" @bind="mobileNo" required/>
 
-	<button @onclick=Submit>Submit</button>
+		<button type="submit">Submit</button>
+	</form>
 </div>
-
-
 
 <div class="table-container">
     <table class="styled-table">
@@ -47,7 +47,7 @@
 
 @code {
     private List<AccountSMSOffersResult> Offers = new();
-    string inputMobileNo;
+    string? mobileNo;
     bool loading = true;
 
     protected override async Task OnInitializedAsync()
@@ -64,7 +64,7 @@
 		using var context = DbFactory.CreateDbContext();
 		Offers = await context.Database
 			.SqlQuery<AccountSMSOffersResult>(
-				$"Select * from Account_SMS_Offers({inputMobileNo})"
+				$"Select * from Account_SMS_Offers({mobileNo})"
 			).ToListAsync();
 
 		loading = false;
