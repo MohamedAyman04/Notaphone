@@ -1,4 +1,4 @@
-﻿@page "/AccountPlanDateView"
+@page "/AccountPlanDateView"
 @rendermode InteractiveServer
 @inject IDbContextFactory<ApplicationDbContext> DbFactory;
 
@@ -11,10 +11,16 @@
     <p>No Active Benefits are available</p>
 }
 
-<input type="date" placeholder="date" @bind="inputDate" @bind:format="yyyy-mm-dd" />
-<input type="number" placeholder="plan id" @bind="inputPlanID"/>
+<div class="form-style">
+	<form @onsubmit=Submit>
+		<input type="date" placeholder="date" @bind="inputDate" @bind:format="yyyy-mm-dd" required/>
+		<input type="number" step="1" min="1" placeholder="1" @bind="inputPlanID" required/>
 
-<button @onclick=Submit>Submit</button>
+		<button type="submit">Submit</button>
+	</form>
+</div>
+
+
 
 <div class="table-container">
     <table class="styled-table">
@@ -41,7 +47,7 @@
 @code {
     private List<AccountPlanDateResult> Accounts = new();
     DateTime inputDate;
-    int inputPlanID;
+    int inputPlanID = 1;
     bool loading = true;
 
     protected override async Task OnInitializedAsync()
