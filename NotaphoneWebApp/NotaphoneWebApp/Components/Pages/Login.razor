@@ -1,0 +1,52 @@
+﻿@page "/"
+@rendermode InteractiveServer
+@inject IDbContextFactory<ApplicationDbContext> DbFactory;
+@inject ProtectedSessionStorage ProtectedSessionStore
+@inject NavigationManager NavigationManager
+@layout Layout.EmptyLayout
+
+<PageTitle>Login</PageTitle>
+
+<h1>Login</h1>
+
+<div class="login">
+    <input type="text" name="username" placeholder="mobile number" @bind="mobileNumber" />
+    <input type="password" name="password" placeholder="password" @bind="password" />
+    <button @onclick="submitInput">Submit</button>
+</div>
+
+@code {
+    public string mobileNumber = "";
+    public string password = "";
+
+    async void submitInput() {
+        using var context = DbFactory.CreateDbContext();
+        var list = await context.Database
+             .SqlQuery<bool?>(
+                 $"Select dbo.AccountLoginValidation({mobileNumber}, {password})"
+             ).ToListAsync();
+
+        if (mobileNumber == "admin" && password == "admin") {
+            await ProtectedSessionStore.SetAsync("isCustomer", false);
+        } else {
+            await ProtectedSessionStore.SetAsync("isCustomer", true);
+        }
+
+        if ((await ProtectedSessionStore.GetAsync<bool>("isCustomer")).Value) {
+            try {
+                if (list[0].Value) {
+                    await ProtectedSessionStore.SetAsync("mobileNumber", mobileNumber);
+                    await ProtectedSessionStore.SetAsync("password", password);
+                    NavigationManager.NavigateTo("/HomeCustomer");
+                } else {
+                    throw new Exception("error no data found");
+                }
+            }
+            catch (Exception error) {
+                Console.WriteLine(error.Message);
+            }
+        } else {
+            NavigationManager.NavigateTo("/HomeAdmin");
+        } 
+    }
+}

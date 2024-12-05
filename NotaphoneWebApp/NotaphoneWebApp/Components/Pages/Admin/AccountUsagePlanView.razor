@@ -1,0 +1,74 @@
+﻿@page "/AccountUsagePlanView"
+@rendermode InteractiveServer
+@inject IDbContextFactory<ApplicationDbContext> DbFactory;
+
+<PageTitle>Account Usage Plan</PageTitle>
+
+<h1>Account Usage Plan</h1>
+
+@if (AccountUsages == null || AccountUsages.Count == 0)
+{
+    <p>No Active Benefits are available</p>
+}
+
+<div class="form-style">
+	<input type="text" placeholder="mobile no" @bind="inputMobileNo" />
+	<input type="date" @bind="inputDate" @bind:format="yyyy-MM-dd" />
+
+	<button @onclick=Submit>Submit</button>
+</div>
+
+
+
+<div class="table-container">
+    <table class="styled-table">
+        <thead>
+            <tr>
+                <th>Plan ID</th>
+                <th>Total data</th>
+                <th>Total minutes</th>
+                <th>Total sms</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var tuple in AccountUsages)
+            {
+                <tr>
+                    <td>@tuple.PlanId</td>
+                    <td>@tuple.TotalData</td>
+                    <td>@tuple.TotalMinutes</td>
+                    <td>@tuple.TotalSMS</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@code {
+    private List<AccountUsagePlanResult> AccountUsages = new();
+    DateTime inputDate;
+    string inputMobileNo;
+    bool loading = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        loading = true;
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+    }
+
+    async void Submit()
+    {
+		using var context = DbFactory.CreateDbContext();
+		AccountUsages = await context.Database
+			.SqlQuery<AccountUsagePlanResult>(
+				$"Select * from dbo.Account_Usage_Plan({inputMobileNo}, {inputDate})"
+			).ToListAsync();
+
+		loading = false;
+
+		StateHasChanged();
+	}
+}

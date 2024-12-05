@@ -1,0 +1,82 @@
+﻿@page "/AccountPlanView"
+@rendermode InteractiveServer
+@inject IDbContextFactory<ApplicationDbContext> DbFactory;
+
+<PageTitle>Account Plan</PageTitle>
+
+<h1>Account Plan</h1>
+
+@if (AccountPlans == null || AccountPlans.Count == 0)
+{
+    <p>No Active Benefits are available</p>
+}
+
+<div class="table-container">
+    <table class="styled-table">
+        <thead>
+            <tr>
+                <th>Mobile no.</th>
+                <th>Pass</th>
+                <th>Balance</th>
+                <th>Account type</th>
+                <th>Start date</th>
+                <th>Status</th>
+                <th>Points</th>
+                <th>National ID</th>
+                <th>Plan ID</th>
+                <th>Name</th>
+                <th>Price</th>
+                <th>SMS offered</th>
+                <th>Minute offered</th>
+                <th>Data offered</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var tuple in AccountPlans)
+            {
+                <tr>
+                    <td>@tuple.MobileNo</td>
+                    <td>@tuple.Pass</td>
+                    <td>@tuple.Balance</td>
+                    <td>@tuple.AccountType</td>
+                    <td>@DateOnly.FromDateTime(tuple.StartDate.Value)</td>
+                    <td>@tuple.Status</td>
+                    <td>@tuple.Points</td>
+                    <td>@tuple.NationalId</td>
+                    <td>@tuple.PlanId</td>
+                    <td>@tuple.Name</td>
+                    <td>@tuple.Price</td>
+                    <td>@tuple.SMSOffered</td>
+                    <td>@tuple.MinutesOffered</td>
+                    <td>@tuple.DataOffered</td>
+                    <td>@tuple.Description</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@code {
+    private List<AccountPlanResult> AccountPlans = new();
+    bool loading = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        loading = true;
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (loading)
+        {
+            using var context = DbFactory.CreateDbContext();
+            AccountPlans = await context.Database
+			    .SqlQuery<AccountPlanResult>($"exec Account_Plan").ToListAsync();
+
+            loading = false;
+
+            StateHasChanged();
+        }
+    }
+}

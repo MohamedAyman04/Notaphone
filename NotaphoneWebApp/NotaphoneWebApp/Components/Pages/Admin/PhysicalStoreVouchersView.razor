@@ -1,0 +1,61 @@
+﻿@page "/PhysicalStoreVouchersView"
+@rendermode InteractiveServer
+@inject IDbContextFactory<ApplicationDbContext> DbFactory;
+
+<PageTitle>Physical Store Vouchers</PageTitle>
+
+<h1>All Physical Store Vouchers</h1>
+
+@if (Vouchers == null || Vouchers.Count == 0)
+{
+    <p>No Active Benefits are available</p>
+}
+
+<div class="table-container">
+    <table class="styled-table">
+        <thead>
+            <tr>
+                <th>Shop ID</th>
+                <th>Address</th>
+                <th>Working hours</th>
+                <th>Voucher ID</th>
+                <th>Value</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var tuple in Vouchers)
+            {
+                <tr>
+                    <td>@tuple.ShopId</td>
+                    <td>@tuple.Address</td>
+                    <td>@tuple.WorkingHours</td>
+                    <td>@tuple.VoucherId</td>
+                    <td>@tuple.Value</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@code {
+    private List<PhysicalStoreVoucher> Vouchers = new();
+    bool loading = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        loading = true;
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (loading)
+        {
+            using var context = DbFactory.CreateDbContext();
+            Vouchers = await context.PhysicalStoreVouchers.ToListAsync();
+
+            loading = false;
+
+            StateHasChanged();
+        }
+    }
+}
