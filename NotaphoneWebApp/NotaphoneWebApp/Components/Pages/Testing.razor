@@ -1,7 +1,7 @@
 ﻿@page "/Testing"
 @rendermode InteractiveServer
 @inject IDbContextFactory<ApplicationDbContext> DbFactory
-
+@inject ProtectedSessionStorage ProtectedSessionStore
 
 <h3>@text</h3>
 
@@ -12,6 +12,8 @@
 <input type="date" @bind="input5" @bind:format="yyyy-mm-dd"/>
 <input @bind="input6"/>
 <button @onclick="Submit">Submit</button>
+<button @onclick="Submit1">Store input2</button>
+<p>@input2</p>
 
 @code {
 	string text = "";
@@ -22,19 +24,6 @@
 	DateTime input5;
 	string input6;
 
-	protected override async Task OnAfterRenderAsync(bool firstRender)
-	{
-		if (!firstRender) return;
-
-		using var context = DbFactory.CreateDbContext();
-
-		// var list = await context.Database.SqlQuery<AccountPlanResult>($"exec Account_Plan").ToListAsync();
-		var list = await context.Database
-			.SqlQuery<AccountPlanDateResult>($"Select * from dbo.Account_Plan_Date({input3}, {input1})")
-			.ToListAsync();
-
-		list.ForEach(Console.WriteLine);
-	}
 
 	async void Submit()
 	{
@@ -149,5 +138,19 @@
 		// Console.WriteLine(rowsAffected);
 
 		StateHasChanged();
+	}
+
+	async void Submit1()
+	{
+		await ProtectedSessionStore.SetAsync("account number", input2);
+	}
+
+	protected override async Task OnAfterRenderAsync(bool firstRender)
+	{
+		if (firstRender)
+		{
+			input2 = (await ProtectedSessionStore.GetAsync<string>("account number")).Value;
+			StateHasChanged();
+		}
 	}
 }
