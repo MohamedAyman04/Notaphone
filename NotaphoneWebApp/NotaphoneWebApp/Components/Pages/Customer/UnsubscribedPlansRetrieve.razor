@@ -7,11 +7,11 @@
 <h1>Unsubscribed Plans</h1>
 
 <div class="form-style">
-	<form @onsubmit=Submit>
-		<input type="text" maxlength="11" pattern="[0-9]{11}" title="11-digit mobile no" placeholder="mobile no" @bind="mobileNo" required/>
+    <form @onsubmit=Submit>
+        <input type="text" maxlength="11" pattern="[0-9]{11}" title="11-digit mobile no" placeholder="mobile no" @bind="mobileNo" required/>
 
-		<button type="submit">Submit</button>
-	</form>
+        <button type="submit">Submit</button>
+    </form>
 </div>
 
 <div class="table-container">
@@ -44,29 +44,45 @@
     </table>
 </div>
 
-@if (unsubscribedPlans == null || unsubscribedPlans.Count == 0)
+@if (loading)
 {
-    <p>No services are available</p>
+    <div class="loader"></div>
+}
+
+<p>@error</p>
+
+@if ((unsubscribedPlans == null || unsubscribedPlans.Count == 0) && done)
+{
+    <p>No Active Benefits are available</p>
 }
 
 @code {
     private List<UnsubscribedPlansResult> unsubscribedPlans = new();
     private bool isLoading = true;
-    public string mobileNo;
-    
+    public string mobileNo = "";
+    private bool loading = false;
+    private string error = "";
+    private bool done = false;
 
     private async Task Submit()
     {
-        using var context = DbFactory.CreateDbContext();
-        unsubscribedPlans = await context.Database
-            .SqlQuery<UnsubscribedPlansResult>($"exec Unsubscribed_Plans {mobileNo}"
-		 	).ToListAsync();
+        try {
+            loading = true;
+            await Task.Yield();
+            using var context = DbFactory.CreateDbContext();
+            unsubscribedPlans = await context.Database
+                .SqlQuery<UnsubscribedPlansResult>($"exec Unsubscribed_Plans {mobileNo}"
+                 ).ToListAsync();
 
-        unsubscribedPlans.ForEach(Console.WriteLine);
-
-
-        StateHasChanged();
-       
+            unsubscribedPlans.ForEach(Console.WriteLine);
+            done = true;
+        } catch (Exception err) {
+            error = err.Message;
+        }
+        finally {
+            loading = false;
+            StateHasChanged();
+        }
     }
 }
 

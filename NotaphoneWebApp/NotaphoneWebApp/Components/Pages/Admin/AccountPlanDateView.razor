@@ -6,18 +6,13 @@
 
 <h1>Account Plan Date</h1>
 
-@if (Accounts == null || Accounts.Count == 0)
-{
-    <p>No Active Benefits are available</p>
-}
-
 <div class="form-style">
-	<form @onsubmit=Submit>
-		<input type="date" placeholder="date" @bind="inputDate" @bind:format="yyyy-mm-dd" required/>
-		<input type="number" step="1" min="1" title="plan id" placeholder="plan id" @bind="planID" required/>
+    <form @onsubmit=Submit>
+        <input type="date" placeholder="date" @bind="inputDate" @bind:format="yyyy-mm-dd" required/>
+        <input type="number" step="1" min="1" title="plan id" placeholder="plan id" @bind="planID" required/>
 
-		<button type="submit">Submit</button>
-	</form>
+        <button type="submit">Submit</button>
+    </form>
 </div>
 
 <div class="table-container">
@@ -42,30 +37,44 @@
     </table>
 </div>
 
+@if (loading)
+{
+    <div class="loader"></div>
+}
+
+<p>@error</p>
+
+@if ((Accounts == null || Accounts.Count == 0) && done)
+{
+    <p>No Account plan date available</p>
+}
+
 @code {
     private List<AccountPlanDateResult> Accounts = new();
     DateTime? inputDate;
     int? planID;
-    bool loading = true;
-
-    protected override async Task OnInitializedAsync()
-    {
-        loading = true;
-    }
-
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-    }
+    bool loading = false;
+    bool done = false;
+    string error = "";
 
     async void Submit()
     {
-		using var context = DbFactory.CreateDbContext();
-		Accounts = await context.Database
-			.SqlQuery<AccountPlanDateResult>($"Select * from dbo.Account_Plan_Date({inputDate}, {planID})")
-			.ToListAsync();
+        try {
+            using var context = DbFactory.CreateDbContext();
+            Accounts = await context.Database
+                .SqlQuery<AccountPlanDateResult>($"Select * from dbo.Account_Plan_Date({inputDate}, {planID})")
+                .ToListAsync();
 
-		loading = false;
+            loading = false;
+            done = true;
 
-		StateHasChanged();
+            StateHasChanged();
+        } catch (Exception err) {
+            error = err.Message;
+        }
+        finally {
+            loading = false;
+            StateHasChanged();
+        }
 	}
 }

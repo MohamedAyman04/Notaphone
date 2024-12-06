@@ -6,11 +6,6 @@
 
 <h1>Account Plan</h1>
 
-@if (AccountPlans == null || AccountPlans.Count == 0)
-{
-    <p>No Active Benefits are available</p>
-}
-
 <div class="table-container">
     <table class="styled-table">
         <thead>
@@ -57,9 +52,23 @@
     </table>
 </div>
 
+@if (loading)
+{
+    <div class="loader"></div>
+}
+
+<p>@error</p>
+
+@if ((AccountPlans == null || AccountPlans.Count == 0) && done)
+{
+    <p>No Account plan available</p>
+}
+
 @code {
     private List<AccountPlanResult> AccountPlans = new();
     bool loading = true;
+    private string error = "";
+    private bool done = false;
 
     protected override async Task OnInitializedAsync()
     {
@@ -70,13 +79,18 @@
     {
         if (loading)
         {
-            using var context = DbFactory.CreateDbContext();
-            AccountPlans = await context.Database
-			    .SqlQuery<AccountPlanResult>($"exec Account_Plan").ToListAsync();
+            try {
+                using var context = DbFactory.CreateDbContext();
+                AccountPlans = await context.Database
+                    .SqlQuery<AccountPlanResult>($"exec Account_Plan").ToListAsync();
 
-            loading = false;
+                loading = false;
 
-            StateHasChanged();
+                StateHasChanged();
+                done = true;
+            } catch (Exception err) {
+                error = err.Message;
+            }
         }
     }
 }

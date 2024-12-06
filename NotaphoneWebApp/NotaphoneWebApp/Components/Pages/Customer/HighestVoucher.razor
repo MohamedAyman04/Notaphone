@@ -7,11 +7,11 @@
 <h1>Highest Voucher</h1>
 
 <form @onsubmit=Submit>
-	<div class="form-style">
-		<input type="text" id="mobileno" maxlength="11" pattern="[0-9]{11}" title="11-digit mobile no" placeholder="mobile no" @bind="mobileNo" required/>
+    <div class="form-style">
+        <input type="text" id="mobileno" maxlength="11" pattern="[0-9]{11}" title="11-digit mobile no" placeholder="mobile no" @bind="mobileNo" required/>
 
         <button type="submit">Submit</button>
-	</div>
+    </div>
 </form>
 
 <div class="table-container">
@@ -55,9 +55,19 @@
 
     public async void Submit()
     {
-        using var context = DbFactory.CreateDbContext();
-        vouchers = await context.Database.SqlQuery<int>($"execute Account_Highest_Voucher {mobileNo}").ToListAsync();
-        Console.WriteLine("done");
-        StateHasChanged();
+        try {
+            loading = true;
+            using var context = DbFactory.CreateDbContext();
+            vouchers = await context.Database.SqlQuery<int>($"execute Account_Highest_Voucher {mobileNo}").ToListAsync();
+            Console.WriteLine("done");
+            StateHasChanged();
+            done = true;
+        } catch (Exception err) {
+            error = err.Message;
+        }
+        finally {
+            loading = false;
+            StateHasChanged();
+        }
     }
 }

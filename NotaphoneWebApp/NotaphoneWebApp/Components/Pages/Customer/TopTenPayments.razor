@@ -42,9 +42,24 @@
     </table>
 </div>
 
+@if (loading)
+{
+    <div class="loader"></div>
+}
+
+<p>@error</p>
+
+@if ((Payments == null || Payments.Count == 0) && done)
+{
+    <p>No plan usage available</p>
+}
+
 @code {
     private List<TopSuccessfulPaymentsResult> Payments = new();
     public string mobileNo = "";
+    private bool done = false;
+    private bool loading = false;
+    private string error = "";
 
     private async Task Submit()
     {

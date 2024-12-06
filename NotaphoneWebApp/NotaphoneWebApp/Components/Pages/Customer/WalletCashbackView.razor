@@ -1,21 +1,16 @@
 ﻿@page "/WalletCashbackView"
 @rendermode InteractiveServer
 @inject IDbContextFactory<ApplicationDbContext> DbFactory;
-	
+
 <PageTitle>Cashback Transactions</PageTitle>
 <h1>Cashback Transactions</h1>
 
-@if (cashbackWallet == null || cashbackWallet.Count == 0)
-{
-	<p>No services are available</p>
-}
-
 <div class="form-style">
-	<form @onsubmit=Submit>
-		<input type="number" step="1" min="1" title="nid" placeholder="nid" @bind="NID" required/>
+    <form @onsubmit=Submit>
+        <input type="number" step="1" min="1" title="nid" placeholder="nid" @bind="NID" required/>
 
-		<button type="submit">Submit</button>
-	</form>
+        <button type="submit">Submit</button>
+    </form>
 </div>
 
 <div class="table-container">
@@ -44,23 +39,46 @@
         </tbody>
     </table>
 </div>
+
+@if (loading)
+{
+    <div class="loader"></div>
+}
+
+<p>@error</p>
+
+@if ((cashbackWallet == null || cashbackWallet.Count == 0) && done)
+{
+    <p>No Active Benefits are available</p>
+}
+
+
 @code {
     private List<CashbackWalletCustomerResult> cashbackWallet = new();
     private bool isLoading = true;
     public int? NID;
-
+    private bool loading = false;
+    private string error = "";
+    private bool done = false;
 
     private async Task Submit()
     {
-        using var context = DbFactory.CreateDbContext();
-        cashbackWallet = await context.Database
-            .SqlQuery<CashbackWalletCustomerResult>($"Select * from dbo.Cashback_Wallet_Customer({NID})"
-             ).ToListAsync();
+        try {
+            loading = true;
+            await Task.Yield();
+            using var context = DbFactory.CreateDbContext();
+            cashbackWallet = await context.Database
+                .SqlQuery<CashbackWalletCustomerResult>($"Select * from dbo.Cashback_Wallet_Customer({NID})"
+                    ).ToListAsync();
 
-     cashbackWallet.ForEach(Console.WriteLine);
-
-
-     StateHasChanged();
-
+            cashbackWallet.ForEach(Console.WriteLine);
+            done = true;
+        } catch (Exception err) {
+            error = err.Message;
+        }
+        finally {
+            loading = false;
+            StateHasChanged();
+        }
     }
 }

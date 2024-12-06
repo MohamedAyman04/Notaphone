@@ -7,11 +7,11 @@
 <h1>Plan Usage</h1>
 
 <form @onsubmit=Submit>
-	<div class="form-style">
-		<input type="text" id="mobileno" maxlength="11" pattern="[0-9]{11}" title="11-digit mobile no" placeholder="mobile no" @bind="mobileNo" required/>
+    <div class="form-style">
+        <input type="text" id="mobileno" maxlength="11" pattern="[0-9]{11}" title="11-digit mobile no" placeholder="mobile no" @bind="mobileNo" required/>
 
         <button type="submit">Submit</button>
-	</div>
+    </div>
 </form>
 
 <div class="table-container">
@@ -21,7 +21,7 @@
                 <td>Data Consumption</td>
                 <td>Minutes Used</td>
                 <td>SMS Sent</td>
-                
+
             </tr>
         </thead>
         <tbody>
@@ -31,35 +31,49 @@
                     <td>@usage.DataConsumption</td>
                     <td>@usage.MinutesUsed</td>
                     <td>@usage.SMSSent</td>
-                    
+
                 </tr>
             }
         </tbody>
     </table>
 </div>
 
-@if (usagePlan == null || usagePlan.Count == 0)
+@if (loading)
 {
-    <p>No services are available</p>
+    <div class="loader"></div>
+}
+
+<p>@error</p>
+
+@if ((usagePlan == null || usagePlan.Count == 0) && done)
+{
+    <p>No plan usage available</p>
 }
 
 @code {
     private List<UsagePlanCurrentMonthResult> usagePlan = new();
-    private bool isLoading = true;
     public string mobileNo = "";
-
+    private bool done = false;
+    private bool loading = false;
+    private string error = "";
 
     private async Task Submit()
     {
-        using var context = DbFactory.CreateDbContext();
-        usagePlan = await context.Database
-            .SqlQuery<UsagePlanCurrentMonthResult>($"Select * from dbo.Usage_Plan_CurrentMonth({mobileNo})"
-		 	).ToListAsync();
-        
-        usagePlan.ForEach(Console.WriteLine);
-
-
-        StateHasChanged();
-
+        try {
+            loading = true;
+            await Task.Yield();
+            using var context = DbFactory.CreateDbContext();
+            usagePlan = await context.Database
+                .SqlQuery<UsagePlanCurrentMonthResult>($"Select * from dbo.Usage_Plan_CurrentMonth({mobileNo})"
+                 ).ToListAsync();
+            usagePlan.ForEach(Console.WriteLine);
+            done = true;
+        } catch (Exception err) {
+            error = err.Message;
+        }
+        finally {
+            loading = false;
+            StateHasChanged();
+        }
     }
 }
