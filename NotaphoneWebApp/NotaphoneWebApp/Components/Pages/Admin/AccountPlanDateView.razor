@@ -6,14 +6,22 @@
 
 <h1>Account Plan Date</h1>
 
-<div class="form-style">
-    <form @onsubmit=Submit>
-        <input type="date" placeholder="date" @bind="inputDate" @bind:format="yyyy-mm-dd" required/>
-        <input type="number" step="1" min="1" title="plan id" placeholder="plan id" @bind="planID" required/>
+
+<form @onsubmit=Submit>
+    <div class="form-style">
+        <div class="together">
+            <label for="date">Subscription date</label>
+            <input type="date" id="date" placeholder="date" @bind="inputDate" @bind:format="yyyy-mm-dd" required/>
+        </div>
+        <div class="together">
+            <label for="id">Plan ID</label>
+            <input type="number" id="id" step="1" min="1" title="plan id" placeholder="plan id" @bind="planID" required/>
+        </div>
 
         <button type="submit">Submit</button>
-    </form>
-</div>
+    </div>
+</form>
+
 
 <div class="table-container">
     <table class="styled-table">
@@ -60,15 +68,13 @@
     async void Submit()
     {
         try {
+            loading = true;
+            await Task.Yield();
             using var context = DbFactory.CreateDbContext();
             Accounts = await context.Database
                 .SqlQuery<AccountPlanDateResult>($"Select * from dbo.Account_Plan_Date({inputDate}, {planID})")
                 .ToListAsync();
-
-            loading = false;
             done = true;
-
-            StateHasChanged();
         } catch (Exception err) {
             error = err.Message;
         }

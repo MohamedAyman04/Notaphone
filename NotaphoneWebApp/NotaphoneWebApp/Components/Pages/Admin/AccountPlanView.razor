@@ -6,7 +6,7 @@
 
 <h1>Account Plan</h1>
 
-<div class="table-container">
+<div class="table-container" style="width: 100%">
     <table class="styled-table">
         <thead>
             <tr>
@@ -45,7 +45,11 @@
                     <td>@tuple.SMSOffered</td>
                     <td>@tuple.MinutesOffered</td>
                     <td>@tuple.DataOffered</td>
-                    <td>@tuple.Description</td>
+                    @if (tuple.Description == null || tuple.Description == "") {
+                        <td>No Description</td>
+                    } else {
+                        <td>@tuple.Description</td>
+                    }
                 </tr>
             }
         </tbody>

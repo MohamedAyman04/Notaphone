@@ -15,34 +15,35 @@
 	</form>
 </div>
 
-<div class="table-container">
-    <p>Wont tell you if it's done</p>
-</div>
+@if (isDone)
+{
+	<p>done</p>
+}
 
 @code {
-    string? mobileNo;
-    int? planID;
-    bool loading = true;
+	string? mobileNo;
+	int? planID;
+	bool loading = false;
+	private bool isDone = false;
+	string error = "";
 
-    protected override async Task OnInitializedAsync()
-    {
-        loading = true;
-    }
-
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-    }
-
-    async void Submit()
-    {
-		using var context = DbFactory.CreateDbContext();
-		var rowsAffected = await context.Database.
-			ExecuteSqlAsync(
-				$"exec Benefits_Account {mobileNo}, {planID}"
-			);
-
-		loading = false;
-
-		StateHasChanged();
+	async void Submit()
+	{
+		try {
+			loading = true;
+			await Task.Yield();
+			using var context = DbFactory.CreateDbContext();
+			var rowsAffected = await context.Database.
+				ExecuteSqlAsync(
+					$"exec Benefits_Account {mobileNo}, {planID}"
+				);
+			isDone = true;
+		} catch (Exception err) {
+			error = err.Message;
+		}
+		finally {
+			loading = false;
+			StateHasChanged();
+		}
 	}
 }

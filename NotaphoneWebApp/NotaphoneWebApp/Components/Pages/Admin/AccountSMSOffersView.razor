@@ -6,17 +6,12 @@
 
 <h1>Account SMS Offers</h1>
 
-@if (Offers == null || Offers.Count == 0)
-{
-    <p>No Active Benefits are available</p>
-}
-
 <div class="form-style">
-	<form @onsubmit=Submit>
-		<input type="text" maxlength="11" pattern="[0-9]{11}" title="11-digit mobile no" placeholder="mobile no" @bind="mobileNo" required/>
+    <form @onsubmit=Submit>
+        <input type="text" maxlength="11" pattern="[0-9]{11}" title="11-digit mobile no" placeholder="mobile no" @bind="mobileNo" required/>
 
-		<button type="submit">Submit</button>
-	</form>
+        <button type="submit">Submit</button>
+    </form>
 </div>
 
 <div class="table-container">
@@ -45,30 +40,42 @@
     </table>
 </div>
 
+@if (loading)
+{
+    <div class="loader"></div>
+}
+
+<p>@error</p>
+
+@if ((Offers == null || Offers.Count == 0) && done)
+{
+    <p>No Account SMS available</p>
+}
+
 @code {
     private List<AccountSMSOffersResult> Offers = new();
     string? mobileNo;
-    bool loading = true;
-
-    protected override async Task OnInitializedAsync()
-    {
-        loading = true;
-    }
-
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-    }
+    bool loading = false;
+    string error = "";
+    bool done = false;
 
     async void Submit()
     {
-		using var context = DbFactory.CreateDbContext();
-		Offers = await context.Database
-			.SqlQuery<AccountSMSOffersResult>(
-				$"Select * from Account_SMS_Offers({mobileNo})"
-			).ToListAsync();
-
-		loading = false;
-
-		StateHasChanged();
+        try {
+            loading = true;
+            await Task.Yield();
+            using var context = DbFactory.CreateDbContext();
+            Offers = await context.Database
+                .SqlQuery<AccountSMSOffersResult>(
+                    $"Select * from Account_SMS_Offers({mobileNo})"
+                ).ToListAsync();
+            done = true;
+        } catch (Exception err) {
+            error = err.Message;
+        }
+        finally {
+            loading = false;
+            StateHasChanged();
+        }
 	}
 }

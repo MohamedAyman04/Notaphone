@@ -6,19 +6,19 @@
 
 <h1>Account Usage Plan</h1>
 
-@if (AccountUsages == null || AccountUsages.Count == 0)
-{
-    <p>No Active Benefits are available</p>
-}
-
-<div class="form-style">
-	<form @onsubmit=Submit>
-		<input type="text" maxlength="11" pattern="[0-9]{11}" title="11-digit mobile no" placeholder="mobile no" @bind="mobileNo" required/>
-		<input type="date" @bind="inputDate" @bind:format="yyyy-MM-dd" required/>
-
-		<button type="submit">Submit</button>
-	</form>
-</div>
+<form @onsubmit=Submit>
+    <div class="form-style">
+        <div class="together">
+            <label for="mob">Mobile Number</label>
+            <input type="text" id="mob" maxlength="11" pattern="[0-9]{11}" title="11-digit mobile no" placeholder="mobile no" @bind="mobileNo" required/>
+        </div>
+        <div class="together">
+            <label for="id">Start Date</label>
+            <input type="date" id="id" @bind="inputDate" @bind:format="yyyy-MM-dd" required/>
+        </div>
+        <button type="submit">Submit</button>
+    </div>
+</form>
 
 <div class="table-container">
     <table class="styled-table">
@@ -44,31 +44,43 @@
     </table>
 </div>
 
+@if (loading)
+{
+    <div class="loader"></div>
+}
+
+<p>@error</p>
+
+@if ((AccountUsages == null || AccountUsages.Count == 0) && done)
+{
+    <p>No Account plan usage available</p>
+}
+
 @code {
     private List<AccountUsagePlanResult> AccountUsages = new();
     DateTime? inputDate;
     string? mobileNo;
-    bool loading = true;
-
-    protected override async Task OnInitializedAsync()
-    {
-        loading = true;
-    }
-
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-    }
+    bool loading = false;
+    bool done = false;
+    string error = "";
 
     async void Submit()
     {
-		using var context = DbFactory.CreateDbContext();
-		AccountUsages = await context.Database
-			.SqlQuery<AccountUsagePlanResult>(
-				$"Select * from dbo.Account_Usage_Plan({mobileNo}, {inputDate})"
-			).ToListAsync();
-
-		loading = false;
-
-		StateHasChanged();
+        try {
+            loading = true;
+            await Task.Yield();
+            using var context = DbFactory.CreateDbContext();
+            AccountUsages = await context.Database
+                .SqlQuery<AccountUsagePlanResult>(
+                    $"Select * from dbo.Account_Usage_Plan({mobileNo}, {inputDate})"
+                ).ToListAsync();
+            done = true;
+        } catch (Exception err) {
+            error = err.Message;
+        }
+        finally {
+            loading = false;
+            StateHasChanged();
+        }
 	}
 }

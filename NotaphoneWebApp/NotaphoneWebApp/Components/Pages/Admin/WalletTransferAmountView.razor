@@ -6,15 +6,23 @@
 
 <h1>Wallet Transfer</h1>
 
-<div class="form-style">
-	<form @onsubmit=Submit>
-		<input type="number" step="1" min="1" title="wallet id" placeholder="wallet id" @bind="walletID" required/>
-		<input type="date" title="start date" @bind="startDate" @bind:format="yyyy-MM-dd" required/>
-		<input type="date" title="end date" @bind="endDate" @bind:format="yyyy-MM-dd" required/>
-
-		<button type="submit">Submit</button>
-	</form>
-</div>
+<form @onsubmit=Submit>
+    <div class="form-style">
+        <div class="together">
+            <label for="id"> Wallet ID</label>
+            <input type="number" id="id" step="1" min="1" title="wallet id" placeholder="wallet id" @bind="walletID" required/>
+        </div>
+        <div class="together">
+            <label for="startDate">Start Date</label>
+            <input type="date" id="startDate" title="start date" @bind="startDate" @bind:format="yyyy-MM-dd" required/>
+        </div>
+        <div class="together">
+            <label for="enddate">End Date</label>
+            <input type="date" id="enddate" title="end date" @bind="endDate" @bind:format="yyyy-MM-dd" required/>
+        </div>
+        <button type="submit">Submit</button>
+    </div>
+</form>
 
 
 <div class="table-container">
@@ -24,29 +32,60 @@
                 <th>Wallet</th>
             </tr>
         </thead>
-	    <tbody>
-		    @foreach (var wallet in walletTransferAmount)
-		    {
-			    <tr>
-				    <td>@wallet</td>
-			    </tr>
-		    }
-	    </tbody>
+        <tbody>
+            @foreach (var wallet in walletTransferAmount)
+            {
+                <tr>
+                    @if (wallet != null) {
+                        <td>@wallet</td>
+                    } else {
+                        <td>No wallet transfers found</td>
+                    }
+                </tr>
+            }
+        </tbody>
     </table>
 </div>
+
+@if (loading)
+{
+    <div class="loader"></div>
+}
+
+<p>@error</p>
+
+@if ((walletTransferAmount == null || walletTransferAmount.Count == 0) && done)
+{
+    <p>No wallet transfers found</p>
+}
 
 @code {
     private List<int?> walletTransferAmount = new();
     public int? walletID;
     public DateTime? startDate;
     public DateTime? endDate;
+    bool loading = false;
+    string error = "";
+    bool done = false;
 
     private async Task Submit()
     {
-        using var context = DbFactory.CreateDbContext();
-        walletTransferAmount = await context.Database
-            .SqlQuery<int?>($"SELECT dbo.Wallet_Transfer_Amount({walletID}, {startDate}, {endDate})")
-            .ToListAsync();
-        StateHasChanged();
+        try {
+            loading = true;
+            await Task.Yield();
+            using var context = DbFactory.CreateDbContext();
+            walletTransferAmount = await context.Database
+                .SqlQuery<int?>($"SELECT dbo.Wallet_Transfer_Amount({walletID}, {startDate}, {endDate})")
+                .ToListAsync();
+            done = true;
+            Console.WriteLine(walletTransferAmount.Count);
+            Console.WriteLine(walletTransferAmount[0]);
+        } catch (Exception err) {
+            error = err.Message;
+        }
+        finally {
+            loading = false;
+            StateHasChanged();
+        }
     }
 }
