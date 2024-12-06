@@ -47,27 +47,27 @@
 
 <p>@error</p>
 
-@if (servicePlans == null || servicePlans.Count == 0)
+@if ((servicePlans == null || servicePlans.Count == 0) && done)
 {
-    <p>No services are available</p>
+    <p>No services available</p>
 }
 
 @code {
     private List<AllServicePlan> servicePlans = new();
     private bool loading = false;
     private string error = "";
+    private bool done = false;
 
     protected override async Task OnInitializedAsync()
     {
         try {
             loading = true;
-            StateHasChanged();
-
+            await Task.Yield();
             using var context = DbFactory.CreateDbContext();
             servicePlans = await context.AllServicePlans.ToListAsync();
+            done = true;
         } catch (Exception err) {
             error = err.Message;
-            StateHasChanged();
         } finally {
             loading = false;
             StateHasChanged();

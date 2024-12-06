@@ -54,7 +54,7 @@
 
 @if ((consumptionResults == null || consumptionResults.Count == 0) && done)
 {
-	<p>No services are available</p>
+	<p>No consumptions available</p>
 }
 
 @code {
@@ -72,7 +72,6 @@
 		try {
 			loading = true;
 			StateHasChanged();
-
 			using var context = DbFactory.CreateDbContext();
 			consumptionResults = await context.Database
 				.SqlQuery<ConsumptionResult>(

@@ -30,9 +30,24 @@
     </table>
 </div>
 
+@if (loading)
+{
+    <div class="loader"></div>
+}
+
+<p>@error</p>
+
+@if ((vouchers == null || vouchers.Count == 0) && done)
+{
+    <p>No services available</p>
+}
+
 @code {
     private List<int> vouchers = new();
     public String mobileNo = "";
+    private bool loading = false;
+    private string error = "";
+    private bool done = false;
 
     public async void SubmitInput()
     {
