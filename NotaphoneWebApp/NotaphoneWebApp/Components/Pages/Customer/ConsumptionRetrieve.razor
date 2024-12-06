@@ -6,23 +6,26 @@
 
 <h1>Consumption Details</h1>
 
-<div class="table-container">
-
+<form @onsubmit=Submit>
 	<div class="form-style">
 		<div class="together">
 			<label for="planname">Plan Name</label>
-			<input type="text" id="planname" placeholder="plan name" name="Plan_name" @bind="Plan_name">
+			<input type="text" id="planname" maxlength="11" title="plan name" placeholder="plan name" @bind="Plan_name" required />
 		</div>
 		<div class="together">
 			<label for="startdate">Start Date</label>
-			<input type="date" id="startdate" name="start_date" @bind="startDate" @bind:format="yyyy-mm-dd" />
+			<input type="date" id="startdate" @bind="startDate" @bind:format="yyyy-MM-dd" required />
 		</div>
 		<div class="together">
 			<label for="enddate">End Date</label>
-			<input type="date" id="enddate" name="end_date" @bind="endDate" @bind:format="yyyy-mm-dd" />
+			<input type="date" id="enddate" @bind="endDate" @bind:format="yyyy-MM-dd" required />
 		</div>
-		<button @onclick="SubmitInput">Submit</button>
+		<button type="submit">Submit</button>
 	</div>
+</form>
+
+<div class="table-container">
+
 
 	<table class="styled-table">
 		<thead>
@@ -58,20 +61,23 @@
 }
 
 @code {
+
 	private List<ConsumptionResult> consumptionResults = new();
 	private bool isLoading = true;
 	public string Plan_name = "";
-	public DateTime startDate;
-	public DateTime endDate;
+	public DateTime? startDate;
+	public DateTime? endDate;
 	private bool loading = false;
 	private string error = "";
 	private bool done = false;
 
-	private async Task SubmitInput()
+	private async Task Submit()
 	{
 		try {
 			loading = true;
-			StateHasChanged();
+
+			await Task.Yield();
+
 			using var context = DbFactory.CreateDbContext();
 			consumptionResults = await context.Database
 				.SqlQuery<ConsumptionResult>(
@@ -79,10 +85,8 @@
 				).ToListAsync();
 			consumptionResults.ForEach(Console.WriteLine); 
 			done = true;
-			StateHasChanged();
 		} catch(Exception err) {
 			error = err.Message;
-			StateHasChanged();
 		} finally {
 			loading = false;
 			StateHasChanged();

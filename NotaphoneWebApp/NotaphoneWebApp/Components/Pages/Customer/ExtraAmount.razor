@@ -1,17 +1,22 @@
 ﻿@page "/ExtraAmount"
 @rendermode InteractiveServer
-@inject IDbContextFactory<ApplicationDbContext> DbFactory;
+@inject IDbContextFactory<ApplicationDbContext> DbFactory
+@inject AuthenticationStateProvider AuthStateProvider
 
 <PageTitle>Extra Amount</PageTitle>
 
 <h1>Extra Amount</h1>
 
+<form @onsubmit=Submit>
+	<div class="form-style">
+		<input type="text" id="mobileno" maxlength="11" pattern="[0-9]{11}" title="11-digit mobile no" placeholder="mobile no" @bind="mobileNo" required/>
+		<input type="text" id="planname" maxlength="11" title="plan name" placeholder="plan name" @bind="planName" required />
+
+        <button type="submit">Submit</button>
+	</div>
+</form>
+
 <div class="table-container">
-    <div class="form-style">
-        <input type="text" placeholder="Mobile Number" name="mobileNumber" @bind="mobileNo" />
-        <input type="text" placeholder="Plan Name" name="planName" @bind="planName" />
-        <button @onclick="SubmitInput">Submit</button>
-    </div>
 
     <table class="styled-table">
         <thead>
@@ -37,7 +42,21 @@
     public string mobileNo = "";
     public string planName = "";
 
-    private async Task SubmitInput()
+    [CascadingParameter]
+    private Task<AuthenticationState> authenticationState { get; set; }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            var authState = await authenticationState;
+            mobileNo = authState.User.FindFirst(ClaimTypes.MobilePhone).Value;
+            StateHasChanged();
+        }
+    }
+
+
+    private async Task Submit()
     {
         using var context = DbFactory.CreateDbContext();
 

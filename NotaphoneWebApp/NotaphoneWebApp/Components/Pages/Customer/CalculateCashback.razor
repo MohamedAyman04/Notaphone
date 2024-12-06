@@ -7,10 +7,13 @@
 <h1>Calculate Cashback</h1>
 
 <div class="form-style">
-    <input type="text" placeholder="mobile number" @bind="mobileNo" />
-    <input type="number" @bind="paymentID" />
-    <input type="number" @bind="benefitID" />
-    <button @onclick="SubmitInput">Submit</button>
+	<form @onsubmit=Submit>
+		<input type="text" maxlength="11" pattern="[0-9]{11}" title="11-digit mobile no" placeholder="mobile no" @bind="mobileNo" required/>
+		<input type="number" step="1" min="1" title="payment id" placeholder="payment id" @bind="paymentID" required/>
+		<input type="number" step="1" min="1" title="benefit id" placeholder="benefit id" @bind="benefitID" required/>
+
+		<button type="submit">Submit</button>
+	</form>
 </div>
 
 @if (isDone)
@@ -21,10 +24,10 @@
 @code {
     private bool isDone = false;
     public string mobileNo = "";
-    public int paymentID;
-    public int benefitID;
+    public int? paymentID;
+    public int? benefitID;
 
-    private async Task SubmitInput()
+    private async Task Submit()
     {
         try
         {

@@ -7,14 +7,18 @@
 <h1>Renew Subscription</h1>
 
 <div class="form-style">
-    <input type="text" placeholder="mobile number" @bind="mobileNo" />
-    <input type="number" step=".1" @bind="amount" />
-</div>
+	<form @onsubmit=Submit>
+		<input type="text" maxlength="11" pattern="[0-9]{11}" title="11-digit mobile no" placeholder="mobile no" @bind="mobileNo" required/>
+		<input type="number" step=".1" min="0" title="plan id" placeholder="amount" @bind="amount" required/>
+        <div></div>
+        <br />
+		<input type="text" maxlength="11" pattern="(cash|credit)" title="payment method (cash or credit)" placeholder="payment method" @bind="paymentMethod" required/>
+		<input type="number" step="1" min="1" title="plan id" placeholder="plan id" @bind="planID" required/>
+        <div></div>
+        <br />
 
-<div class="form-style">
-    <input type="text" placeholder="payment method" @bind="PaymentMethod" />
-    <input type="number" @bind="planID" />
-    <button @onclick="SubmitInput">Submit</button>
+		<button type="submit" style="margin:auto;display:block">Submit</button>
+	</form>
 </div>
 
 @if (isDone)
@@ -25,18 +29,18 @@
 @code {
     public bool isDone;
     public string mobileNo;
-    public decimal amount;
-    public string PaymentMethod;
-    public int planID;
+    public decimal? amount;
+    public string paymentMethod;
+    public int? planID;
 
-    async void SubmitInput()
+    async void Submit()
     {
         try{
             isDone = false;
             using var context = DbFactory.CreateDbContext();
             var rowsAffected = await context.Database.
             ExecuteSqlAsync(
-            $"exec Initiate_plan_payment {mobileNo}, {amount}, {PaymentMethod}, {planID}"
+            $"exec Initiate_plan_payment {mobileNo}, {amount}, {paymentMethod}, {planID}"
             );
 
             Console.WriteLine("done");

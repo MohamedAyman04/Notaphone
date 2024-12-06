@@ -6,13 +6,15 @@
 
 <h1>Unsubscribed Plans</h1>
 
+<div class="form-style">
+	<form @onsubmit=Submit>
+		<input type="text" maxlength="11" pattern="[0-9]{11}" title="11-digit mobile no" placeholder="mobile no" @bind="mobileNo" required/>
+
+		<button type="submit">Submit</button>
+	</form>
+</div>
+
 <div class="table-container">
-
-    <div class="form-style">
-        <input type="text" placeholder="mobile number" name="mobile_num" @bind="mobile_num">
-        <button @onclick="SubmitInput">Submit</button>
-    </div>
-
     <table class="styled-table">
         <thead>
             <tr>
@@ -50,14 +52,14 @@
 @code {
     private List<UnsubscribedPlansResult> unsubscribedPlans = new();
     private bool isLoading = true;
-    public string mobile_num;
+    public string mobileNo;
     
 
-    private async Task SubmitInput()
+    private async Task Submit()
     {
         using var context = DbFactory.CreateDbContext();
         unsubscribedPlans = await context.Database
-            .SqlQuery<UnsubscribedPlansResult>($"exec Unsubscribed_Plans {mobile_num}"
+            .SqlQuery<UnsubscribedPlansResult>($"exec Unsubscribed_Plans {mobileNo}"
 		 	).ToListAsync();
 
         unsubscribedPlans.ForEach(Console.WriteLine);

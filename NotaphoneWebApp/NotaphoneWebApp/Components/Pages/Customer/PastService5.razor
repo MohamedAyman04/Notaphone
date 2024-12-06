@@ -11,11 +11,15 @@
     <p>No available service plans</p>
 }
 
+<form @onsubmit=Submit>
+	<div class="form-style">
+		<input type="text" id="mobileno" maxlength="11" pattern="[0-9]{11}" title="11-digit mobile no" placeholder="mobile no" @bind="mobileNo" required/>
+
+        <button type="submit">Submit</button>
+	</div>
+</form>
+
 <div class="table-container">
-    <div class="form-style">
-        <input type="text" @bind=MobileNo placeholder="mobile number"/>
-        <button @onclick=submit>Submit</button>
-    </div>
     <table class="styled-table">
         <thead>
             <tr>
@@ -43,14 +47,14 @@
 
 @code {
     private List<SubscribedPlans5MonthsResult> ServicePlans = new();
-    public string MobileNo;
+    public string mobileNo = "";
 
-    async void submit()
+    async void Submit()
     {
         using var context = DbFactory.CreateDbContext();
         ServicePlans = await context.Database
         .SqlQuery<SubscribedPlans5MonthsResult>(
-        $"Select * from dbo.Subscribed_plans_5_Months({MobileNo})"
+        $"Select * from dbo.Subscribed_plans_5_Months({mobileNo})"
         ).ToListAsync();
 
     }

@@ -7,10 +7,13 @@
 <h1>Balance recharge</h1>
 
 <div class="form-style">
-    <input type="text" placeholder="mobile number" @bind="mobileNo" />
-    <input type="number" step=".1" @bind="amount" />
-    <input type="text" placeholder="payment method" @bind="paymentMethod" />
-    <button @onclick="SubmitInput">Submit</button>
+	<form @onsubmit=Submit>
+		<input type="text" maxlength="11" pattern="[0-9]{11}" title="11-digit mobile no" placeholder="mobile no" @bind="mobileNo" required/>
+		<input type="number" step=".1" min="0" title="plan id" placeholder="amount" @bind="amount" required/>
+		<input type="text" maxlength="11" pattern="(cash|credit)" title="payment method (cash or credit)" placeholder="payment method" @bind="paymentMethod" required/>
+
+		<button type="submit">Submit</button>
+	</form>
 </div>
 
 @if (isDone)
@@ -21,10 +24,10 @@
 @code {
     private bool isDone = false;
     public string mobileNo = "";
-    public decimal amount;
+    public decimal? amount;
     public string paymentMethod = "";
 
-    private async Task SubmitInput()
+    private async Task Submit()
     {
         try
         {

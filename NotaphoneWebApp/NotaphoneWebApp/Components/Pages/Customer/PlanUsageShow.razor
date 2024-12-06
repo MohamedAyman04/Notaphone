@@ -6,15 +6,15 @@
 
 <h1>Plan Usage</h1>
 
+<form @onsubmit=Submit>
+	<div class="form-style">
+		<input type="text" id="mobileno" maxlength="11" pattern="[0-9]{11}" title="11-digit mobile no" placeholder="mobile no" @bind="mobileNo" required/>
+
+        <button type="submit">Submit</button>
+	</div>
+</form>
 
 <div class="table-container">
-
-    <div class="form-style">
-        <input type="text" name="mobile_num" @bind="mobile_num">
-
-        <button @onclick="SubmitInput">Submit</button>
-    </div>
-
     <table class="styled-table">
         <thead>
             <tr>
@@ -46,14 +46,14 @@
 @code {
     private List<UsagePlanCurrentMonthResult> usagePlan = new();
     private bool isLoading = true;
-    public string mobile_num;
+    public string mobileNo = "";
 
 
-    private async Task SubmitInput()
+    private async Task Submit()
     {
         using var context = DbFactory.CreateDbContext();
         usagePlan = await context.Database
-            .SqlQuery<UsagePlanCurrentMonthResult>($"Select * from dbo.Usage_Plan_CurrentMonth({mobile_num})"
+            .SqlQuery<UsagePlanCurrentMonthResult>($"Select * from dbo.Usage_Plan_CurrentMonth({mobileNo})"
 		 	).ToListAsync();
         
         usagePlan.ForEach(Console.WriteLine);

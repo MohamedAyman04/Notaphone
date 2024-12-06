@@ -9,14 +9,16 @@
 {
 	<p>No services are available</p>
 }
+
+<div class="form-style">
+	<form @onsubmit=Submit>
+		<input type="number" step="1" min="1" title="nid" placeholder="nid" @bind="NID" required/>
+
+		<button type="submit">Submit</button>
+	</form>
+</div>
+
 <div class="table-container">
-
-    <div class="form-style">
-        <input type="int" name="NID" @bind="NID">
-
-        <button @onclick="SubmitInput">Submit</button>
-    </div>
-
     <table class="styled-table">
         <thead>
             <tr>
@@ -45,10 +47,10 @@
 @code {
     private List<CashbackWalletCustomerResult> cashbackWallet = new();
     private bool isLoading = true;
-    public int NID;
+    public int? NID;
 
 
-    private async Task SubmitInput()
+    private async Task Submit()
     {
         using var context = DbFactory.CreateDbContext();
         cashbackWallet = await context.Database

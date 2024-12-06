@@ -6,12 +6,16 @@
 
 <h1>Highest Voucher</h1>
 
+<form @onsubmit=Submit>
+	<div class="form-style">
+		<input type="text" id="mobileno" maxlength="11" pattern="[0-9]{11}" title="11-digit mobile no" placeholder="mobile no" @bind="mobileNo" required/>
+
+        <button type="submit">Submit</button>
+	</div>
+</form>
+
 <div class="table-container">
 
-    <div class="form-style">
-        <input type="text" placeholder="Mobile Number" name="mobileNumber" @bind="mobileNo" />
-        <button @onclick=SubmitInput>Submit</button>
-    </div>
 
     <table class="styled-table">
         <thead>
@@ -49,7 +53,7 @@
     private string error = "";
     private bool done = false;
 
-    public async void SubmitInput()
+    public async void Submit()
     {
         using var context = DbFactory.CreateDbContext();
         vouchers = await context.Database.SqlQuery<int>($"execute Account_Highest_Voucher {mobileNo}").ToListAsync();

@@ -6,13 +6,17 @@
 
 <h1>Remaining Amount</h1>
 
-<div class="table-container">
-    <div class="form-style">
-        <input type="text" placeholder="Mobile Number" name="mobileNumber" @bind="mobileNo" />
-        <input type="text" placeholder="Plan Name"  name="planName" @bind="planName" />
-        <button @onclick="SubmitInput">Submit</button>
-    </div>
+<div class="form-style">
+	<form @onsubmit=Submit>
+		<input type="text" maxlength="11" pattern="[0-9]{11}" title="11-digit mobile no" placeholder="mobile no" @bind="mobileNo" required/>
+		<input type="text" maxlength="11" title="plan name" placeholder="plan name" @bind="planName" required/>
 
+		<button type="submit">Submit</button>
+	</form>
+</div>
+
+
+<div class="table-container">
     <table class="styled-table">
         <thead>
             <tr>
@@ -37,7 +41,7 @@
     public string mobileNo = "";
     public string planName = "";
 
-    private async Task SubmitInput()
+    private async Task Submit()
     {
         using var context = DbFactory.CreateDbContext();
 
