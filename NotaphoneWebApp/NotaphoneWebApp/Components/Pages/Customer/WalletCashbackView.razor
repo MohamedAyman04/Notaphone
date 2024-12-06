@@ -33,7 +33,7 @@
                     <td>@cashback.BenefitId </td>
                     <td>@cashback.WalletId</td>
                     <td>@cashback.Amount</td>
-                    <td>@DateOnly.FromDateTime(cashback.CreditDate.Value)</td>
+                    <td>@if (cashback.CreditDate != null) DateOnly.FromDateTime(cashback.CreditDate.Value);</td>
                 </tr>
             }
         </tbody>

@@ -38,11 +38,11 @@
                     <td>@tuple.LastName</td>
                     <td>@tuple.Email</td>
                     <td>@tuple.Address</td>
-                    <td>@DateOnly.FromDateTime(tuple.DateOfBirth.Value)</td>
+                    <td>@if (tuple.DateOfBirth != null) DateOnly.FromDateTime(tuple.DateOfBirth.Value);</td>
                     <td>@tuple.MobileNo</td>
                     <td>@tuple.AccountType</td>
                     <td>@tuple.Status</td>
-                    <td>@DateOnly.FromDateTime(tuple.StartDate.Date)</td>
+                    <td>@if (tuple.StartDate != null) DateOnly.FromDateTime(tuple.StartDate.Date);</td>
                     <td>@tuple.Balance</td>
                     <td>@tuple.Points</td>
                 </tr>

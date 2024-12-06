@@ -23,7 +23,7 @@
                 <tr>
                     <td>@benefit.BenefitId</td>
                     <td>@benefit.Description</td>
-                    <td>@benefit.ValidityDate</td>
+                    <td>@if (benefit.ValidityDate != null) DateOnly.FromDateTime(benefit.ValidityDate.Value);</td>
                     <td>@benefit.Status</td>
                     <td>@benefit.MobileNo</td>
                 </tr>

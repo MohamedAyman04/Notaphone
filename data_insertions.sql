@@ -5,7 +5,7 @@ GO
 
 INSERT INTO Customer_profile
 VALUES
-(1, 'jay', 'hay', 'jayhay', 'a', '2000/01/01'),
+(1, 'jay', 'hay', null, 'a', null),
 (2, 'clay', 'bay', 'claybay', 'b', '1999/01/01'),
 (3, 'bob', 'jack', 'bobjack', 'c', '2001/01/01'),
 (4, 'bob', 'jack', 'bobjack', 'c', null)

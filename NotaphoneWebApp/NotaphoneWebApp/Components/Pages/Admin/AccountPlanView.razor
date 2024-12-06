@@ -35,7 +35,7 @@
                     <td>@tuple.Pass</td>
                     <td>@tuple.Balance</td>
                     <td>@tuple.AccountType</td>
-                    <td>@DateOnly.FromDateTime(tuple.StartDate.Value)</td>
+                    <td>@if (tuple.StartDate != null) DateOnly.FromDateTime(tuple.StartDate.Value);</td>
                     <td>@tuple.Status</td>
                     <td>@tuple.Points</td>
                     <td>@tuple.NationalId</td>
