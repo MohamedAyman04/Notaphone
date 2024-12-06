@@ -11,14 +11,14 @@
 <h1>Login</h1>
 
 
-<div class="login">
-	<form @onsubmit=Submit>
-		<input type="text" title="11-digit mobile no" max-length="11" placeholder="mobile no" @bind="mobileNumber" required />
+<form @onsubmit=Submit>
+	<div class="login">
+		<input type="text" title="11-digit mobile no" maxlength="11" placeholder="mobile no" @bind="mobileNumber" required />
 		<input type="password" title="account password" placeholder="password" @bind="password" required />
 
 		<button type="submit">Submit</button>
-	</form>
-</div>
+	</div>
+</form>
 
 @if (loading)
 {
@@ -42,13 +42,15 @@
 
 		using var context = DbFactory.CreateDbContext();
 		var list = await context.Database
-			 .SqlQuery<bool?>(
-				 $"Select dbo.AccountLoginValidation({mobileNumber}, {password})"
-			 ).ToListAsync();
+				.SqlQuery<bool?>(
+					$"Select dbo.AccountLoginValidation({mobileNumber}, {password})"
+				).ToListAsync();
 
 		bool isAdmin = mobileNumber == "admin" && password == "admin";
 
-		if ((await ProtectedSessionStore.GetAsync<bool>("isCustomer")).Value) {
+		var CustomAuthStateProvider = (CustomAuthStateProvider)AuthStateProvider;
+
+		if (!isAdmin) {
 			try {
 				if (list[0].Value) {
 					var user = new UserSession();
