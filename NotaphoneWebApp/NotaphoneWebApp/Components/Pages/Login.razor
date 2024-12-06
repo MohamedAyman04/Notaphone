@@ -36,7 +36,8 @@
 	async void Submit() {
 		loading = true;
 		error = "";
-		StateHasChanged();
+
+		await Task.Yield();
 
 		using var context = DbFactory.CreateDbContext();
 		var list = await context.Database
@@ -62,7 +63,6 @@
 			}
 			catch (Exception err) {
 				error = err.Message;
-				StateHasChanged();
 			}
 			finally {
 				loading = false;
