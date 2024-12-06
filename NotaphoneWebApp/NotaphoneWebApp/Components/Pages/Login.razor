@@ -1,73 +1,79 @@
 ﻿@page "/"
 @rendermode InteractiveServer
-@inject IDbContextFactory<ApplicationDbContext> DbFactory;
+@inject IDbContextFactory<ApplicationDbContext> DbFactory
 @inject ProtectedSessionStorage ProtectedSessionStore
 @inject NavigationManager NavigationManager
+@inject AuthenticationStateProvider AuthStateProvider
 @layout Layout.EmptyLayout
 
 <PageTitle>Login</PageTitle>
 
 <h1>Login</h1>
 
+
 <div class="login">
-    <input type="text" name="username" placeholder="mobile number" @bind="mobileNumber" />
-    <input type="password" name="password" placeholder="password" @bind="password" />
-    <button @onclick="submitInput">Submit</button>
-    <p style="color: red">@error</p>
+	<form @onsubmit=Submit>
+		<input type="text" title="11-digit mobile no" max-length="11" placeholder="mobile no" @bind="mobileNumber" required />
+		<input type="password" title="account password" placeholder="password" @bind="password" required />
+
+		<button type="submit">Submit</button>
+	</form>
 </div>
 
 @if (loading)
 {
-    <div class="d-flex justify-content-center">
-        <div class="spinner-border" style="color: #6c63ff" role="status">
-            <span class="sr-only"></span>
-        </div>
-    </div>
+	<div class="d-flex justify-content-center">
+		<div class="spinner-border" style="color: #6c63ff" role="status">
+			<span class="sr-only"></span>
+		</div>
+	</div>
 }
 
 @code {
-    public string mobileNumber = "";
-    public string password = "";
-    public string error = "";
-    public bool loading = false;
+	public string mobileNumber = "";
+	public string password = "";
+	public string error = "";
+	public bool loading = false;
 
-    async void submitInput() {
-        loading = true;
-        error = "";
-        StateHasChanged();
+	async void Submit() {
+		loading = true;
+		error = "";
+		StateHasChanged();
 
-        using var context = DbFactory.CreateDbContext();
-        var list = await context.Database
-             .SqlQuery<bool?>(
-                 $"Select dbo.AccountLoginValidation({mobileNumber}, {password})"
-             ).ToListAsync();
+		using var context = DbFactory.CreateDbContext();
+		var list = await context.Database
+			 .SqlQuery<bool?>(
+				 $"Select dbo.AccountLoginValidation({mobileNumber}, {password})"
+			 ).ToListAsync();
 
-        if (mobileNumber == "admin" && password == "admin") {
-            await ProtectedSessionStore.SetAsync("isCustomer", false);
-        } else {
-            await ProtectedSessionStore.SetAsync("isCustomer", true);
-        }
+		bool isAdmin = mobileNumber == "admin" && password == "admin";
 
-        if ((await ProtectedSessionStore.GetAsync<bool>("isCustomer")).Value) {
-            try {
-                if (list[0].Value) {
-                    await ProtectedSessionStore.SetAsync("mobileNumber", mobileNumber);
-                    await ProtectedSessionStore.SetAsync("password", password);
-                    NavigationManager.NavigateTo("/HomeCustomer");
-                } else {
-                    throw new Exception("Wrong Mobile Number Or Password");
-                }
-            }
-            catch (Exception err) {
-                error = err.Message;
-                StateHasChanged();
-            }
-            finally {
-                loading = false;
-                StateHasChanged();
-            }
-        } else {
-            NavigationManager.NavigateTo("/HomeAdmin");
-        } 
-    }
+		if ((await ProtectedSessionStore.GetAsync<bool>("isCustomer")).Value) {
+			try {
+				if (list[0].Value) {
+					var user = new UserSession();
+					user.MobilePhone = mobileNumber;
+					user.Role = "user";
+					CustomAuthStateProvider.UpdateAuthenticationState(user);
+					NavigationManager.NavigateTo("/HomeCustomer");
+				} else {
+					throw new Exception("Wrong Mobile Number Or Password");
+				}
+			}
+			catch (Exception err) {
+				error = err.Message;
+				StateHasChanged();
+			}
+			finally {
+				loading = false;
+				StateHasChanged();
+			}
+		} else {
+			var user = new UserSession();
+			user.MobilePhone = "admin";
+			user.Role = "admin";
+			CustomAuthStateProvider.UpdateAuthenticationState(user);
+			NavigationManager.NavigateTo("/HomeAdmin");
+		} 
+	}
 }

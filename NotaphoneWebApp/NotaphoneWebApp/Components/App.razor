@@ -11,12 +11,12 @@
     <link rel="stylesheet" href="NotaphoneWebApp.styles.css" />
     <link rel="stylesheet" href="default-layout.css" />
     <link rel="icon" type="image/png" href="Notaphone.png" />
-    <HeadOutlet />
+	<HeadOutlet @rendermode="new InteractiveServerRenderMode(prerender: false)" />
 </head>
 
 <body>
-    <Routes />
-    <script src="_framework/blazor.web.js"></script>
+	<Routes @rendermode="new InteractiveServerRenderMode(prerender: false)" />
+	<script src="_framework/blazor.web.js"></script>
 </body>
 
 </html>
