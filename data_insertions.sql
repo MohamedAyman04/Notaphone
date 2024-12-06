@@ -7,7 +7,8 @@ INSERT INTO Customer_profile
 VALUES
 (1, 'jay', 'hay', 'jayhay', 'a', '2000/01/01'),
 (2, 'clay', 'bay', 'claybay', 'b', '1999/01/01'),
-(3, 'bob', 'jack', 'bobjack', 'c', '2001/01/01')
+(3, 'bob', 'jack', 'bobjack', 'c', '2001/01/01'),
+(4, 'bob', 'jack', 'bobjack', 'c', null)
 INSERT INTO Customer_Account
 VALUES
 ('00000000000', 'abc', 0, 'postpaid', '2010/01/01', 'active', 0, 1),
