@@ -16,24 +16,24 @@
 
 @if (isDone)
 {
-    <p>done</p>
+    <p>@rowsAffected rows affected</p>
 }
 
 @code {
-    private List<TotalPointsAccountResult> totalPointsAccountResults = new();
+    private int? rowsAffected = 0;
     private bool isDone = false;
     public string? mobileNo = "";
 
     private async Task Submit()
     {
+        rowsAffected = 0;
         try
         {
             isDone = false;
             using var context = DbFactory.CreateDbContext();
 
-            totalPointsAccountResults = await context.Database
-                .SqlQuery<TotalPointsAccountResult>($"execute Total_Points_Account {mobileNo}")
-                .ToListAsync();
+            rowsAffected = context.Database
+                .ExecuteSql($"execute Total_Points_Account {mobileNo}");
 
             Console.WriteLine("done");
             isDone = true;
