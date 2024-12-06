@@ -29,14 +29,16 @@
 
     private async Task Submit()
     {
-		rowsAffected = 0;
-		try
+        rowsAffected = 0;
+        try
         {
             isDone = false;
             using var context = DbFactory.CreateDbContext();
 
             rowsAffected = await context.Database
                 .ExecuteSqlAsync($"execute Redeem_voucher_points {mobileNo}, {voucherID}");
+
+            if (rowsAffected == -1) rowsAffected = 0;
 
             Console.WriteLine("done");
             isDone = true;
