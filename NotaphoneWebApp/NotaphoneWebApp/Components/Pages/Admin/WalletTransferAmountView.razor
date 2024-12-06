@@ -25,7 +25,7 @@
             </tr>
         </thead>
 	    <tbody>
-		    @foreach (var wallet in wallterTransferAmount)
+		    @foreach (var wallet in walletTransferAmount)
 		    {
 			    <tr>
 				    <td>@wallet</td>
@@ -36,7 +36,7 @@
 </div>
 
 @code {
-    private List<int> wallterTransferAmount = new();
+    private List<int?> walletTransferAmount = new();
     public int? walletID;
     public DateTime? startDate;
     public DateTime? endDate;
@@ -44,8 +44,8 @@
     private async Task Submit()
     {
         using var context = DbFactory.CreateDbContext();
-        wallterTransferAmount = await context.Database
-            .SqlQuery<int>($"SELECT dbo.Wallet_Transfer_Amount({walletID}, {startDate}, {endDate})")
+        walletTransferAmount = await context.Database
+            .SqlQuery<int?>($"SELECT dbo.Wallet_Transfer_Amount({walletID}, {startDate}, {endDate})")
             .ToListAsync();
         StateHasChanged();
     }
