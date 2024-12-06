@@ -6,11 +6,6 @@
 
 <h1>All Active Benefits Details</h1>
 
-@if (Benefits == null || Benefits.Count == 0)
-{
-    <p>No Active Benefits are available</p>
-}
-
 <div class="table-container">
     <table class="styled-table">
         <thead>
@@ -37,12 +32,37 @@
     </table>
 </div>
 
+@if (loading)
+{
+    <div class="loader"></div>
+}
+
+<p>@error</p>
+
+@if ((Benefits == null || Benefits.Count == 0) && done)
+{
+    <p>No Active Benefits are available</p>
+}
+
 @code {
     private List<AllBenefit> Benefits = new();
+    private bool loading = false;
+    private string error = "";
+    private bool done = false;
 
     protected override async Task OnInitializedAsync()
     {
-        using var context = DbFactory.CreateDbContext();
-        Benefits = await context.AllBenefits.ToListAsync();
+        try {
+            loading = true;
+            await Task.Yield();
+            using var context = DbFactory.CreateDbContext();
+            Benefits = await context.AllBenefits.ToListAsync();
+            done = true;
+        } catch (Exception err) {
+            error = err.Message;    
+        } finally {
+            loading = false;
+            StateHasChanged();
+        }
     }
 }

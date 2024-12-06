@@ -2,18 +2,14 @@
 @rendermode InteractiveServer
 @inject IDbContextFactory<ApplicationDbContext> DbFactory;
 
-<PageTitle>Offered Plans</PageTitle>
+<PageTitle>Unsubscribed Plans</PageTitle>
 
-@if (unsubscribedPlans == null || unsubscribedPlans.Count == 0)
-{
-    <p>No services are available</p>
-}
+<h1>Unsubscribed Plans</h1>
 
 <div class="table-container">
 
     <div class="form-style">
-        <input type="text" name="mobile_num" @bind="mobile_num">
-        
+        <input type="text" placeholder="mobile number" name="mobile_num" @bind="mobile_num">
         <button @onclick="SubmitInput">Submit</button>
     </div>
 
@@ -45,6 +41,12 @@
         </tbody>
     </table>
 </div>
+
+@if (unsubscribedPlans == null || unsubscribedPlans.Count == 0)
+{
+    <p>No services are available</p>
+}
+
 @code {
     private List<UnsubscribedPlansResult> unsubscribedPlans = new();
     private bool isLoading = true;

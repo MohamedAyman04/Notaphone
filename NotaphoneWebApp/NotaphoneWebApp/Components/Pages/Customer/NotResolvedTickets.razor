@@ -9,7 +9,10 @@
 <div class="table-container">
 
     <div class="form-style">
-        <input type="number" placeholder="National ID" name="NationalID" @bind="NID">
+        <div class="together">
+            <label for="national">National ID</label>
+            <input type="number" id="national" placeholder="National ID" name="NationalID" @bind="NID">
+        </div>
         <button @onclick="SubmitInput">Submit</button>
     </div>
 
@@ -30,20 +33,46 @@
     </table>
 </div>
 
+@if (loading)
+{
+    <div class="loader"></div>
+}
+
+<p>@error</p>
+
+@if ((NotResTickets == null || NotResTickets.Count == 0) && done)
+{
+    <p>No Tickets available</p>
+}
+
 @code {
     private List<int?> NotResTickets = new();
     public int NID;
+    private bool loading = false;
+    private string error = "";
+    private bool done = false;
 
     private async Task SubmitInput()
     {
-        using var context = DbFactory.CreateDbContext();
-
-        NotResTickets = await context.Database
-        .SqlQuery<int?>(
-       		$"exec Ticket_Account_Customer {NID}"
-       	).ToListAsync();
-
-
-        StateHasChanged();
+        try
+        {
+            loading = true;
+            await Task.Yield();
+            using var context = DbFactory.CreateDbContext();
+            NotResTickets = await context.Database
+            .SqlQuery<int?>(
+               $"exec Ticket_Account_Customer {NID}"
+            ).ToListAsync();
+            done = true;
+        }
+        catch (Exception err)
+        {
+            error = err.Message;
+        }
+        finally
+        {
+            loading = false;
+            StateHasChanged();
+        }
     }
 }

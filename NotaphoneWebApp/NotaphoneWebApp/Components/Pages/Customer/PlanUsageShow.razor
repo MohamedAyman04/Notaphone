@@ -4,10 +4,9 @@
 
 <PageTitle>Plan Usage in the Current Month</PageTitle>
 
-@if (usagePlan == null || usagePlan.Count == 0)
-{
-    <p>No services are available</p>
-}
+<h1>Plan Usage</h1>
+
+
 <div class="table-container">
 
     <div class="form-style">
@@ -38,6 +37,12 @@
         </tbody>
     </table>
 </div>
+
+@if (usagePlan == null || usagePlan.Count == 0)
+{
+    <p>No services are available</p>
+}
+
 @code {
     private List<UsagePlanCurrentMonthResult> usagePlan = new();
     private bool isLoading = true;
