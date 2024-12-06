@@ -17,10 +17,11 @@
 
 @if (isDone)
 {
-	<p>done</p>
+	<p>@rowsAffected row(s) affcetd</p>
 }
 
 @code {
+	int? rowsAffected = 0;
 	string? mobileNo;
 	int? planID;
 	bool loading = false;
@@ -29,11 +30,13 @@
 
 	async void Submit()
 	{
+
+		rowsAffected = 0;
 		try {
 			loading = true;
 			await Task.Yield();
 			using var context = DbFactory.CreateDbContext();
-			var rowsAffected = await context.Database.
+			rowsAffected = await context.Database.
 				ExecuteSqlAsync(
 					$"exec Benefits_Account {mobileNo}, {planID}"
 				);

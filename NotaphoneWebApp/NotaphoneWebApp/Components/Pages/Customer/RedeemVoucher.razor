@@ -18,22 +18,24 @@
 
 @if (isDone)
 {
-    <p>done</p>
+    <p>@rowsAffected row(s) affected</p>
 }
 
 @code {
+    int? rowsAffected = 0;
     private bool isDone = false;
     public string mobileNo = "";
     public int? voucherID;
 
     private async Task Submit()
     {
-        try
+		rowsAffected = 0;
+		try
         {
             isDone = false;
             using var context = DbFactory.CreateDbContext();
 
-            int rowsAffected = await context.Database
+            rowsAffected = await context.Database
                 .ExecuteSqlAsync($"execute Redeem_voucher_points {mobileNo}, {voucherID}");
 
             Console.WriteLine("done");

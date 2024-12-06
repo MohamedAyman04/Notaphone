@@ -24,22 +24,33 @@
 @if (isDone)
 {
     <br />
-    <p>done</p>
+    @if (error) {
+		<p>Invalid input</p>
+	}
+	else
+	{
+		<p>@rowsAffected row(s) affected</p>
+	}
 }
 
 @code {
+    int? rowsAffected = 0;
     public bool isDone;
     public string mobileNo;
     public decimal? amount;
     public string paymentMethod;
     public int? planID;
+    bool error;
 
     async void Submit()
     {
-        try{
+        rowsAffected = 0;
+        error = false;
+        try
+        {
             isDone = false;
             using var context = DbFactory.CreateDbContext();
-            var rowsAffected = await context.Database.
+            rowsAffected = await context.Database.
             ExecuteSqlAsync(
             $"exec Initiate_plan_payment {mobileNo}, {amount}, {paymentMethod}, {planID}"
             );
@@ -50,7 +61,8 @@
         catch (Exception ex)
         {
             Console.WriteLine($"Error: {ex.Message}");
-            isDone = false;
+            isDone = true;
+            error = true;
         }
         StateHasChanged();
     }
