@@ -13,13 +13,29 @@
     <input type="text" name="username" placeholder="mobile number" @bind="mobileNumber" />
     <input type="password" name="password" placeholder="password" @bind="password" />
     <button @onclick="submitInput">Submit</button>
+    <p style="color: red">@error</p>
 </div>
+
+@if (loading)
+{
+    <div class="d-flex justify-content-center">
+        <div class="spinner-border" style="color: #6c63ff" role="status">
+            <span class="sr-only"></span>
+        </div>
+    </div>
+}
 
 @code {
     public string mobileNumber = "";
     public string password = "";
+    public string error = "";
+    public bool loading = false;
 
     async void submitInput() {
+        loading = true;
+        error = "";
+        StateHasChanged();
+
         using var context = DbFactory.CreateDbContext();
         var list = await context.Database
              .SqlQuery<bool?>(
@@ -39,11 +55,16 @@
                     await ProtectedSessionStore.SetAsync("password", password);
                     NavigationManager.NavigateTo("/HomeCustomer");
                 } else {
-                    throw new Exception("error no data found");
+                    throw new Exception("Wrong Mobile Number Or Password");
                 }
             }
-            catch (Exception error) {
-                Console.WriteLine(error.Message);
+            catch (Exception err) {
+                error = err.Message;
+                StateHasChanged();
+            }
+            finally {
+                loading = false;
+                StateHasChanged();
             }
         } else {
             NavigationManager.NavigateTo("/HomeAdmin");

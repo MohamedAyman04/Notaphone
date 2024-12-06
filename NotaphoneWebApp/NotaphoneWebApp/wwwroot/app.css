@@ -54,17 +54,20 @@ h1:focus {
     padding-bottom: 25%;
 }
 
-h1, h2 {
+.home, h2, h1 {
     text-align: center;
 }
 
-h1 {
+.home, h1 {
     color: #6c63ff;
+}
+
+h1, h2 {
+    margin-bottom: 10%;
 }
 
 h2 {
     color: #372f8f;
-    margin-bottom: 10%;
 }
 
 input {
@@ -153,11 +156,29 @@ button:active {
     display: flex;
     flex-direction: row;
     justify-content: center;
-    align-items: center;
+    align-items: flex-end;
+    gap: 30px;
+}
+
+.together {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    flex-wrap: wrap;
     gap: 10px;
 }
 
-/* for home page */
+    .together label {
+        color: #6c63ff;
+        font-size: 18px;
+    }
+
+p {
+    text-align: center;
+    color: red;
+    font-weight: bold;
+}
 
 /* for login page */
 

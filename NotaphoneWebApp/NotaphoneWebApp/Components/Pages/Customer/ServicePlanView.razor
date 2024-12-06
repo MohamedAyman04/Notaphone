@@ -6,11 +6,6 @@
 
 <h1>Service Plan Details</h1>
 
-@if (servicePlans == null || servicePlans.Count == 0)
-{
-    <p>No services are available</p>
-}
-
 <div class="table-container">
     <table class="styled-table">
         <thead>
@@ -34,20 +29,52 @@
                     <td>@plan.SmsOffered</td>
                     <td>@plan.MinutesOffered</td>
                     <td>@plan.DataOffered</td>
-                    <td>@plan.Description</td>
+                    @if (plan.Description == null) {
+                        <td>No Description</td>
+                    } else {
+                        <td>@plan.Description</td>
+                    }
                 </tr>
             }
         </tbody>
     </table>
 </div>
 
+@if (loading)
+{
+    <div class="d-flex justify-content-center">
+        <div class="spinner-border" style="color: #6c63ff" role="status">
+            <span class="sr-only"></span>
+        </div>
+    </div>
+}
+
+<p>@error</p>
+
+@if (servicePlans == null || servicePlans.Count == 0)
+{
+    <p>No services are available</p>
+}
+
 @code {
     private List<AllServicePlan> servicePlans = new();
-    private bool isLoading = true;
+    private bool loading = false;
+    private string error = "";
 
     protected override async Task OnInitializedAsync()
     {
-        using var context = DbFactory.CreateDbContext();
-        servicePlans = await context.AllServicePlans.ToListAsync();
+        try {
+            loading = true;
+            StateHasChanged();
+
+            using var context = DbFactory.CreateDbContext();
+            servicePlans = await context.AllServicePlans.ToListAsync();
+        } catch (Exception err) {
+            error = err.Message;
+            StateHasChanged();
+        } finally {
+            loading = false;
+            StateHasChanged();
+        }
     }
 }
